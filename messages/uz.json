@@ -1,0 +1,81 @@
+{
+  "site": {
+    "brand": "Reads",
+    "roleTag": "Tarjimon va Muallif",
+    "homeTitle": "Reads, tarjimonlar portfoliosi",
+    "homeDescription": "Tarjimonlar va adabiy sharhlovchilarning shaxsiy portfolio sahifalari.",
+    "profileTitle": "{name}, Reads",
+    "languageLabel": "Til"
+  },
+  "home": {
+    "empty": "Hozircha tarjimon profili qo'shilmagan."
+  },
+  "stats": {
+    "booksTranslated": "Asarlar va tarjimalar",
+    "yearsActive": "Ijodiy faoliyat",
+    "languagePairs": "Til yo'nalishlari",
+    "booksValue": "{count}+",
+    "yearsValue": "{years} yil"
+  },
+  "books": {
+    "sectionTitle": "Asarlar va tarjimalar",
+    "count": "{count} ta kitob",
+    "roleAuthor": "Mualliflik asari",
+    "roleEditor": "Adabiy tahrir",
+    "roleTranslator": "Badiiy tarjima",
+    "coverAlt": "{title} kitobining muqovasi"
+  },
+  "excerpt": {
+    "sectionTitle": "Qiyosiy mutolaa",
+    "workLabel": "Asar",
+    "sourcePaneTab": "{language} (Asl)",
+    "translationPaneTab": "Tarjima",
+    "originalLabel": "{language} · Asl nusxa",
+    "bookExcerptLabel": "Kitobdan parcha",
+    "translationLabel": "Badiiy tarjima",
+    "analysisLabel": "Adabiy tahlil va mohiyat"
+  },
+  "inquiry": {
+    "cta": "Buyurtma yuborish",
+    "cancel": "Bekor qilish",
+    "formTitle": "Buyurtma yuborish",
+    "successTitle": "Rahmat, buyurtmangiz yuborildi.",
+    "successBody": "Tarjimon buyurtmalarni o'zi ko'rib chiqadi va sizga elektron pochta orqali javob beradi.",
+    "sendAnother": "Yana bir buyurtma yuborish",
+    "fixFields": "Iltimos, quyida belgilangan maydonlarni to'g'rilang.",
+    "tooMany": "Juda ko'p urinish. Iltimos, bir daqiqadan so'ng qayta urinib ko'ring.",
+    "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan so'ng qayta urinib ko'ring.",
+    "labelName": "Ismingiz",
+    "labelEmail": "Email",
+    "labelPair": "Til yo'nalishi",
+    "choosePair": "Til yo'nalishini tanlang",
+    "pairMismatch": "Ushbu tarjimon bunday til yo'nalishi bilan ishlamaydi.",
+    "labelProjectType": "Loyiha turi",
+    "chooseProjectType": "Loyiha turini tanlang",
+    "labelWordCount": "So'zlar soni",
+    "optional": "(ixtiyoriy)",
+    "labelBudget": "Byudjet",
+    "labelDeadline": "Muddat",
+    "labelMessage": "Loyihangiz haqida yozing",
+    "submit": "Buyurtmani yuborish",
+    "projectType": {
+      "book": "Kitob",
+      "article": "Maqola",
+      "certified_document": "Tasdiqlangan hujjat",
+      "interpretation": "Og'zaki tarjima",
+      "other": "Boshqa"
+    },
+    "budget": {
+      "unspecified": "Aytishni xohlamayman",
+      "under_100": "$100 dan kam",
+      "100_500": "$100 - $500",
+      "500_1000": "$500 - $1 000",
+      "over_1000": "$1 000 dan ko'p",
+      "not_sure": "Hali aniq emas"
+    }
+  },
+  "footer": {
+    "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
+    "personalPage": "Shaxsiy sahifa"
+  }
+}

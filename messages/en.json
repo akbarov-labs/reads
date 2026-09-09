@@ -1,0 +1,81 @@
+{
+  "site": {
+    "brand": "Reads",
+    "roleTag": "Translator & Author",
+    "homeTitle": "Reads, translator portfolios",
+    "homeDescription": "Personal portfolio pages for translators and literary critics.",
+    "profileTitle": "{name}, Reads",
+    "languageLabel": "Language"
+  },
+  "home": {
+    "empty": "No translator profiles have been added yet."
+  },
+  "stats": {
+    "booksTranslated": "Books & translations",
+    "yearsActive": "years active",
+    "languagePairs": "Language directions",
+    "booksValue": "{count}+",
+    "yearsValue": "{years, plural, one {# year} other {# years}}"
+  },
+  "books": {
+    "sectionTitle": "Books & translations",
+    "count": "{count, plural, one {# book} other {# books}}",
+    "roleAuthor": "Author's work",
+    "roleEditor": "Editorial work",
+    "roleTranslator": "Literary translation",
+    "coverAlt": "Cover of {title}"
+  },
+  "excerpt": {
+    "sectionTitle": "Compare the text",
+    "workLabel": "Work",
+    "sourcePaneTab": "{language} (Original)",
+    "translationPaneTab": "Translation",
+    "originalLabel": "{language} · Original",
+    "bookExcerptLabel": "Excerpt from the book",
+    "translationLabel": "Translation",
+    "analysisLabel": "Literary analysis"
+  },
+  "inquiry": {
+    "cta": "Send an inquiry",
+    "cancel": "Cancel",
+    "formTitle": "Send an inquiry",
+    "successTitle": "Thanks, your inquiry was sent.",
+    "successBody": "The translator reviews inquiries directly and will reach out by email.",
+    "sendAnother": "Send another inquiry",
+    "fixFields": "Please fix the highlighted fields below.",
+    "tooMany": "Too many attempts. Please try again in a minute.",
+    "genericError": "Something went wrong sending this. Please try again shortly.",
+    "labelName": "Your name",
+    "labelEmail": "Email",
+    "labelPair": "Language pair",
+    "choosePair": "Choose a language pair",
+    "pairMismatch": "This translator does not offer that language pair.",
+    "labelProjectType": "Project type",
+    "chooseProjectType": "Choose a project type",
+    "labelWordCount": "Word count",
+    "optional": "(optional)",
+    "labelBudget": "Budget",
+    "labelDeadline": "Deadline",
+    "labelMessage": "Tell them about your project",
+    "submit": "Send inquiry",
+    "projectType": {
+      "book": "Book",
+      "article": "Article",
+      "certified_document": "Certified document",
+      "interpretation": "Interpretation",
+      "other": "Other"
+    },
+    "budget": {
+      "unspecified": "Prefer not to say",
+      "under_100": "Under $100",
+      "100_500": "$100 - $500",
+      "500_1000": "$500 - $1,000",
+      "over_1000": "Over $1,000",
+      "not_sure": "Not sure yet"
+    }
+  },
+  "footer": {
+    "quote": "Literature is the deepest echo of the human soul.",
+    "personalPage": "Personal page"
+  }
+}

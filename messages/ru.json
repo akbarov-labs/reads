@@ -1,0 +1,81 @@
+{
+  "site": {
+    "brand": "Reads",
+    "roleTag": "Переводчик и автор",
+    "homeTitle": "Reads, портфолио переводчиков",
+    "homeDescription": "Персональные страницы-портфолио переводчиков и литературных критиков.",
+    "profileTitle": "{name}, Reads",
+    "languageLabel": "Язык"
+  },
+  "home": {
+    "empty": "Пока не добавлено ни одного профиля переводчика."
+  },
+  "stats": {
+    "booksTranslated": "Книги и переводы",
+    "yearsActive": "лет в профессии",
+    "languagePairs": "Языковые направления",
+    "booksValue": "{count}+",
+    "yearsValue": "{years, plural, one {# год} few {# года} many {# лет} other {# года}}"
+  },
+  "books": {
+    "sectionTitle": "Книги и переводы",
+    "count": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
+    "roleAuthor": "Авторская работа",
+    "roleEditor": "Литературная редактура",
+    "roleTranslator": "Художественный перевод",
+    "coverAlt": "Обложка книги {title}"
+  },
+  "excerpt": {
+    "sectionTitle": "Сравнение текста",
+    "workLabel": "Произведение",
+    "sourcePaneTab": "{language} (оригинал)",
+    "translationPaneTab": "Перевод",
+    "originalLabel": "{language} · Оригинал",
+    "bookExcerptLabel": "Отрывок из книги",
+    "translationLabel": "Перевод",
+    "analysisLabel": "Литературный анализ"
+  },
+  "inquiry": {
+    "cta": "Отправить заявку",
+    "cancel": "Отмена",
+    "formTitle": "Отправить заявку",
+    "successTitle": "Спасибо, ваша заявка отправлена.",
+    "successBody": "Переводчик сам просматривает заявки и свяжется с вами по электронной почте.",
+    "sendAnother": "Отправить ещё одну заявку",
+    "fixFields": "Пожалуйста, исправьте отмеченные поля ниже.",
+    "tooMany": "Слишком много попыток. Попробуйте снова через минуту.",
+    "genericError": "Не удалось отправить заявку. Попробуйте ещё раз чуть позже.",
+    "labelName": "Ваше имя",
+    "labelEmail": "Email",
+    "labelPair": "Языковая пара",
+    "choosePair": "Выберите языковую пару",
+    "pairMismatch": "Этот переводчик не работает с такой языковой парой.",
+    "labelProjectType": "Тип проекта",
+    "chooseProjectType": "Выберите тип проекта",
+    "labelWordCount": "Объём (слов)",
+    "optional": "(необязательно)",
+    "labelBudget": "Бюджет",
+    "labelDeadline": "Срок",
+    "labelMessage": "Расскажите о проекте",
+    "submit": "Отправить заявку",
+    "projectType": {
+      "book": "Книга",
+      "article": "Статья",
+      "certified_document": "Заверенный документ",
+      "interpretation": "Устный перевод",
+      "other": "Другое"
+    },
+    "budget": {
+      "unspecified": "Не хочу указывать",
+      "under_100": "До $100",
+      "100_500": "$100 - $500",
+      "500_1000": "$500 - $1 000",
+      "over_1000": "Свыше $1 000",
+      "not_sure": "Пока не знаю"
+    }
+  },
+  "footer": {
+    "quote": "Литература - самое глубокое эхо человеческой души.",
+    "personalPage": "Личная страница"
+  }
+}
