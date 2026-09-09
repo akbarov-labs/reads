@@ -11,8 +11,16 @@ const nextConfig: NextConfig = {
     // drop the dangerouslyAllowSVG flag later.
     dangerouslyAllowSVG: true,
     remotePatterns: [
+      // Local dev: Next running on the host, or in its own container
+      // reaching Sail on the host.
       { protocol: "http", hostname: "localhost", port: "8000" },
       { protocol: "http", hostname: "host.docker.internal", port: "8000" },
+      // Production: API_URL is http://reads-admin-app/api over the shared
+      // Docker network, so cover/avatar URLs resolve to that host. The
+      // optimizer fetches them server-side; the browser only ever sees
+      // same-origin /_next/image URLs. No port here on purpose: :80 is the
+      // default for http and normalizes away when the URL is parsed.
+      { protocol: "http", hostname: "reads-admin-app" },
     ],
   },
 };
