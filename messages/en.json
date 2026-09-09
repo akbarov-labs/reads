@@ -77,5 +77,10 @@
   "footer": {
     "quote": "Literature is the deepest echo of the human soul.",
     "personalPage": "Personal page"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "This page could not be loaded. It is usually temporary.",
+    "retry": "Try again"
   }
 }

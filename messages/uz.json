@@ -77,5 +77,10 @@
   "footer": {
     "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
     "personalPage": "Shaxsiy sahifa"
+  },
+  "error": {
+    "title": "Xatolik yuz berdi",
+    "body": "Sahifani yuklab bo'lmadi. Odatda bu vaqtinchalik holat.",
+    "retry": "Qayta urinish"
   }
 }

@@ -32,17 +32,21 @@ interface ApiResource<T> {
 }
 
 async function apiFetch<T>(path: string): Promise<T | null> {
-  let response: Response;
-  try {
-    response = await fetch(`${API_URL}${path}`, {
-      next: { revalidate: REVALIDATE_SECONDS },
-    });
-  } catch (error) {
-    console.error(`Failed to reach Reads-admin API at ${API_URL}${path}`, error);
-    return null;
-  }
+  // Deliberately does NOT catch network errors. Returning null on failure
+  // looks tidy but is worse than crashing: null renders as "this translator
+  // has no data" / an empty homepage, Next treats that as a perfectly good
+  // render, and caches it -- so one transient blip leaves a blank page
+  // sitting in the cache until something forces a hard reload. Letting it
+  // throw keeps the bad render out of the cache and surfaces the real cause
+  // in the logs instead of silently showing an empty site.
+  const response = await fetch(`${API_URL}${path}`, {
+    next: { revalidate: REVALIDATE_SECONDS },
+  });
 
+  // A genuine 404 is different: that translator really does not exist, and
+  // the caller turns this into notFound().
   if (response.status === 404) return null;
+
   if (!response.ok) {
     throw new Error(`Reads-admin API request failed: ${response.status} ${path}`);
   }
