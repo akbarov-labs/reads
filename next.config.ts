@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
     // The seeded demo assets are SVG placeholders; real photography can
     // drop the dangerouslyAllowSVG flag later.
     dangerouslyAllowSVG: true,
+    // Next re-optimises an image once its cache entry expires, and the
+    // default TTL is 60s -- on a low-traffic site that means re-encoding
+    // the same avatars and covers over and over. These only change when a
+    // translator uploads a replacement, which produces a new filename (and
+    // therefore a new URL), so caching them hard is safe.
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     remotePatterns: [
       // Local dev: Next running on the host, or in its own container
       // reaching Sail on the host.
