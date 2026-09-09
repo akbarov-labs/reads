@@ -1,0 +1,29 @@
+# Production stack for the Contabo server. Pulls the image built by
+# .github/workflows/deploy.yml from GHCR — the server never builds. Joins
+# the existing external Caddy network so Caddy can reverse_proxy to it by
+# container name, and so this container can reach reads-admin-app directly
+# (server-side rendering calls the API over the internal network, never the
+# public internet).
+#
+# This file is copied to the server by the deploy workflow; the real .env
+# next to it on the server is created once by hand (see DEPLOY.md) and is
+# never touched by deploys.
+
+services:
+  app:
+    image: ${IMAGE:-ghcr.io/akbarov-sarvar/reads}:${IMAGE_TAG:-latest}
+    container_name: reads-app
+    restart: unless-stopped
+    env_file: .env
+    mem_limit: 256m
+    networks:
+      - caddy_net
+
+networks:
+  caddy_net:
+    external: true
+    # kitoblarim's Caddy container's network (confirmed via:
+    # docker inspect kitoblarim-caddy-1 --format '{{json .NetworkSettings.Networks}}')
+    # — also the network reads-admin-app joins, so this container can reach
+    # it by name for server-side API calls.
+    name: kitoblarim_default

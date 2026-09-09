@@ -12,6 +12,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
+# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, not
+# read from the environment at container start — so this one has to arrive
+# as a build arg (set by .github/workflows/deploy.yml), not via
+# docker-compose's `environment:`/`env_file:` at runtime.
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 # ---- runner: minimal runtime image using Next.js standalone output ----
