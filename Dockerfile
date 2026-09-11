@@ -26,6 +26,14 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Also needed at *runtime*, not just at build: next.config.ts derives the
+# Content-Security-Policy's connect-src from it, and next.config is loaded
+# when the server starts. Without it the browser would block the inquiry
+# form's cross-origin POST to the admin API. Public value either way -- it
+# is already inlined in the client bundle.
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 

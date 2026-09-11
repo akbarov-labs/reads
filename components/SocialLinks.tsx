@@ -9,6 +9,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { SocialLink } from "@/lib/types";
+import { safeExternalUrl } from "@/lib/safeUrl";
 
 // Lucide doesn't ship trademarked brand logos, so each platform gets a
 // generic stand-in icon — the visible text label next to it is what
@@ -33,11 +34,16 @@ export function SocialLinks({ links }: { links: SocialLink[] }) {
         const meta = PLATFORM[link.platform];
         const Icon = meta?.icon ?? Globe;
         const label = meta?.label ?? link.platform;
+        // Anything that isn't a real http(s) link (a `javascript:` URL, say)
+        // is dropped rather than rendered as a dead or dangerous button.
+        const href = safeExternalUrl(link.url);
+
+        if (!href) return null;
 
         return (
           <a
             key={link.platform}
-            href={link.url}
+            href={href}
             target="_blank"
             rel="noreferrer noopener"
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-zinc-300 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-500 hover:text-zinc-900"

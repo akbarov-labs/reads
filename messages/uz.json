@@ -82,5 +82,10 @@
     "title": "Xatolik yuz berdi",
     "body": "Sahifani yuklab bo'lmadi. Odatda bu vaqtinchalik holat.",
     "retry": "Qayta urinish"
+  },
+  "notFound": {
+    "title": "Bunday sahifa yo‘q",
+    "body": "Havola eskirgan bo‘lishi yoki profil o‘chirilgan bo‘lishi mumkin.",
+    "home": "Bosh sahifaga"
   }
 }

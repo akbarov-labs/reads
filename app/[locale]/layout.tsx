@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -9,10 +9,22 @@ import "@fontsource/newsreader/400.css";
 import "@fontsource/newsreader/400-italic.css";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
+import {
+  OG_LOCALE,
+  SITE_NAME,
+  SITE_URL,
+  localeAlternates,
+  type Locale,
+} from "@/lib/site";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
+export const viewport: Viewport = {
+  themeColor: "#fafaf9",
+  colorScheme: "light",
+};
 
 export async function generateMetadata({
   params,
@@ -21,10 +33,43 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "site" });
+  const typedLocale = locale as Locale;
 
   return {
-    title: t("homeTitle"),
+    // Everything relative in this file and in child pages resolves against
+    // this. Without it, og:image and canonical come out as bare paths,
+    // which crawlers cannot follow.
+    metadataBase: new URL(SITE_URL),
+    // Child pages set their own title; this template frames it, and the
+    // default covers pages that set none.
+    title: {
+      default: t("homeTitle"),
+      template: `%s · ${SITE_NAME}`,
+    },
     description: t("homeDescription"),
+    applicationName: SITE_NAME,
+    alternates: localeAlternates(typedLocale),
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      title: t("homeTitle"),
+      description: t("homeDescription"),
+      locale: OG_LOCALE[typedLocale],
+    },
+    twitter: { card: "summary_large_image" },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    // Turns off iOS Safari's habit of linkifying anything that resembles a
+    // phone number — book years and word counts get caught by it.
+    formatDetection: { telephone: false, address: false, email: false },
   };
 }
 

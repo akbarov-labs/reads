@@ -140,6 +140,53 @@ Also: never quote values in `.env`. Compose's `env_file:` reader does not
 strip quotes, so `FOO="bar"` becomes the literal string `"bar"` inside the
 container.
 
+## Search-engine setup
+
+Three variables in the server's `.env` drive everything SEO-related. They
+are read at runtime, so changing one needs a container recreate (see
+"Changing `.env` on the server" above) but not a rebuild:
+
+```
+SITE_URL=https://tarjima.kitoblarim.uz
+SITE_NAME=Reads
+REVALIDATE_SECRET=<openssl rand -hex 32>
+```
+
+`SITE_URL` is the origin every canonical URL, hreflang alternate, sitemap
+entry and `og:image` is built from. Get it wrong and the whole site tells
+Google it lives somewhere else.
+
+`REVALIDATE_SECRET` must be **identical** to `SEO_REVALIDATE_SECRET` in
+Reads-admin's `.env` on the same server. It authenticates
+`POST /api/revalidate`, which Reads-admin calls after every save so a new
+book appears on the site — and in the sitemap — within seconds instead of
+after the 5-minute ISR window. If the two do not match, the site still
+works; content just takes up to five minutes to appear, and the admin's
+`storage/logs/laravel.log` fills with "Site revalidation was rejected".
+
+Check it end to end from the server:
+
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -X POST -H "Authorization: Bearer $REVALIDATE_SECRET" \
+  https://tarjima.kitoblarim.uz/api/revalidate     # expect 200
+```
+
+**After the first deploy**, submit the sitemap once in Google Search Console
+and Bing Webmaster Tools (`https://tarjima.kitoblarim.uz/sitemap.xml`). It
+regenerates itself from then on; nothing needs resubmitting when a
+translator or book is added.
+
+Worth knowing about the routes this adds:
+
+| Path | What it is |
+| --- | --- |
+| `/sitemap.xml` | Every profile in every language, with hreflang alternates and a real `lastmod` |
+| `/robots.txt` | Allows the answer-engine crawlers by name (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, …) |
+| `/llms.txt` | Plain-text index of every translator and book, for language models |
+| `/og/<locale>/<slug>` | Generated 1200×630 share card, unless an admin uploaded one |
+| `/api/revalidate` | The webhook above. Rejects everything without the secret |
+
 ## Rollback
 
 Every image is also tagged with its commit SHA. To roll back:

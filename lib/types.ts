@@ -27,6 +27,23 @@ export interface Book {
   excerpt?: Excerpt;
 }
 
+/**
+ * Search-engine metadata, already resolved by Reads-admin: an admin's
+ * override where one exists, otherwise a value derived from the profile
+ * (name, professional title, location, language pairs, live book count).
+ * The site renders these verbatim — the admin panel previews the exact
+ * strings, and a new book changes the description without anyone editing it.
+ *
+ * Managed by admins only; translators cannot see or write these fields.
+ */
+export interface TranslatorSeo {
+  metaTitle: string;
+  metaDescription: string;
+  /** Absolute, publicly reachable URL (unlike avatarUrl/coverUrl). */
+  ogImageUrl: string | null;
+  noindex: boolean;
+}
+
 export interface Translator {
   slug: string;
   name: string;
@@ -43,4 +60,8 @@ export interface Translator {
   startYear: number;
   totalBooksTranslated: number;
   books: Book[];
+  /** Newest change anywhere in the profile, including its books. Sitemap lastmod. */
+  updatedAt?: string | null;
+  /** Optional so an older API deployment doesn't break rendering. */
+  seo?: TranslatorSeo | null;
 }

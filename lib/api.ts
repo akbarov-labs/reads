@@ -21,7 +21,20 @@ function resolveAssetUrl(path: string | null | undefined): string {
 // Revalidate portfolio data periodically instead of on every request or
 // only at build time — translators edit their profile through the admin
 // dashboard and expect changes to show up without a redeploy.
-const REVALIDATE_SECONDS = 60;
+//
+// This is the backstop, not the main path: Reads-admin pings /api/revalidate
+// on every write (see App\Services\SiteRevalidator), which drops the cache
+// entries tagged below straight away. The interval only matters if that ping
+// is lost, so it can be generous rather than tight.
+const REVALIDATE_SECONDS = 300;
+
+/** Cache tag covering every page built from the translator collection. */
+export const TRANSLATORS_TAG = "translators";
+
+/** Cache tag for one profile, so a single save doesn't rebuild the site. */
+export function translatorTag(slug: string): string {
+  return `translator:${slug}`;
+}
 
 interface ApiCollection<T> {
   data: T[];
@@ -31,7 +44,7 @@ interface ApiResource<T> {
   data: T;
 }
 
-async function apiFetch<T>(path: string): Promise<T | null> {
+async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
   // Deliberately does NOT catch network errors. Returning null on failure
   // looks tidy but is worse than crashing: null renders as "this translator
   // has no data" / an empty homepage, Next treats that as a perfectly good
@@ -40,7 +53,7 @@ async function apiFetch<T>(path: string): Promise<T | null> {
   // throw keeps the bad render out of the cache and surfaces the real cause
   // in the logs instead of silently showing an empty site.
   const response = await fetch(`${API_URL}${path}`, {
-    next: { revalidate: REVALIDATE_SECONDS },
+    next: { revalidate: REVALIDATE_SECONDS, tags },
   });
 
   // A genuine 404 is different: that translator really does not exist, and
@@ -67,7 +80,8 @@ function normalizeTranslator(translator: Translator): Translator {
 
 export async function getTranslators(locale: string): Promise<Translator[]> {
   const result = await apiFetch<ApiCollection<Translator>>(
-    `/translators?locale=${encodeURIComponent(locale)}`
+    `/translators?locale=${encodeURIComponent(locale)}`,
+    [TRANSLATORS_TAG]
   );
   return (result?.data ?? []).map(normalizeTranslator);
 }
@@ -77,7 +91,8 @@ export async function getTranslatorBySlug(
   locale: string
 ): Promise<Translator | null> {
   const result = await apiFetch<ApiResource<Translator>>(
-    `/translators/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`
+    `/translators/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [TRANSLATORS_TAG, translatorTag(slug)]
   );
   return result?.data ? normalizeTranslator(result.data) : null;
 }
