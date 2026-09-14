@@ -9,6 +9,13 @@ import { HREFLANG, absoluteUrl, type Locale } from "@/lib/site";
  * getTranslators is cache-tagged, and Reads-admin drops that tag on every
  * write — which is why a book added at 10:00 is in this file at 10:00.
  */
+// Rendered per request rather than prerendered. The build machine cannot
+// reach the API (see app/[locale]/layout.tsx), and unlike a page this route
+// has no dynamic segment to leave empty, so the only way to keep it out of
+// the build is to mark it dynamic. That costs very little: the getTranslators
+// fetch below still comes from the 300s data cache, so a crawler hitting
+// /sitemap.xml re-serialises a few dozen entries rather than calling Laravel.
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 function alternates(path = "") {

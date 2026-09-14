@@ -1,11 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getTranslatorBySlug, getTranslators } from "@/lib/api";
+import { getTranslatorBySlug } from "@/lib/api";
 import { getTranslatorStats } from "@/lib/translatorStats";
 import { translatorMetadata } from "@/lib/seo";
 import { translatorGraph } from "@/lib/jsonld";
-import { routing } from "@/i18n/routing";
 import type { Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
@@ -22,18 +21,16 @@ function profilePath(slug: string) {
 }
 
 /**
- * Pre-renders every profile in every language at build time; new profiles
- * added later are still served (and then cached) on first request. The point
- * is that a crawler hitting a cold page gets HTML immediately rather than
- * waiting on the API — crawl budget is spent on slow pages.
+ * Empty for the same reason as the locale layout's: enumerating slugs means
+ * calling the API, and the API is unreachable from the machine that builds
+ * the production image.
+ *
+ * Every profile is therefore generated on its first request and cached from
+ * then on, which is the path new profiles already took — this just makes it
+ * the path all of them take.
  */
-export async function generateStaticParams() {
-  // One locale is enough to enumerate slugs; the set is locale-independent.
-  const translators = await getTranslators(routing.defaultLocale);
-
-  return routing.locales.flatMap((locale) =>
-    translators.map((translator) => ({ locale, slug: translator.slug })),
-  );
+export async function generateStaticParams(): Promise<PageParams[]> {
+  return [];
 }
 
 export async function generateMetadata({
