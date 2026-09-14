@@ -10,6 +10,22 @@
   "home": {
     "empty": "Hozircha tarjimon profili qo'shilmagan."
   },
+  "translators": {
+    "sectionTitle": "Tarjimonlar",
+    "count": "{count} ta tarjimon",
+    "defaultRole": "Tarjimon",
+    "books": "{count} ta asar"
+  },
+  "authors": {
+    "sectionTitle": "Kitob mualliflari",
+    "count": "{count} ta muallif",
+    "books": "{count} ta kitob"
+  },
+  "publishers": {
+    "sectionTitle": "Nashriyotlar",
+    "count": "{count} ta nashriyot",
+    "books": "{count} ta kitob"
+  },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
     "yearsActive": "Ijodiy faoliyat",

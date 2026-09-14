@@ -1,4 +1,4 @@
-import type { Translator } from "@/lib/types";
+import type { Author, Book, Publisher, Translator } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
 // Points at the Reads-admin Laravel API (see Reads-admin/README or the
@@ -30,6 +30,9 @@ const REVALIDATE_SECONDS = 300;
 
 /** Cache tag covering every page built from the translator collection. */
 export const TRANSLATORS_TAG = "translators";
+export const AUTHORS_TAG = "authors";
+export const BOOKS_TAG = "books";
+export const PUBLISHERS_TAG = "publishers";
 
 /** Cache tag for one profile, so a single save doesn't rebuild the site. */
 export function translatorTag(slug: string): string {
@@ -95,4 +98,37 @@ export async function getTranslatorBySlug(
     [TRANSLATORS_TAG, translatorTag(slug)]
   );
   return result?.data ? normalizeTranslator(result.data) : null;
+}
+
+export async function getAuthors(locale: string): Promise<Author[]> {
+  const result = await apiFetch<ApiCollection<Author>>(
+    `/authors?locale=${encodeURIComponent(locale)}`,
+    [AUTHORS_TAG],
+  );
+  return (result?.data ?? []).map((author) => ({
+    ...author,
+    portraitUrl: resolveAssetUrl(author.portraitUrl),
+  }));
+}
+
+export async function getBooks(locale: string): Promise<Book[]> {
+  const result = await apiFetch<ApiCollection<Book>>(
+    `/books?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG],
+  );
+  return (result?.data ?? []).map((book) => ({
+    ...book,
+    coverUrl: resolveAssetUrl(book.coverUrl),
+  }));
+}
+
+export async function getPublishers(locale: string): Promise<Publisher[]> {
+  const result = await apiFetch<ApiCollection<Publisher>>(
+    `/publishers?locale=${encodeURIComponent(locale)}`,
+    [PUBLISHERS_TAG],
+  );
+  return (result?.data ?? []).map((publisher) => ({
+    ...publisher,
+    logoUrl: resolveAssetUrl(publisher.logoUrl),
+  }));
 }

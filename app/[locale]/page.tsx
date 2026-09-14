@@ -1,23 +1,14 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getTranslators } from "@/lib/api";
-import { getTranslatorStats } from "@/lib/translatorStats";
-import { translatorMetadata } from "@/lib/seo";
-import { translatorGraph } from "@/lib/jsonld";
+import { getAuthors, getBooks, getPublishers, getTranslators } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ProfileHeader } from "@/components/ProfileHeader";
-import { StatsBar } from "@/components/StatsBar";
 import { BookGrid } from "@/components/BookGrid";
-import { ExcerptReader } from "@/components/ExcerptReader";
-import { JsonLd } from "@/components/JsonLd";
+import { TranslatorGrid } from "@/components/TranslatorGrid";
+import { AuthorGrid } from "@/components/AuthorGrid";
+import { PublisherGrid } from "@/components/PublisherGrid";
 
-/**
- * The home page *is* the featured translator's page, so its metadata is that
- * translator's — resolved by Reads-admin, which means it already reflects
- * the current book count and any admin override, with no build step.
- */
 export async function generateMetadata({
   params,
 }: {
@@ -26,28 +17,8 @@ export async function generateMetadata({
   const { locale } = await params;
   const typedLocale = locale as Locale;
 
-  const [translators, t] = await Promise.all([
-    getTranslators(locale),
-    getTranslations({ locale, namespace: "site" }),
-  ]);
-  const translator = translators[0];
-
-  if (!translator) {
-    return {
-      title: t("homeTitle"),
-      description: t("homeDescription"),
-      alternates: localeAlternates(typedLocale),
-    };
-  }
-
-  return translatorMetadata({
-    translator,
-    locale: typedLocale,
-    fallback: {
-      title: t("profileTitle", { name: translator.name }),
-      description: translator.bio,
-    },
-  });
+  const t = await getTranslations({ locale, namespace: "site" });
+  return { title: t("homeTitle"), description: t("homeDescription"), alternates: localeAlternates(typedLocale) };
 }
 
 export default async function Home({
@@ -58,16 +29,16 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [translators, t, tSite, tFooter] = await Promise.all([
+  const [translators, authors, books, publishers, tHome, tFooter] = await Promise.all([
     getTranslators(locale),
-    getTranslations("stats"),
-    getTranslations("site"),
+    getAuthors(locale),
+    getBooks(locale),
+    getPublishers(locale),
+    getTranslations("home"),
     getTranslations("footer"),
   ]);
-  const translator = translators[0];
 
-  if (!translator) {
-    const tHome = await getTranslations("home");
+  if (translators.length === 0) {
     return (
       <div className="min-h-screen flex flex-col bg-stone-50">
         <SiteHeader />
@@ -80,27 +51,15 @@ export default async function Home({
     );
   }
 
-  const stats = getTranslatorStats(t, translator);
-
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
-      {/* Machine-readable version of everything below: who this is, which
-          languages they work between, and every book with the right credit
-          on it. This is what answer engines read instead of guessing from
-          the prose. */}
-      <JsonLd
-        data={translatorGraph({ translator, locale: locale as Locale })}
-      />
-      <SiteHeader
-        name={translator.name}
-        subtitle={translator.title || tSite("roleTag")}
-      />
+      <SiteHeader />
       <main className="flex-1">
         <Container>
-          <ProfileHeader translator={translator} />
-          <StatsBar stats={stats} />
-          <BookGrid books={translator.books} />
-          <ExcerptReader books={translator.books} />
+          <TranslatorGrid translators={translators} />
+          <AuthorGrid authors={authors} />
+          <PublisherGrid publishers={publishers} />
+          <BookGrid books={books} />
         </Container>
       </main>
       <footer className="border-t border-zinc-200 py-10 text-center text-xs text-zinc-500">
@@ -109,8 +68,7 @@ export default async function Home({
             «{tFooter("quote")}»
           </p>
           <p>
-            © {new Date().getFullYear()} {translator.name}.{" "}
-            {tFooter("personalPage")}.
+            © {new Date().getFullYear()} Reads. {tFooter("personalPage")}.
           </p>
         </Container>
       </footer>

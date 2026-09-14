@@ -10,6 +10,22 @@
   "home": {
     "empty": "No translator profiles have been added yet."
   },
+  "translators": {
+    "sectionTitle": "Translators",
+    "count": "{count, plural, one {# translator} other {# translators}}",
+    "defaultRole": "Translator",
+    "books": "{count, plural, one {# work} other {# works}}"
+  },
+  "authors": {
+    "sectionTitle": "Book authors",
+    "count": "{count, plural, one {# author} other {# authors}}",
+    "books": "{count, plural, one {# book} other {# books}}"
+  },
+  "publishers": {
+    "sectionTitle": "Publishers",
+    "count": "{count, plural, one {# publisher} other {# publishers}}",
+    "books": "{count, plural, one {# book} other {# books}}"
+  },
   "stats": {
     "booksTranslated": "Books & translations",
     "yearsActive": "years active",
