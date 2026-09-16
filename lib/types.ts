@@ -16,6 +16,7 @@ export interface Excerpt {
 
 export interface Book {
   id: string;
+  authorId?: string | null;
   role?: "author" | "translator" | "editor";
   uzbekTitle: string;
   originalTitle: string;
@@ -29,6 +30,31 @@ export interface Book {
   year: number;
   coverUrl: string;
   excerpt?: Excerpt;
+}
+
+export interface Author {
+  id: string;
+  slug: string;
+  name: string;
+  bio?: string | null;
+  nationality?: string | null;
+  birthYear?: number | null;
+  deathYear?: number | null;
+  portraitUrl?: string | null;
+  websiteUrl?: string | null;
+  bookCount: number;
+}
+
+export interface Publisher {
+  id: string;
+  slug: string;
+  name: string;
+  bio?: string | null;
+  country?: string | null;
+  establishedYear?: number | null;
+  logoUrl?: string | null;
+  websiteUrl?: string | null;
+  bookCount: number;
 }
 
 /**

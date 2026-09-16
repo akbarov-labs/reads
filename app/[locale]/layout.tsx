@@ -17,8 +17,28 @@ import {
   type Locale,
 } from "@/lib/site";
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
+/**
+ * Deliberately empty, rather than the three locales.
+ *
+ * Prerendering a locale means rendering the homepage, and the homepage needs
+ * the Laravel API. The production image is built by GitHub Actions (see
+ * .github/workflows/deploy.yml), on a runner with no route to that API — it
+ * only exists on the deployment host's private Docker network — so any
+ * build-time fetch there fails with ECONNREFUSED and takes the whole build
+ * down with it.
+ *
+ * Returning an empty list keeps this route on the static path (note the
+ * bullet, not the lambda, next to /[locale] in the build output): nothing is
+ * baked into the image, the first request for each locale renders it, and
+ * Next caches that HTML and revalidates it like any other ISR page. The only
+ * cost is one cold render per locale per deploy.
+ *
+ * The alternative — letting the build fall back to empty data — is worse: an
+ * empty homepage would be baked into the image and served as a valid
+ * response until something revalidated it.
+ */
+export function generateStaticParams(): { locale: string }[] {
+  return [];
 }
 
 export const viewport: Viewport = {

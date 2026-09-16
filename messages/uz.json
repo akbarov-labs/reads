@@ -45,6 +45,22 @@
     "pageDescription": "O'zbek tarjimalarini o'quvchilarga yetkazib beruvchi nashriyotlar.",
     "empty": "Nashriyotlar topilmadi."
   },
+  "translators": {
+    "sectionTitle": "Tarjimonlar",
+    "count": "{count} ta tarjimon",
+    "defaultRole": "Tarjimon",
+    "books": "{count} ta asar"
+  },
+  "authors": {
+    "sectionTitle": "Kitob mualliflari",
+    "count": "{count} ta muallif",
+    "books": "{count} ta kitob"
+  },
+  "publishers": {
+    "sectionTitle": "Nashriyotlar",
+    "count": "{count} ta nashriyot",
+    "books": "{count} ta kitob"
+  },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
     "yearsActive": "Ijodiy faoliyat",

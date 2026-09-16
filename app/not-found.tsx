@@ -1,34 +1,20 @@
 import { routing } from "@/i18n/routing";
+import { NotFoundContent } from "@/components/NotFoundPage";
 
 /**
- * Last-resort 404, for requests that never reached a locale segment (the
- * i18n middleware rewrites everything else). There is no root layout in this
- * app — app/[locale]/layout.tsx plays that part — so this page has to bring
- * its own <html> and <body>.
+ * 404 for a URL that matched no route — including everything the i18n
+ * middleware rewrote into a locale that no page then claimed.
+ *
+ * Brings its own <html>/<body>: app/layout.tsx passes children straight
+ * through, so this page *is* the document. The sibling boundary at
+ * app/[locale]/translator/[slug]/not-found.tsx must not, because that one
+ * renders inside the locale layout's shell.
  */
 export default function GlobalNotFound() {
   return (
     <html lang={routing.defaultLocale}>
-      <body
-        style={{
-          margin: 0,
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#fafaf9",
-          color: "#18181b",
-          fontFamily: "system-ui, sans-serif",
-          textAlign: "center",
-        }}
-      >
-        <div>
-          <p style={{ letterSpacing: 4, color: "#a1a1aa", fontSize: 12 }}>404</p>
-          <h1 style={{ fontSize: 24, fontWeight: 500 }}>Page not found</h1>
-          <a href={`/${routing.defaultLocale}`} style={{ color: "#18181b" }}>
-            Go to the home page
-          </a>
-        </div>
+      <body style={{ margin: 0 }}>
+        <NotFoundContent />
       </body>
     </html>
   );

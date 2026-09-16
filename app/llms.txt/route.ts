@@ -15,6 +15,11 @@ import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
  * Generated from the same cache-tagged API call as the pages, so it is never
  * out of step with them.
  */
+// Dynamic for the same reason as app/sitemap.ts: no dynamic segment to
+// leave empty, and the build machine has no route to the API. The
+// Cache-Control header at the bottom of this file already tells any proxy in
+// front of the app to hold the response for the same 300 seconds.
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 function line(value: string | number | null | undefined): string | null {

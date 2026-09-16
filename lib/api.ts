@@ -31,6 +31,9 @@ const REVALIDATE_SECONDS = 300;
 
 /** Cache tag covering every page built from the translator collection. */
 export const TRANSLATORS_TAG = "translators";
+export const AUTHORS_TAG = "authors";
+export const BOOKS_TAG = "books";
+export const PUBLISHERS_TAG = "publishers";
 
 /** Cache tag for one profile, so a single save doesn't rebuild the site. */
 export function translatorTag(slug: string): string {
