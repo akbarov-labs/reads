@@ -8,7 +8,7 @@ import { slugify } from "@/lib/slug";
 import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ArrowLeft, BookOpen, User, Building2 } from "lucide-react";
+import { ArrowLeft, BookOpen, User } from "lucide-react";
 
 type PageParams = { locale: string; id: string };
 

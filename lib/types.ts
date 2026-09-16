@@ -32,31 +32,6 @@ export interface Book {
   excerpt?: Excerpt;
 }
 
-export interface Author {
-  id: string;
-  slug: string;
-  name: string;
-  bio?: string | null;
-  nationality?: string | null;
-  birthYear?: number | null;
-  deathYear?: number | null;
-  portraitUrl?: string | null;
-  websiteUrl?: string | null;
-  bookCount: number;
-}
-
-export interface Publisher {
-  id: string;
-  slug: string;
-  name: string;
-  bio?: string | null;
-  country?: string | null;
-  establishedYear?: number | null;
-  logoUrl?: string | null;
-  websiteUrl?: string | null;
-  bookCount: number;
-}
-
 /**
  * A book enriched with the translator it belongs to, for use in flat
  * cross-translator listing pages (Books, Authors, Publishers discovery).
@@ -67,28 +42,36 @@ export interface BookWithTranslator extends Book {
 }
 
 /**
- * A unique author derived from the books collection.
- * The backend stores author as a plain string per book; we aggregate here.
+ * A unique author derived from the books collection or author model.
  */
 export interface Author {
+  id?: string;
   slug: string;
   name: string;
-  /** Best available photo — taken from the first book that has one. */
+  bio?: string | null;
+  nationality?: string | null;
+  birthYear?: number | null;
+  deathYear?: number | null;
+  portraitUrl?: string | null;
   imageUrl?: string | null;
-  /** Number of books attributed to this author in the database. */
+  websiteUrl?: string | null;
   bookCount: number;
-  /** Books by this author, for preview thumbnails. */
   books: BookWithTranslator[];
 }
 
 /**
- * A unique publisher derived from the books collection.
+ * A unique publisher derived from the books collection or publisher model.
  */
 export interface Publisher {
+  id?: string;
   slug: string;
   name: string;
-  /** Logo or representative image — taken from the first book that has one. */
+  bio?: string | null;
+  country?: string | null;
+  establishedYear?: number | null;
+  logoUrl?: string | null;
   imageUrl?: string | null;
+  websiteUrl?: string | null;
   bookCount: number;
   books: BookWithTranslator[];
 }
