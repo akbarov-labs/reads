@@ -1,9 +1,10 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import type { Book } from "@/lib/types";
 
 export async function BookCard({ book }: { book: Book }) {
-  const t = await getTranslations("books");
+  const t = await getTranslations("bookCard");
 
   const roleLabel =
     book.role === "author"
@@ -20,7 +21,8 @@ export async function BookCard({ book }: { book: Book }) {
       : "bg-white/90 text-zinc-700 border-zinc-200";
 
   return (
-    <article className="group">
+    <Link href={`/book/${book.id}`} className="block group">
+      <article>
       <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-shadow group-hover:shadow-md">
         <Image
           src={book.coverUrl}
@@ -50,5 +52,6 @@ export async function BookCard({ book }: { book: Book }) {
         </p>
       </div>
     </article>
+  </Link>
   );
 }

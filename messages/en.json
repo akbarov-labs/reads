@@ -2,13 +2,48 @@
   "site": {
     "brand": "Reads",
     "roleTag": "Translator & Author",
-    "homeTitle": "Reads, translator portfolios",
-    "homeDescription": "Personal portfolio pages for translators and literary critics.",
+    "homeTitle": "Reads — Uzbek Literary World",
+    "homeDescription": "Discover the translators, authors, books and publishers shaping Uzbek literature today.",
     "profileTitle": "{name}, Reads",
     "languageLabel": "Language"
   },
   "home": {
-    "empty": "No translator profiles have been added yet."
+    "empty": "No translator profiles have been added yet.",
+    "heroHeadline": "The Uzbek Literary World,\nin One Place",
+    "heroSubline": "Translators, authors, books and publishers — all connected, all discoverable.",
+    "statTranslators": "Translators",
+    "statBooks": "Books & translations",
+    "statAuthors": "Authors",
+    "statPublishers": "Publishers",
+    "translatorsTitle": "Translators",
+    "translatorsSeeAll": "All translators",
+    "booksTitle": "Books & Translations",
+    "booksSeeAll": "All books",
+    "authorsTitle": "Authors",
+    "authorsSeeAll": "All authors",
+    "publishersTitle": "Publishers",
+    "publishersSeeAll": "All publishers"
+  },
+  "translators": {
+    "pageTitle": "All Translators",
+    "pageDescription": "Every translator bringing world literature into Uzbek.",
+    "empty": "No translators found."
+  },
+  "books": {
+    "pageTitle": "All Books & Translations",
+    "pageDescription": "Every book translated into or from Uzbek, catalogued in one place.",
+    "empty": "No books found.",
+    "translatedBy": "Translated by"
+  },
+  "authors": {
+    "pageTitle": "All Authors",
+    "pageDescription": "Authors whose works have been translated into Uzbek.",
+    "empty": "No authors found."
+  },
+  "publishers": {
+    "pageTitle": "All Publishers",
+    "pageDescription": "Publishers bringing Uzbek translations to readers.",
+    "empty": "No publishers found."
   },
   "stats": {
     "booksTranslated": "Books & translations",
@@ -17,7 +52,7 @@
     "booksValue": "{count}+",
     "yearsValue": "{years, plural, one {# year} other {# years}}"
   },
-  "books": {
+  "bookCard": {
     "sectionTitle": "Books & translations",
     "count": "{count, plural, one {# book} other {# books}}",
     "roleAuthor": "Author's work",
@@ -76,7 +111,7 @@
   },
   "footer": {
     "quote": "Literature is the deepest echo of the human soul.",
-    "personalPage": "Personal page"
+    "rights": "All rights reserved."
   },
   "error": {
     "title": "Something went wrong",
@@ -87,5 +122,38 @@
     "title": "This page does not exist",
     "body": "The link may be out of date, or the profile may have been removed.",
     "home": "Go to the home page"
+  },
+  "bookDetail": {
+    "back": "Back to books",
+    "details": "Book details",
+    "author": "Author",
+    "translator": "Translator",
+    "publisher": "Publisher",
+    "year": "Publication year",
+    "sourceLanguage": "Original language",
+    "role": "Role in project",
+    "excerptTitle": "Book excerpt",
+    "originalText": "Original text",
+    "translatedText": "Uzbek translation",
+    "otherByAuthor": "Other works by this author",
+    "otherByTranslator": "Other works by this translator",
+    "viewAuthor": "Author profile",
+    "viewTranslator": "Translator profile",
+    "viewPublisher": "Publisher profile"
+  },
+  "authorDetail": {
+    "back": "Back to authors",
+    "totalBooks": "{count} books in Uzbek",
+    "about": "About author",
+    "works": "Works in Uzbek",
+    "translators": "Translators of this author",
+    "sourceLanguage": "Primary source language"
+  },
+  "publisherDetail": {
+    "back": "Back to publishers",
+    "totalBooks": "{count} titles published",
+    "catalog": "Published translations",
+    "translatorsAndAuthors": "Collaborating creators",
+    "booksInCatalog": "Books in catalog"
   }
 }

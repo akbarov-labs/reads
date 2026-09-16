@@ -1,4 +1,5 @@
-import type { Translator } from "@/lib/types";
+import type { Translator, BookWithTranslator, Author, Publisher } from "@/lib/types";
+import { slugify } from "@/lib/slug";
 
 // Server-only: read directly, never exposed to the browser bundle.
 // Points at the Reads-admin Laravel API (see Reads-admin/README or the
@@ -74,6 +75,8 @@ function normalizeTranslator(translator: Translator): Translator {
     books: translator.books.map((book) => ({
       ...book,
       coverUrl: resolveAssetUrl(book.coverUrl),
+      authorImageUrl: resolveAssetUrl(book.authorImageUrl) || null,
+      publisherImageUrl: resolveAssetUrl(book.publisherImageUrl) || null,
     })),
   };
 }
@@ -95,4 +98,132 @@ export async function getTranslatorBySlug(
     [TRANSLATORS_TAG, translatorTag(slug)]
   );
   return result?.data ? normalizeTranslator(result.data) : null;
+}
+
+/**
+ * All books across every translator, each enriched with the translator's
+ * name and slug so listing pages can link back to the profile.
+ */
+export async function getAllBooks(locale: string): Promise<BookWithTranslator[]> {
+  const translators = await getTranslators(locale);
+  const books: BookWithTranslator[] = [];
+
+  for (const translator of translators) {
+    for (const book of translator.books) {
+      books.push({
+        ...book,
+        translatorSlug: translator.slug,
+        translatorName: translator.name,
+      });
+    }
+  }
+
+  // Most recent year first.
+  return books.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+}
+
+/**
+ * Unique authors derived from all books, sorted by book count descending.
+ * The first book that has an author photo wins for the card image.
+ */
+export async function getAuthors(locale: string): Promise<Author[]> {
+  const books = await getAllBooks(locale);
+  const map = new Map<string, Author>();
+
+  for (const book of books) {
+    const key = book.author.trim();
+    if (!key) continue;
+
+    const existing = map.get(key);
+    if (existing) {
+      existing.bookCount += 1;
+      existing.books.push(book);
+      // Upgrade image if we don't have one yet.
+      if (!existing.imageUrl && book.authorImageUrl) {
+        existing.imageUrl = book.authorImageUrl;
+      }
+    } else {
+      map.set(key, {
+        slug: slugify(key),
+        name: key,
+        imageUrl: book.authorImageUrl ?? null,
+        bookCount: 1,
+        books: [book],
+      });
+    }
+  }
+
+  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+}
+
+/**
+ * Unique publishers derived from all books, sorted by book count descending.
+ */
+export async function getPublishers(locale: string): Promise<Publisher[]> {
+  const books = await getAllBooks(locale);
+  const map = new Map<string, Publisher>();
+
+  for (const book of books) {
+    const key = book.publisher?.trim();
+    if (!key) continue;
+
+    const existing = map.get(key);
+    if (existing) {
+      existing.bookCount += 1;
+      existing.books.push(book);
+      if (!existing.imageUrl && book.publisherImageUrl) {
+        existing.imageUrl = book.publisherImageUrl;
+      }
+    } else {
+      map.set(key, {
+        slug: slugify(key),
+        name: key,
+        imageUrl: book.publisherImageUrl ?? null,
+        bookCount: 1,
+        books: [book],
+      });
+    }
+  }
+
+  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+}
+
+export async function getBookById(
+  id: string,
+  locale: string
+): Promise<BookWithTranslator | null> {
+  const books = await getAllBooks(locale);
+  return books.find((b) => String(b.id) === String(id)) ?? null;
+}
+
+export async function getAuthorBySlug(
+  slug: string,
+  locale: string
+): Promise<Author | null> {
+  const authors = await getAuthors(locale);
+  const cleanSlug = slug.toLowerCase();
+  return (
+    authors.find(
+      (a) =>
+        a.slug === cleanSlug ||
+        slugify(a.name) === cleanSlug ||
+        a.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
+    ) ?? null
+  );
+}
+
+export async function getPublisherBySlug(
+  slug: string,
+  locale: string
+): Promise<Publisher | null> {
+  const publishers = await getPublishers(locale);
+  const cleanSlug = slug.toLowerCase();
+  return (
+    publishers.find(
+      (p) =>
+        p.slug === cleanSlug ||
+        slugify(p.name) === cleanSlug ||
+        p.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
+    ) ?? null
+  );
 }

@@ -20,11 +20,51 @@ export interface Book {
   uzbekTitle: string;
   originalTitle: string;
   author: string;
+  /** Portrait photo of the author, relative URL resolved by api.ts. */
+  authorImageUrl?: string | null;
   sourceLanguage: string;
   publisher: string;
+  /** Logo or representative image for the publisher, relative URL resolved by api.ts. */
+  publisherImageUrl?: string | null;
   year: number;
   coverUrl: string;
   excerpt?: Excerpt;
+}
+
+/**
+ * A book enriched with the translator it belongs to, for use in flat
+ * cross-translator listing pages (Books, Authors, Publishers discovery).
+ */
+export interface BookWithTranslator extends Book {
+  translatorSlug: string;
+  translatorName: string;
+}
+
+/**
+ * A unique author derived from the books collection.
+ * The backend stores author as a plain string per book; we aggregate here.
+ */
+export interface Author {
+  slug: string;
+  name: string;
+  /** Best available photo — taken from the first book that has one. */
+  imageUrl?: string | null;
+  /** Number of books attributed to this author in the database. */
+  bookCount: number;
+  /** Books by this author, for preview thumbnails. */
+  books: BookWithTranslator[];
+}
+
+/**
+ * A unique publisher derived from the books collection.
+ */
+export interface Publisher {
+  slug: string;
+  name: string;
+  /** Logo or representative image — taken from the first book that has one. */
+  imageUrl?: string | null;
+  bookCount: number;
+  books: BookWithTranslator[];
 }
 
 /**

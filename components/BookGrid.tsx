@@ -3,7 +3,7 @@ import type { Book } from "@/lib/types";
 import { BookCard } from "@/components/BookCard";
 
 export async function BookGrid({ books }: { books: Book[] }) {
-  const t = await getTranslations("books");
+  const t = await getTranslations("bookCard");
 
   return (
     <section className="py-14 sm:py-16">

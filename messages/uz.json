@@ -2,13 +2,48 @@
   "site": {
     "brand": "Reads",
     "roleTag": "Tarjimon va Muallif",
-    "homeTitle": "Reads, tarjimonlar portfoliosi",
-    "homeDescription": "Tarjimonlar va adabiy sharhlovchilarning shaxsiy portfolio sahifalari.",
+    "homeTitle": "Reads — O'zbek Adabiy Dunyosi",
+    "homeDescription": "O'zbek adabiyotini shakllantirayotgan tarjimonlar, mualliflar, kitoblar va nashriyotlar.",
     "profileTitle": "{name}, Reads",
     "languageLabel": "Til"
   },
   "home": {
-    "empty": "Hozircha tarjimon profili qo'shilmagan."
+    "empty": "Hozircha tarjimon profili qo'shilmagan.",
+    "heroHeadline": "O'zbek Adabiy Dunyosi,\nBir Joyda",
+    "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bog'liq, hammasi kashf qilinishi mumkin.",
+    "statTranslators": "Tarjimonlar",
+    "statBooks": "Asarlar va tarjimalar",
+    "statAuthors": "Mualliflar",
+    "statPublishers": "Nashriyotlar",
+    "translatorsTitle": "Tarjimonlar",
+    "translatorsSeeAll": "Barcha tarjimonlar",
+    "booksTitle": "Asarlar va Tarjimalar",
+    "booksSeeAll": "Barcha kitoblar",
+    "authorsTitle": "Mualliflar",
+    "authorsSeeAll": "Barcha mualliflar",
+    "publishersTitle": "Nashriyotlar",
+    "publishersSeeAll": "Barcha nashriyotlar"
+  },
+  "translators": {
+    "pageTitle": "Barcha Tarjimonlar",
+    "pageDescription": "Jahon adabiyotini o'zbek tiliga olib kelayotgan har bir tarjimon.",
+    "empty": "Tarjimonlar topilmadi."
+  },
+  "books": {
+    "pageTitle": "Barcha Kitoblar va Tarjimalar",
+    "pageDescription": "O'zbek tiliga yoki o'zbek tilidan tarjima qilingan har bir kitob.",
+    "empty": "Kitoblar topilmadi.",
+    "translatedBy": "Tarjima qilgan"
+  },
+  "authors": {
+    "pageTitle": "Barcha Mualliflar",
+    "pageDescription": "Asarlari o'zbek tiliga tarjima qilingan mualliflar.",
+    "empty": "Mualliflar topilmadi."
+  },
+  "publishers": {
+    "pageTitle": "Barcha Nashriyotlar",
+    "pageDescription": "O'zbek tarjimalarini o'quvchilarga yetkazib beruvchi nashriyotlar.",
+    "empty": "Nashriyotlar topilmadi."
   },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
@@ -17,7 +52,7 @@
     "booksValue": "{count}+",
     "yearsValue": "{years} yil"
   },
-  "books": {
+  "bookCard": {
     "sectionTitle": "Asarlar va tarjimalar",
     "count": "{count} ta kitob",
     "roleAuthor": "Mualliflik asari",
@@ -76,7 +111,7 @@
   },
   "footer": {
     "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
-    "personalPage": "Shaxsiy sahifa"
+    "rights": "Barcha huquqlar himoyalangan."
   },
   "error": {
     "title": "Xatolik yuz berdi",
@@ -84,8 +119,41 @@
     "retry": "Qayta urinish"
   },
   "notFound": {
-    "title": "Bunday sahifa yo‘q",
-    "body": "Havola eskirgan bo‘lishi yoki profil o‘chirilgan bo‘lishi mumkin.",
+    "title": "Bunday sahifa yo'q",
+    "body": "Havola eskirgan bo'lishi yoki profil o'chirilgan bo'lishi mumkin.",
     "home": "Bosh sahifaga"
+  },
+  "bookDetail": {
+    "back": "Kitoblarga qaytish",
+    "details": "Kitob haqida",
+    "author": "Muallif",
+    "translator": "Tarjimon",
+    "publisher": "Nashriyot",
+    "year": "Nashr yili",
+    "sourceLanguage": "Asl tili",
+    "role": "Loyihadagi roli",
+    "excerptTitle": "Kitobdan parcha",
+    "originalText": "Asl matn",
+    "translatedText": "O'zbekcha tarjimasi",
+    "otherByAuthor": "Ushbu muallifning boshqa asarlari",
+    "otherByTranslator": "Ushbu tarjimonning boshqa ishlari",
+    "viewAuthor": "Muallif sahifasi",
+    "viewTranslator": "Tarjimon profili",
+    "viewPublisher": "Nashriyot sahifasi"
+  },
+  "authorDetail": {
+    "back": "Mualliflarga qaytish",
+    "totalBooks": "{count} ta kitob o'zbek tilida",
+    "about": "Muallif haqida",
+    "works": "O'zbek tilidagi asarlari",
+    "translators": "Muallif asarlarini o'girgan tarjimonlar",
+    "sourceLanguage": "Asosiy ijod tili"
+  },
+  "publisherDetail": {
+    "back": "Nashriyotlarga qaytish",
+    "totalBooks": "{count} ta nashr",
+    "catalog": "Nashr qilingan tarjimalar",
+    "translatorsAndAuthors": "Hamkor ijodkorlar",
+    "booksInCatalog": "Katalogdagi kitoblar"
   }
 }
