@@ -23,11 +23,8 @@ function publisherColor(name: string): string {
   return colors[idx];
 }
 
-export async function generateStaticParams() {
-  const publishers = await getPublishers(routing.defaultLocale);
-  return routing.locales.flatMap((locale) =>
-    publishers.map((publisher) => ({ locale, slug: publisher.slug }))
-  );
+export async function generateStaticParams(): Promise<PageParams[]> {
+  return [];
 }
 
 export async function generateMetadata({

@@ -34,11 +34,8 @@ function initials(name: string): string {
     .join("");
 }
 
-export async function generateStaticParams() {
-  const authors = await getAuthors(routing.defaultLocale);
-  return routing.locales.flatMap((locale) =>
-    authors.map((author) => ({ locale, slug: author.slug }))
-  );
+export async function generateStaticParams(): Promise<PageParams[]> {
+  return [];
 }
 
 export async function generateMetadata({

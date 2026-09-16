@@ -12,11 +12,8 @@ import { ArrowLeft, BookOpen, User } from "lucide-react";
 
 type PageParams = { locale: string; id: string };
 
-export async function generateStaticParams() {
-  const books = await getAllBooks(routing.defaultLocale);
-  return routing.locales.flatMap((locale) =>
-    books.map((book) => ({ locale, id: String(book.id) }))
-  );
+export async function generateStaticParams(): Promise<PageParams[]> {
+  return [];
 }
 
 export async function generateMetadata({
