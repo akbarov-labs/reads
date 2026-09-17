@@ -25,9 +25,10 @@
     "publishersSeeAll": "Barcha nashriyotlar"
   },
   "translators": {
-    "pageTitle": "Barcha Tarjimonlar",
-    "pageDescription": "Jahon adabiyotini o'zbek tiliga olib kelayotgan har bir tarjimon.",
-    "empty": "Tarjimonlar topilmadi."
+    "sectionTitle": "Tarjimonlar",
+    "count": "{count} ta tarjimon",
+    "defaultRole": "Tarjimon",
+    "books": "{count} ta asar"
   },
   "books": {
     "pageTitle": "Barcha Kitoblar va Tarjimalar",
@@ -37,26 +38,14 @@
   },
   "authors": {
     "pageTitle": "Barcha Mualliflar",
-    "pageDescription": "Asarlari o'zbek tiliga tarjima qilingan mualliflar.",
-    "empty": "Mualliflar topilmadi."
-  },
-  "publishers": {
-    "pageTitle": "Barcha Nashriyotlar",
-    "pageDescription": "O'zbek tarjimalarini o'quvchilarga yetkazib beruvchi nashriyotlar.",
-    "empty": "Nashriyotlar topilmadi."
-  },
-  "translators": {
-    "sectionTitle": "Tarjimonlar",
-    "count": "{count} ta tarjimon",
-    "defaultRole": "Tarjimon",
-    "books": "{count} ta asar"
-  },
-  "authors": {
+    "pageDescription": "Tarjima qilingan yoki yozilgan kitoblarning barcha mualliflari.",
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
     "books": "{count} ta kitob"
   },
   "publishers": {
+    "pageTitle": "Barcha Nashriyotlar",
+    "pageDescription": "Tarjima qilingan kitoblarni nashr etgan barcha nashriyotlar.",
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
     "books": "{count} ta kitob"
