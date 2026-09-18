@@ -25,10 +25,13 @@
     "publishersSeeAll": "Barcha nashriyotlar"
   },
   "translators": {
+    "pageTitle": "Barcha Tarjimonlar",
+    "pageDescription": "O'zbek tiliga yoki o'zbek tilidan tarjima qiluvchi barcha tarjimonlar.",
     "sectionTitle": "Tarjimonlar",
     "count": "{count} ta tarjimon",
     "defaultRole": "Tarjimon",
-    "books": "{count} ta asar"
+    "books": "{count} ta asar",
+    "empty": "Tarjimonlar topilmadi."
   },
   "books": {
     "pageTitle": "Barcha Kitoblar va Tarjimalar",
@@ -41,14 +44,16 @@
     "pageDescription": "Tarjima qilingan yoki yozilgan kitoblarning barcha mualliflari.",
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
-    "books": "{count} ta kitob"
+    "books": "{count} ta kitob",
+    "empty": "Mualliflar topilmadi."
   },
   "publishers": {
     "pageTitle": "Barcha Nashriyotlar",
     "pageDescription": "Tarjima qilingan kitoblarni nashr etgan barcha nashriyotlar.",
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
-    "books": "{count} ta kitob"
+    "books": "{count} ta kitob",
+    "empty": "Nashriyotlar topilmadi."
   },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",

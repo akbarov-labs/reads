@@ -25,10 +25,13 @@
     "publishersSeeAll": "All publishers"
   },
   "translators": {
+    "pageTitle": "All Translators",
+    "pageDescription": "Every translator working into or from Uzbek.",
     "sectionTitle": "Translators",
     "count": "{count, plural, one {# translator} other {# translators}}",
     "defaultRole": "Translator",
-    "books": "{count, plural, one {# work} other {# works}}"
+    "books": "{count, plural, one {# work} other {# works}}",
+    "empty": "No translators found."
   },
   "books": {
     "pageTitle": "All Books & Translations",
@@ -41,14 +44,16 @@
     "pageDescription": "Every author whose books have been translated into or from Uzbek.",
     "sectionTitle": "Book authors",
     "count": "{count, plural, one {# author} other {# authors}}",
-    "books": "{count, plural, one {# book} other {# books}}"
+    "books": "{count, plural, one {# book} other {# books}}",
+    "empty": "No authors found."
   },
   "publishers": {
     "pageTitle": "All Publishers",
     "pageDescription": "Every publisher behind the books translated into or from Uzbek.",
     "sectionTitle": "Publishers",
     "count": "{count, plural, one {# publisher} other {# publishers}}",
-    "books": "{count, plural, one {# book} other {# books}}"
+    "books": "{count, plural, one {# book} other {# books}}",
+    "empty": "No publishers found."
   },
   "stats": {
     "booksTranslated": "Books & translations",

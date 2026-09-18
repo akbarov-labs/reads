@@ -25,10 +25,13 @@
     "publishersSeeAll": "Все издательства"
   },
   "translators": {
+    "pageTitle": "Все переводчики",
+    "pageDescription": "Все переводчики, работающие с узбекским языком.",
     "sectionTitle": "Переводчики",
     "count": "{count, plural, one {# переводчик} few {# переводчика} many {# переводчиков} other {# переводчика}}",
     "defaultRole": "Переводчик",
-    "books": "{count, plural, one {# работа} few {# работы} many {# работ} other {# работы}}"
+    "books": "{count, plural, one {# работа} few {# работы} many {# работ} other {# работы}}",
+    "empty": "Переводчики не найдены."
   },
   "books": {
     "pageTitle": "Все книги и переводы",
@@ -41,14 +44,16 @@
     "pageDescription": "Авторы книг, переведённых на узбекский язык или с узбекского.",
     "sectionTitle": "Авторы книг",
     "count": "{count, plural, one {# автор} few {# автора} many {# авторов} other {# автора}}",
-    "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}"
+    "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
+    "empty": "Авторы не найдены."
   },
   "publishers": {
     "pageTitle": "Все издательства",
     "pageDescription": "Издательства, выпустившие книги, переведённые на узбекский язык или с узбекского.",
     "sectionTitle": "Издательства",
     "count": "{count, plural, one {# издательство} few {# издательства} many {# издательств} other {# издательства}}",
-    "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}"
+    "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
+    "empty": "Издательства не найдены."
   },
   "stats": {
     "booksTranslated": "Книги и переводы",
