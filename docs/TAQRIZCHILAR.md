@@ -1,6 +1,6 @@
 # Taqrizchilar (book reviewers) — implementation spec
 
-Status: decisions settled, not yet built. Spans both repos — `Reads`
+Status: built, tested, not yet deployed. Spans both repos — `Reads`
 (Next.js public site) and `Reads-admin` (Laravel + Filament).
 
 ## What this is
@@ -86,86 +86,75 @@ the count of non-null aspects, never by a hardcoded 5.
 UI labels are translated per locale through next-intl messages as usual; only
 the URL segment stays fixed.
 
-## Work breakdown
+## What was built
 
-### Reads-admin (Laravel + Filament)
+### Reads-admin
 
-- Add `Taqrizchi` to the `UserRole` enum. `User::canAccessPanel()` currently
-  gates on `isTranslator() && translator()->exists()` — extend it so a
-  taqrizchi with a profile gets in on the same terms.
-- `Taqrizchi` model + table, mirroring `translators` (slug, name, avatar, bio,
-  translatable fields, social links via the existing `social_links` relation).
-- `Taqriz` model + table: `book_id`, `taqrizchi_id`, `body`, `youtube_url`
-  nullable, five nullable decimal aspect columns, `status`
-  (pending/approved/rejected), timestamps, unique index on
-  `(taqrizchi_id, book_id)`.
-- Migration on `books`: `translator_id` nullable **and** `nullOnDelete()`.
-- Filament resources: combined "add book + write taqriz" flow for taqrizchilar,
-  plus an approval queue for admins.
-- API: `/api/taqrizchilar`, `/api/taqrizchilar/{slug}`, `/api/taqriz/{id}`;
-  nest approved taqrizlar + average score into `CatalogBookResource`.
-- Hook approval into `App\Services\SiteRevalidator` so `/api/revalidate` fires
-  exactly as it does for book and translator writes.
+- `UserRole` gains `Taqrizchi` and `Publisher`. `User::canAccessPanel()` grants
+  access to either, on the same terms as translators: the role alone is not
+  enough, the account must have a profile to manage.
+- `Taqrizchi` and `Taqriz` models, with `TaqrizStatus` and `ModerationStatus`.
+- Six migrations: `books.translator_id` nullable and `nullOnDelete`;
+  `taqrizchilar`; `social_links` made polymorphic; `taqrizlar`; `books.status`;
+  `publishers.user_id`.
+- Moderation lives in `TaqrizObserver`, not in the form that renders the
+  field. A reviewer cannot publish their own work even going straight at the
+  model, and editing a published taqriz returns it to the queue.
+- Filament: `TaqrizchiResource`, `TaqrizResource` (with the combined "add a
+  book and review it" flow and an approve action), `TaqrizchiProfileWidget`,
+  and publisher self-service on `PublisherResource`.
+- API: `/api/taqrizchilar`, `/api/taqrizchilar/{slug}`, `/api/taqrizlar/{id}`,
+  with approved taqrizlar and an average score nested into book responses.
+  Unapproved rows are never loaded rather than loaded and filtered, and a
+  pending permalink is 404 rather than 403 — 403 would confirm it exists.
 
-### Reads (Next.js)
+### Reads
 
-**Done** — `lib/api.ts` now reads `/api/books` and `/api/books/{id}` directly
-instead of walking translators, `BookWithTranslator`'s translator fields are
-optional, and every render site that assumed a translator is guarded. Verified
-against a mock catalogue containing a translator-less book: the book page,
-books listing, author page and publisher page all render it, the translator
-card and "other by this translator" section drop out, and the meta description
-omits the `tarjimon:` clause. Books that do have a translator are unchanged.
+- `lib/api.ts` reads `/api/books` directly; `getTaqrizchilar`,
+  `getTaqrizchiBySlug`, `getTaqrizById` added.
+- Pages: `/taqrizchilar`, `/taqrizchi/[slug]`, `/taqriz/[id]`, a Taqrizlar
+  section on book pages, a reviewers section on the home page, all three
+  locales at full key parity.
+- `ScoreBadge`, `AspectBreakdown`, `TaqrizCard`, `TaqrizchiCard`.
+- The revalidate webhook reads `type` and `id`, so a book ping invalidates one
+  book rather than the whole catalogue.
 
-Not done, and still blocked on backend work — `getAuthors`/`getPublishers`
-still derive from the flattened book list rather than `/api/authors` and
-`/api/publishers`, because those endpoints cannot yet serve the detail pages:
+## Decisions taken during the build
 
-- `Author` and `Publisher` have no `getRouteKeyName()`, so
-  `/api/authors/{author}` binds by **id**, while the site routes on slug.
-  Add `getRouteKeyName(): string { return 'slug'; }` to both models.
-- `AuthorResource`/`PublisherResource` return no `books`, and `BookResource`
-  omits `authorId`/`publisherId`, so there is no way to associate books with an
-  author except by matching the free-text `author` string — which is what the
-  frontend already does. Expose the ids (or nest the books) and the derivation
-  can go.
+**Book status defaults to Approved, not Pending.** Every book that existed
+before this branch was entered by a translator or an admin and is already
+live. Defaulting to Pending would have silently unpublished the entire
+catalogue on deploy and queued every future translator-entered book. The
+taqrizchi flow opts into the queue explicitly instead — the narrow path opts
+in rather than the whole table opting out.
 
-Then, once the taqriz API shape is final:
+**Publisher-added books go live immediately.** A publisher describing their
+own catalogue is the primary source for it, unlike a taqrizchi adding somebody
+else's book in order to review it.
 
-- `lib/types.ts`: add `Taqrizchi`, `Taqriz`, `AspectScores`; make the translator
-  fields on `BookWithTranslator` optional.
-- `lib/api.ts`: `getTaqrizchilar`, `getTaqrizchiBySlug`, `getTaqrizById`; fold
-  approved taqrizlar into book fetches. New cache tags alongside
-  `TRANSLATORS_TAG` etc.
-- Pages: `app/[locale]/taqrizchilar`, `app/[locale]/taqrizchi/[slug]`,
-  `app/[locale]/taqriz/[id]`.
-- Components: `TaqrizchiCard`, `TaqrizchiGrid`, `TaqrizCard` (score + excerpt +
-  link), reused on both the book page and the profile.
-- Book detail page: "Taqrizlar" section in the same visual language as the
-  existing Excerpt and Related-books sections.
-- Add `/taqrizchi/*` and `/taqriz/*` to `app/sitemap.ts`, excluding pending ones.
+**A Book row is an edition, not a work.** Two publishers issuing the same
+public-domain title each own their own row, with their own cover, year and
+print run. One row cannot hold both covers, and sharing one would make the
+"Muqova va nashr sifati" aspect meaningless. Editions of the same work already
+share `author_id` and `original_title`, so "other editions" is derivable
+without a new table. Genuine co-publishing — two publishers on one physical
+edition — would need a `book_publisher` pivot; deferred until a real one
+appears, because adding it later is a small migration whereas building it now
+complicates ownership for every book.
 
-### Translator-coupling to unpick in Reads
+**`publishers.user_id` is nullable**, so "owned by nobody" is a real state the
+authorisation code handles deliberately. `null == null` would otherwise hand
+every backfilled row to whichever publisher asked first.
 
-Making the type optional is not enough — these render or interpolate translator
-data unconditionally:
+## Still open
 
-- `app/[locale]/book/[id]/page.tsx:30` — meta description hardcodes
-  `tarjimon: ${book.translatorName}`
-- `app/[locale]/book/[id]/page.tsx:167-178` — translator link block
-- `app/[locale]/book/[id]/page.tsx:66` — related-books filter on `translatorSlug`
-- `lib/jsonld.ts` — `bookNode()` assigns a `translator` node by role
-- `lib/seo.ts` — translator-centric metadata helpers
-
-## Suggested order
-
-1. ~~Reads: repoint `lib/api.ts` at the real catalogue endpoints, and guard the
-   translator-coupled call sites.~~ **Done.**
-2. Reads-admin: migration (nullable + `nullOnDelete`), models, Filament
-   resources, API, revalidation. While there, the two small fixes above
-   (`getRouteKeyName`, `authorId`/`publisherId` on `BookResource`) retire the
-   last of the derive-from-books logic.
-3. Reads: taqriz types, API client, pages, components.
+- The site's author and publisher pages still derive from the flattened book
+  list. Both blockers are now gone — `BookResource` emits `authorId` and
+  `publisherId`, and both models resolve by slug or id — so this is a
+  frontend-only change whenever it is wanted.
+- Co-publishing, as above.
+- A taqrizchi has no public reputation or rating; the profile mirrors a
+  translator's exactly, as agreed.
 
 ## Note on cache invalidation
 
