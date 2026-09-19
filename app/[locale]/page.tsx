@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { getTranslators, getAllBooks, getAuthors, getPublishers } from "@/lib/api";
+import {
+  getTranslators,
+  getAllBooks,
+  getAuthors,
+  getPublishers,
+  getTaqrizchilar,
+} from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
+import { TaqrizchiCard } from "@/components/TaqrizchiCard";
 import { TranslatorCard } from "@/components/TranslatorCard";
 import { BookCard } from "@/components/BookCard";
 import { AuthorCard } from "@/components/AuthorCard";
@@ -32,18 +39,22 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [translators, allBooks, authors, publishers, t] = await Promise.all([
+  const [translators, allBooks, authors, publishers, taqrizchilar, t, tTaqrizchilar] =
+    await Promise.all([
     getTranslators(locale),
     getAllBooks(locale),
     getAuthors(locale),
     getPublishers(locale),
+    getTaqrizchilar(locale),
     getTranslations("home"),
+    getTranslations("taqrizchilar"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
   const featuredBooks = allBooks.slice(0, 8);
   const featuredAuthors = authors.slice(0, 6);
   const featuredPublishers = publishers.slice(0, 4);
+  const featuredTaqrizchilar = taqrizchilar.slice(0, 3);
 
   // Global hero stats
   const stats = [
@@ -159,6 +170,32 @@ export default async function Home({
             )}
           </Container>
         </section>
+
+        {/* ─── TAQRIZCHILAR ────────────────────────────────────── */}
+        {taqrizchilar.length > 0 && (
+          <section className="py-16 sm:py-20">
+            <Container>
+              <SectionHeader
+                title={tTaqrizchilar("sectionTitle")}
+                count={taqrizchilar.length}
+                seeMoreHref="/taqrizchilar"
+                seeMoreLabel={tTaqrizchilar("seeAll")}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {featuredTaqrizchilar.map((taqrizchi) => (
+                  <TaqrizchiCard
+                    key={taqrizchi.slug}
+                    taqrizchi={taqrizchi}
+                    countLabel={tTaqrizchilar("taqrizlar", {
+                      count: taqrizchi.totalTaqrizlar,
+                    })}
+                    viewLabel={tTaqrizchilar("viewProfile")}
+                  />
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
 
         {/* ─── PUBLISHERS ──────────────────────────────────────── */}
         <section className="py-16 sm:py-20 bg-white border-t border-stone-200">

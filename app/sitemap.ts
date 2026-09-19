@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getTranslators } from "@/lib/api";
+import { getTaqrizchilar, getTranslators } from "@/lib/api";
 import { routing } from "@/i18n/routing";
 import { HREFLANG, absoluteUrl, type Locale } from "@/lib/site";
 
@@ -34,7 +34,10 @@ function alternates(path = "") {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const translators = await getTranslators(routing.defaultLocale);
+  const [translators, taqrizchilar] = await Promise.all([
+    getTranslators(routing.defaultLocale),
+    getTaqrizchilar(routing.defaultLocale),
+  ]);
 
   // A profile marked "hide from search engines" in the admin panel carries
   // noindex on the page itself; listing it here would be the sitemap telling
@@ -69,5 +72,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
   });
 
-  return [...home, ...profiles];
+  const reviewers: MetadataRoute.Sitemap = taqrizchilar.flatMap((taqrizchi) => {
+    const path = `/taqrizchi/${taqrizchi.slug}`;
+
+    return routing.locales.map((locale: Locale) => ({
+      url: absoluteUrl(locale, path),
+      lastModified: taqrizchi.updatedAt
+        ? new Date(taqrizchi.updatedAt)
+        : undefined,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      alternates: alternates(path),
+    }));
+  });
+
+  // Individual reviews. Only approved ones reach us — the API refuses to
+  // serve the rest — so nothing here points at a page that would 404.
+  const taqrizlar: MetadataRoute.Sitemap = taqrizchilar.flatMap((taqrizchi) =>
+    taqrizchi.taqrizlar.flatMap((taqriz) => {
+      const path = `/taqriz/${taqriz.id}`;
+
+      return routing.locales.map((locale: Locale) => ({
+        url: absoluteUrl(locale, path),
+        lastModified: taqriz.updatedAt ? new Date(taqriz.updatedAt) : undefined,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+        alternates: alternates(path),
+      }));
+    })
+  );
+
+  return [...home, ...profiles, ...reviewers, ...taqrizlar];
 }

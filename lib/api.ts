@@ -1,4 +1,12 @@
-import type { Translator, Book, BookWithTranslator, Author, Publisher } from "@/lib/types";
+import type {
+  Translator,
+  Book,
+  BookWithTranslator,
+  Author,
+  Publisher,
+  Taqriz,
+  Taqrizchi,
+} from "@/lib/types";
 import { slugify } from "@/lib/slug";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -45,6 +53,13 @@ export function bookTag(id: string): string {
   return `book:${id}`;
 }
 
+export const TAQRIZCHILAR_TAG = "taqrizchilar";
+
+/** One reviewer's page, so publishing a review doesn't rebuild every profile. */
+export function taqrizchiTag(slug: string): string {
+  return `taqrizchi:${slug}`;
+}
+
 interface ApiCollection<T> {
   data: T[];
 }
@@ -63,6 +78,8 @@ interface ApiResource<T> {
  */
 type ApiCatalogBook = Book & {
   translator?: { slug: string; name: string } | null;
+  taqrizlar?: Taqriz[];
+  averageScore?: number | null;
 };
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
@@ -120,6 +137,29 @@ export async function getTranslatorBySlug(
   return result?.data ? normalizeTranslator(result.data) : null;
 }
 
+function normalizeTaqriz(taqriz: Taqriz): Taqriz {
+  return {
+    ...taqriz,
+    taqrizchi: taqriz.taqrizchi
+      ? {
+          ...taqriz.taqrizchi,
+          avatarUrl: resolveAssetUrl(taqriz.taqrizchi.avatarUrl) || null,
+        }
+      : taqriz.taqrizchi,
+    book: taqriz.book
+      ? { ...taqriz.book, coverUrl: resolveAssetUrl(taqriz.book.coverUrl) || null }
+      : taqriz.book,
+  };
+}
+
+function normalizeTaqrizchi(taqrizchi: Taqrizchi): Taqrizchi {
+  return {
+    ...taqrizchi,
+    avatarUrl: resolveAssetUrl(taqrizchi.avatarUrl),
+    taqrizlar: (taqrizchi.taqrizlar ?? []).map(normalizeTaqriz),
+  };
+}
+
 function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
   const { translator, ...rest } = book;
 
@@ -130,6 +170,7 @@ function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
     publisherImageUrl: resolveAssetUrl(book.publisherImageUrl) || null,
     translatorSlug: translator?.slug ?? null,
     translatorName: translator?.name ?? null,
+    taqrizlar: (book.taqrizlar ?? []).map(normalizeTaqriz),
   };
 }
 
@@ -231,6 +272,44 @@ export async function getBookById(
     [BOOKS_TAG, bookTag(id)]
   );
   return result?.data ? normalizeBook(result.data) : null;
+}
+
+/**
+ * Every reviewer, for the /taqrizchilar listing. The API only ever loads
+ * approved reviews, so counts and lists here are already public-safe.
+ */
+export async function getTaqrizchilar(locale: string): Promise<Taqrizchi[]> {
+  const result = await apiFetch<ApiCollection<Taqrizchi>>(
+    `/taqrizchilar?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG]
+  );
+  return (result?.data ?? []).map(normalizeTaqrizchi);
+}
+
+export async function getTaqrizchiBySlug(
+  slug: string,
+  locale: string
+): Promise<Taqrizchi | null> {
+  const result = await apiFetch<ApiResource<Taqrizchi>>(
+    `/taqrizchilar/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG, taqrizchiTag(slug)]
+  );
+  return result?.data ? normalizeTaqrizchi(result.data) : null;
+}
+
+/**
+ * One review at its own permalink. An unapproved taqriz is a 404 from the
+ * API, which this turns into null and the page turns into notFound().
+ */
+export async function getTaqrizById(
+  id: string,
+  locale: string
+): Promise<Taqriz | null> {
+  const result = await apiFetch<ApiResource<Taqriz>>(
+    `/taqrizlar/${encodeURIComponent(id)}?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG]
+  );
+  return result?.data ? normalizeTaqriz(result.data) : null;
 }
 
 export async function getAuthorBySlug(

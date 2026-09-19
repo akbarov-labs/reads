@@ -165,5 +165,35 @@
     "catalog": "Опубликованные переводы",
     "translatorsAndAuthors": "Сотрудничающие авторы и переводчики",
     "booksInCatalog": "Книги в каталоге"
+  },
+  "taqrizchilar": {
+    "pageTitle": "Все рецензенты",
+    "pageDescription": "Авторы, которые пишут рецензии на книги.",
+    "sectionTitle": "Рецензенты",
+    "count": "{count, plural, one {# рецензент} few {# рецензента} other {# рецензентов}}",
+    "taqrizlar": "{count, plural, one {# рецензия} few {# рецензии} other {# рецензий}}",
+    "empty": "Рецензентов пока нет.",
+    "viewProfile": "Смотреть профиль",
+    "defaultRole": "Рецензент",
+    "seeAll": "Все рецензенты"
+  },
+  "taqriz": {
+    "sectionTitle": "Рецензии",
+    "empty": "На эту книгу пока нет рецензий.",
+    "readMore": "Читать полностью",
+    "overall": "Общая оценка",
+    "breakdown": "Оценки",
+    "writtenBy": "Рецензент",
+    "about": "Книга",
+    "watchVideo": "Смотреть видео",
+    "backToBook": "Вернуться к книге",
+    "notFound": "Рецензия не найдена.",
+    "aspects": {
+      "plot": "Сюжет и развитие событий",
+      "style": "Стиль и язык",
+      "translation": "Качество перевода",
+      "cover": "Обложка и качество издания",
+      "overall": "Общее впечатление"
+    }
   }
 }
