@@ -1,9 +1,17 @@
 # Production stack for the Contabo server. Pulls the image built by
-# .github/workflows/deploy.yml from GHCR — the server never builds. Joins
-# the existing external Caddy network so Caddy can reverse_proxy to it by
-# container name, and so this container can reach reads-admin-app directly
-# (server-side rendering calls the API over the internal network, never the
-# public internet).
+# .github/workflows/deploy.yml from GHCR — the server never builds.
+#
+# Public routing: joins the standalone `edge` Caddy (caddy-docker-proxy) via
+# Docker labels — see ~/edge on the server / infra/edge-caddy/ in
+# online-shop-telegram-bot. No shared Caddyfile for any project to own.
+#
+# Internal routing: joins `reads_net`, a small external network shared only
+# with reads-admin-app, so server-side rendering can call the API by
+# container name without depending on kitoblarim's own network the way the
+# old `kitoblarim_default` coupling did (that was exactly the kind of
+# one-project-holds-up-another dependency that caused the 2026-09-19 outage,
+# just for internal traffic instead of the edge proxy). Create once on the
+# server: docker network create reads_net
 #
 # This file is copied to the server by the deploy workflow; the real .env
 # next to it on the server is created once by hand (see DEPLOY.md) and is
@@ -17,13 +25,14 @@ services:
     env_file: .env
     mem_limit: 256m
     networks:
-      - caddy_net
+      - edge
+      - reads_net
+    labels:
+      caddy: ${DOMAIN:?set DOMAIN in .env, e.g. kitoblarim.uz}
+      caddy.reverse_proxy: "{{upstreams 3000}}"
 
 networks:
-  caddy_net:
+  edge:
     external: true
-    # kitoblarim's Caddy container's network (confirmed via:
-    # docker inspect kitoblarim-caddy-1 --format '{{json .NetworkSettings.Networks}}')
-    # — also the network reads-admin-app joins, so this container can reach
-    # it by name for server-side API calls.
-    name: kitoblarim_default
+  reads_net:
+    external: true
