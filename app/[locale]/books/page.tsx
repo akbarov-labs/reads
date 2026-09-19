@@ -8,6 +8,19 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { Pagination } from "@/components/Pagination";
 
+/**
+ * These listing pages read `page` out of searchParams, which is a dynamic
+ * server API. The [locale] layout has generateStaticParams, so without this
+ * Next treats them as statically prerenderable, then throws
+ * DYNAMIC_SERVER_USAGE at request time when searchParams is touched — a 500
+ * on every listing page while the home page and detail pages, which take no
+ * search params, carry on working.
+ *
+ * The data itself is still cached: apiFetch tags its fetches and revalidates
+ * on the admin webhook, so this costs a re-render, not a round trip.
+ */
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 20;
 
 export async function generateMetadata({
@@ -110,12 +123,14 @@ export default async function BooksPage({
                         <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400 truncate">
                           {book.author}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-zinc-400">
-                          {t("translatedBy")}{" "}
-                          <span className="font-medium text-zinc-600">
-                            {book.translatorName}
-                          </span>
-                        </p>
+                        {book.translatorName && (
+                          <p className="mt-0.5 text-[11px] text-zinc-400">
+                            {t("translatedBy")}{" "}
+                            <span className="font-medium text-zinc-600">
+                              {book.translatorName}
+                            </span>
+                          </p>
+                        )}
                         <p className="mt-0.5 text-[11px] text-zinc-400">
                           {book.publisher} · {book.year}
                         </p>

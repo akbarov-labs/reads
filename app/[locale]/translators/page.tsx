@@ -7,6 +7,19 @@ import { Container } from "@/components/Container";
 import { TranslatorCard } from "@/components/TranslatorCard";
 import { Pagination } from "@/components/Pagination";
 
+/**
+ * These listing pages read `page` out of searchParams, which is a dynamic
+ * server API. The [locale] layout has generateStaticParams, so without this
+ * Next treats them as statically prerenderable, then throws
+ * DYNAMIC_SERVER_USAGE at request time when searchParams is touched — a 500
+ * on every listing page while the home page and detail pages, which take no
+ * search params, carry on working.
+ *
+ * The data itself is still cached: apiFetch tags its fetches and revalidates
+ * on the admin webhook, so this costs a re-render, not a round trip.
+ */
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 12;
 
 export async function generateMetadata({

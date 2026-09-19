@@ -1,4 +1,12 @@
-import type { Translator, BookWithTranslator, Author, Publisher } from "@/lib/types";
+import type {
+  Translator,
+  Book,
+  BookWithTranslator,
+  Author,
+  Publisher,
+  Taqriz,
+  Taqrizchi,
+} from "@/lib/types";
 import { slugify } from "@/lib/slug";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -40,6 +48,18 @@ export function translatorTag(slug: string): string {
   return `translator:${slug}`;
 }
 
+/** Same idea for one book, now that a book has its own endpoint to invalidate. */
+export function bookTag(id: string): string {
+  return `book:${id}`;
+}
+
+export const TAQRIZCHILAR_TAG = "taqrizchilar";
+
+/** One reviewer's page, so publishing a review doesn't rebuild every profile. */
+export function taqrizchiTag(slug: string): string {
+  return `taqrizchi:${slug}`;
+}
+
 interface ApiCollection<T> {
   data: T[];
 }
@@ -47,6 +67,20 @@ interface ApiCollection<T> {
 interface ApiResource<T> {
   data: T;
 }
+
+/**
+ * What GET /api/books returns per row: the Book fields, plus the translator
+ * as a nested object rather than the flattened pair the site renders.
+ *
+ * `translator` is null for a book nobody has translated. Laravel's
+ * whenLoaded() already collapses a loaded-but-null relation to null, so this
+ * is the shape on the wire, not something we have to defend against twice.
+ */
+type ApiCatalogBook = Book & {
+  translator?: { slug: string; name: string } | null;
+  taqrizlar?: Taqriz[];
+  averageScore?: number | null;
+};
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
   // Deliberately does NOT catch network errors. Returning null on failure
@@ -103,26 +137,64 @@ export async function getTranslatorBySlug(
   return result?.data ? normalizeTranslator(result.data) : null;
 }
 
+function normalizeTaqriz(taqriz: Taqriz): Taqriz {
+  return {
+    ...taqriz,
+    taqrizchi: taqriz.taqrizchi
+      ? {
+          ...taqriz.taqrizchi,
+          avatarUrl: resolveAssetUrl(taqriz.taqrizchi.avatarUrl) || null,
+        }
+      : taqriz.taqrizchi,
+    book: taqriz.book
+      ? { ...taqriz.book, coverUrl: resolveAssetUrl(taqriz.book.coverUrl) || null }
+      : taqriz.book,
+  };
+}
+
+function normalizeTaqrizchi(taqrizchi: Taqrizchi): Taqrizchi {
+  return {
+    ...taqrizchi,
+    avatarUrl: resolveAssetUrl(taqrizchi.avatarUrl),
+    taqrizlar: (taqrizchi.taqrizlar ?? []).map(normalizeTaqriz),
+  };
+}
+
+function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
+  const { translator, ...rest } = book;
+
+  return {
+    ...rest,
+    coverUrl: resolveAssetUrl(book.coverUrl),
+    authorImageUrl: resolveAssetUrl(book.authorImageUrl) || null,
+    publisherImageUrl: resolveAssetUrl(book.publisherImageUrl) || null,
+    translatorSlug: translator?.slug ?? null,
+    translatorName: translator?.name ?? null,
+    taqrizlar: (book.taqrizlar ?? []).map(normalizeTaqriz),
+  };
+}
+
 /**
- * All books across every translator, each enriched with the translator's
- * name and slug so listing pages can link back to the profile.
+ * The whole book catalogue, each row carrying its translator's name and slug
+ * where it has one, so listing pages can link back to the profile.
+ *
+ * This reads /api/books directly. It used to walk getTranslators() and flatten
+ * every profile's books[], which made "book" a thing that could only exist
+ * inside a translator: a book with no translator was not merely unlisted, it
+ * was unreachable — absent from listings, from generateStaticParams, and so
+ * from the sitemap. The catalogue endpoint owns books in their own right, so
+ * they now show up whether or not anyone has translated them.
  */
 export async function getAllBooks(locale: string): Promise<BookWithTranslator[]> {
-  const translators = await getTranslators(locale);
-  const books: BookWithTranslator[] = [];
-
-  for (const translator of translators) {
-    for (const book of translator.books) {
-      books.push({
-        ...book,
-        translatorSlug: translator.slug,
-        translatorName: translator.name,
-      });
-    }
-  }
+  const result = await apiFetch<ApiCollection<ApiCatalogBook>>(
+    `/books?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG]
+  );
 
   // Most recent year first.
-  return books.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+  return (result?.data ?? [])
+    .map(normalizeBook)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 }
 
 /**
@@ -195,8 +267,49 @@ export async function getBookById(
   id: string,
   locale: string
 ): Promise<BookWithTranslator | null> {
-  const books = await getAllBooks(locale);
-  return books.find((b) => String(b.id) === String(id)) ?? null;
+  const result = await apiFetch<ApiResource<ApiCatalogBook>>(
+    `/books/${encodeURIComponent(id)}?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG, bookTag(id)]
+  );
+  return result?.data ? normalizeBook(result.data) : null;
+}
+
+/**
+ * Every reviewer, for the /taqrizchilar listing. The API only ever loads
+ * approved reviews, so counts and lists here are already public-safe.
+ */
+export async function getTaqrizchilar(locale: string): Promise<Taqrizchi[]> {
+  const result = await apiFetch<ApiCollection<Taqrizchi>>(
+    `/taqrizchilar?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG]
+  );
+  return (result?.data ?? []).map(normalizeTaqrizchi);
+}
+
+export async function getTaqrizchiBySlug(
+  slug: string,
+  locale: string
+): Promise<Taqrizchi | null> {
+  const result = await apiFetch<ApiResource<Taqrizchi>>(
+    `/taqrizchilar/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG, taqrizchiTag(slug)]
+  );
+  return result?.data ? normalizeTaqrizchi(result.data) : null;
+}
+
+/**
+ * One review at its own permalink. An unapproved taqriz is a 404 from the
+ * API, which this turns into null and the page turns into notFound().
+ */
+export async function getTaqrizById(
+  id: string,
+  locale: string
+): Promise<Taqriz | null> {
+  const result = await apiFetch<ApiResource<Taqriz>>(
+    `/taqrizlar/${encodeURIComponent(id)}?locale=${encodeURIComponent(locale)}`,
+    [TAQRIZCHILAR_TAG]
+  );
+  return result?.data ? normalizeTaqriz(result.data) : null;
 }
 
 export async function getAuthorBySlug(

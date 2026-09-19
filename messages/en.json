@@ -165,5 +165,35 @@
     "catalog": "Published translations",
     "translatorsAndAuthors": "Collaborating creators",
     "booksInCatalog": "Books in catalog"
+  },
+  "taqrizchilar": {
+    "pageTitle": "All reviewers",
+    "pageDescription": "The people writing reviews of the books in this catalogue.",
+    "sectionTitle": "Reviewers",
+    "count": "{count, plural, one {# reviewer} other {# reviewers}}",
+    "taqrizlar": "{count, plural, one {# review} other {# reviews}}",
+    "empty": "No reviewers yet.",
+    "viewProfile": "View profile",
+    "defaultRole": "Reviewer",
+    "seeAll": "All reviewers"
+  },
+  "taqriz": {
+    "sectionTitle": "Reviews",
+    "empty": "No reviews of this book yet.",
+    "readMore": "Read in full",
+    "overall": "Overall score",
+    "breakdown": "Scores",
+    "writtenBy": "Reviewer",
+    "about": "Book",
+    "watchVideo": "Watch video",
+    "backToBook": "Back to the book",
+    "notFound": "Review not found.",
+    "aspects": {
+      "plot": "Plot",
+      "style": "Style & language",
+      "translation": "Translation quality",
+      "cover": "Cover & print quality",
+      "overall": "Overall impression"
+    }
   }
 }

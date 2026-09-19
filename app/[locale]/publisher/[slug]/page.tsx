@@ -64,7 +64,7 @@ export default async function PublisherDetailPage({
 
   for (const b of publisher.books) {
     if (b.author) authorsSet.add(b.author);
-    if (b.translatorSlug && !translatorsMap.has(b.translatorSlug)) {
+    if (b.translatorSlug && b.translatorName && !translatorsMap.has(b.translatorSlug)) {
       translatorsMap.set(b.translatorSlug, {
         slug: b.translatorSlug,
         name: b.translatorName,
@@ -188,7 +188,9 @@ export default async function PublisherDetailPage({
                       {book.author}
                     </p>
                     <p className="mt-1 text-xs text-zinc-400">
-                      Tarjimon: {book.translatorName} · {book.year}
+                      {book.translatorName
+                        ? `Tarjimon: ${book.translatorName} · ${book.year}`
+                        : book.year}
                     </p>
                   </div>
                 </Link>

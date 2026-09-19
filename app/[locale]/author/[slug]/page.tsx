@@ -72,7 +72,7 @@ export default async function AuthorDetailPage({
   // Deduplicate translators who translated this author
   const translatorsMap = new Map<string, { slug: string; name: string }>();
   for (const b of author.books) {
-    if (b.translatorSlug && !translatorsMap.has(b.translatorSlug)) {
+    if (b.translatorSlug && b.translatorName && !translatorsMap.has(b.translatorSlug)) {
       translatorsMap.set(b.translatorSlug, {
         slug: b.translatorSlug,
         name: b.translatorName,
@@ -208,12 +208,14 @@ export default async function AuthorDetailPage({
                         {book.originalTitle}
                       </p>
                     )}
-                    <p className="mt-2 text-xs text-zinc-500">
-                      Tarjimon:{" "}
-                      <span className="text-zinc-800 font-medium">
-                        {book.translatorName}
-                      </span>
-                    </p>
+                    {book.translatorName && (
+                      <p className="mt-2 text-xs text-zinc-500">
+                        Tarjimon:{" "}
+                        <span className="text-zinc-800 font-medium">
+                          {book.translatorName}
+                        </span>
+                      </p>
+                    )}
                     <p className="text-xs text-zinc-400 mt-0.5">
                       {book.publisher} · {book.year}
                     </p>

@@ -165,5 +165,35 @@
     "catalog": "Nashr qilingan tarjimalar",
     "translatorsAndAuthors": "Hamkor ijodkorlar",
     "booksInCatalog": "Katalogdagi kitoblar"
+  },
+  "taqrizchilar": {
+    "pageTitle": "Barcha taqrizchilar",
+    "pageDescription": "Kitoblar haqida taqriz yozadigan mualliflar.",
+    "sectionTitle": "Taqrizchilar",
+    "count": "{count, plural, one {# taqrizchi} other {# taqrizchi}}",
+    "taqrizlar": "{count, plural, one {# taqriz} other {# taqriz}}",
+    "empty": "Hozircha taqrizchilar yo'q.",
+    "viewProfile": "Profilni ko'rish",
+    "defaultRole": "Taqrizchi",
+    "seeAll": "Barcha taqrizchilar"
+  },
+  "taqriz": {
+    "sectionTitle": "Taqrizlar",
+    "empty": "Bu kitobga hali taqriz yozilmagan.",
+    "readMore": "To'liq o'qish",
+    "overall": "Umumiy baho",
+    "breakdown": "Baholar",
+    "writtenBy": "Taqrizchi",
+    "about": "Kitob",
+    "watchVideo": "Videoni ko'rish",
+    "backToBook": "Kitobga qaytish",
+    "notFound": "Taqriz topilmadi.",
+    "aspects": {
+      "plot": "Syujet va voqealar rivoji",
+      "style": "Uslub va til",
+      "translation": "Tarjima sifati",
+      "cover": "Muqova va nashr sifati",
+      "overall": "Umumiy taassurot"
+    }
   }
 }

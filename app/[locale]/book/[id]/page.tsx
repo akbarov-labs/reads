@@ -9,6 +9,8 @@ import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, BookOpen, User } from "lucide-react";
+import { TaqrizCard } from "@/components/TaqrizCard";
+import { ScoreBadge } from "@/components/ScoreBadge";
 
 type PageParams = { locale: string; id: string };
 
@@ -25,9 +27,17 @@ export async function generateMetadata({
   const book = await getBookById(id, locale);
   if (!book) return { robots: { index: false, follow: false } };
 
+  // A book with no translator must not advertise "tarjimon: null" to search
+  // engines, so the clause is dropped rather than left empty.
+  const credits = [
+    `muallif: ${book.author}`,
+    book.translatorName ? `tarjimon: ${book.translatorName}` : null,
+    `nashriyot: ${book.publisher}`,
+  ].filter(Boolean);
+
   return {
     title: `${book.uzbekTitle} — ${book.author} | Reads`,
-    description: `${book.uzbekTitle} (${book.originalTitle}), muallif: ${book.author}, tarjimon: ${book.translatorName}, nashriyot: ${book.publisher}.`,
+    description: `${book.uzbekTitle} (${book.originalTitle}), ${credits.join(", ")}.`,
   };
 }
 
@@ -39,10 +49,11 @@ export default async function BookDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [book, tDetail, tCard, allBooks] = await Promise.all([
+  const [book, tDetail, tCard, tTaqriz, allBooks] = await Promise.all([
     getBookById(id, locale),
     getTranslations("bookDetail"),
     getTranslations("bookCard"),
+    getTranslations("taqriz"),
     getAllBooks(locale),
   ]);
 
@@ -62,9 +73,11 @@ export default async function BookDetailPage({
     .filter((b) => b.id !== book.id && slugify(b.author) === authorSlug)
     .slice(0, 4);
 
-  const otherBooksByTranslator = allBooks
-    .filter((b) => b.id !== book.id && b.translatorSlug === book.translatorSlug)
-    .slice(0, 4);
+  const otherBooksByTranslator = book.translatorSlug
+    ? allBooks
+        .filter((b) => b.id !== book.id && b.translatorSlug === book.translatorSlug)
+        .slice(0, 4)
+    : [];
 
   return (
     <>
@@ -162,7 +175,8 @@ export default async function BookDetailPage({
                   </div>
                 </Link>
 
-                {/* Translator Card */}
+                {/* Translator Card — absent for a book nobody has translated. */}
+                {book.translatorSlug && (
                 <Link
                   href={`/translator/${book.translatorSlug}`}
                   className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-amber-300 hover:shadow-sm transition-all"
@@ -179,6 +193,7 @@ export default async function BookDetailPage({
                     </p>
                   </div>
                 </Link>
+                )}
               </div>
 
               {/* Publication Specs */}
@@ -258,6 +273,41 @@ export default async function BookDetailPage({
               </div>
             </section>
           )}
+
+          {/* Taqrizlar — approved reviews of this book. The API only ever
+              loads approved ones, so there is nothing to filter here. */}
+          <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12 sm:pt-16">
+            <div className="flex items-baseline justify-between gap-4">
+              <h2 className="font-serif text-2xl text-zinc-900">
+                {tTaqriz("sectionTitle")}
+              </h2>
+              {book.averageScore !== null && book.averageScore !== undefined && (
+                <div className="text-right shrink-0">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                    {tTaqriz("overall")}
+                  </span>
+                  <span className="mt-1 inline-block">
+                    <ScoreBadge score={book.averageScore} />
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {!book.taqrizlar || book.taqrizlar.length === 0 ? (
+              <p className="mt-4 text-sm text-zinc-500">{tTaqriz("empty")}</p>
+            ) : (
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {book.taqrizlar.map((taqriz) => (
+                  <TaqrizCard
+                    key={taqriz.id}
+                    taqriz={taqriz}
+                    context="book"
+                    readMoreLabel={tTaqriz("readMore")}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
 
           {/* Related books by author */}
           {otherBooksByAuthor.length > 0 && (
