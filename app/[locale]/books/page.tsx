@@ -110,12 +110,14 @@ export default async function BooksPage({
                         <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400 truncate">
                           {book.author}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-zinc-400">
-                          {t("translatedBy")}{" "}
-                          <span className="font-medium text-zinc-600">
-                            {book.translatorName}
-                          </span>
-                        </p>
+                        {book.translatorName && (
+                          <p className="mt-0.5 text-[11px] text-zinc-400">
+                            {t("translatedBy")}{" "}
+                            <span className="font-medium text-zinc-600">
+                              {book.translatorName}
+                            </span>
+                          </p>
+                        )}
                         <p className="mt-0.5 text-[11px] text-zinc-400">
                           {book.publisher} · {book.year}
                         </p>

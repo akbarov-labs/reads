@@ -1,6 +1,6 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
-import { TRANSLATORS_TAG, translatorTag } from "@/lib/api";
+import { BOOKS_TAG, TRANSLATORS_TAG, translatorTag } from "@/lib/api";
 
 /**
  * Webhook Reads-admin calls after any write to a translator, book, language
@@ -58,6 +58,13 @@ export async function POST(request: Request) {
   // The collection tag always goes: the home page, the sitemap and llms.txt
   // all list every translator, so any single change can alter them.
   revalidateTag(TRANSLATORS_TAG);
+
+  // The book catalogue is fetched separately from /api/books, so the
+  // translator tag no longer reaches it. It used to, back when getAllBooks()
+  // walked getTranslators() — without this line a saved book would wait out
+  // the full ISR window instead of appearing within seconds, and the Authors
+  // and Publishers pages derived from the catalogue would lag with it.
+  revalidateTag(BOOKS_TAG);
 
   if (slug) {
     revalidateTag(translatorTag(slug));

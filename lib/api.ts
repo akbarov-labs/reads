@@ -1,4 +1,4 @@
-import type { Translator, BookWithTranslator, Author, Publisher } from "@/lib/types";
+import type { Translator, Book, BookWithTranslator, Author, Publisher } from "@/lib/types";
 import { slugify } from "@/lib/slug";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -40,6 +40,11 @@ export function translatorTag(slug: string): string {
   return `translator:${slug}`;
 }
 
+/** Same idea for one book, now that a book has its own endpoint to invalidate. */
+export function bookTag(id: string): string {
+  return `book:${id}`;
+}
+
 interface ApiCollection<T> {
   data: T[];
 }
@@ -47,6 +52,18 @@ interface ApiCollection<T> {
 interface ApiResource<T> {
   data: T;
 }
+
+/**
+ * What GET /api/books returns per row: the Book fields, plus the translator
+ * as a nested object rather than the flattened pair the site renders.
+ *
+ * `translator` is null for a book nobody has translated. Laravel's
+ * whenLoaded() already collapses a loaded-but-null relation to null, so this
+ * is the shape on the wire, not something we have to defend against twice.
+ */
+type ApiCatalogBook = Book & {
+  translator?: { slug: string; name: string } | null;
+};
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
   // Deliberately does NOT catch network errors. Returning null on failure
@@ -103,26 +120,40 @@ export async function getTranslatorBySlug(
   return result?.data ? normalizeTranslator(result.data) : null;
 }
 
+function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
+  const { translator, ...rest } = book;
+
+  return {
+    ...rest,
+    coverUrl: resolveAssetUrl(book.coverUrl),
+    authorImageUrl: resolveAssetUrl(book.authorImageUrl) || null,
+    publisherImageUrl: resolveAssetUrl(book.publisherImageUrl) || null,
+    translatorSlug: translator?.slug ?? null,
+    translatorName: translator?.name ?? null,
+  };
+}
+
 /**
- * All books across every translator, each enriched with the translator's
- * name and slug so listing pages can link back to the profile.
+ * The whole book catalogue, each row carrying its translator's name and slug
+ * where it has one, so listing pages can link back to the profile.
+ *
+ * This reads /api/books directly. It used to walk getTranslators() and flatten
+ * every profile's books[], which made "book" a thing that could only exist
+ * inside a translator: a book with no translator was not merely unlisted, it
+ * was unreachable — absent from listings, from generateStaticParams, and so
+ * from the sitemap. The catalogue endpoint owns books in their own right, so
+ * they now show up whether or not anyone has translated them.
  */
 export async function getAllBooks(locale: string): Promise<BookWithTranslator[]> {
-  const translators = await getTranslators(locale);
-  const books: BookWithTranslator[] = [];
-
-  for (const translator of translators) {
-    for (const book of translator.books) {
-      books.push({
-        ...book,
-        translatorSlug: translator.slug,
-        translatorName: translator.name,
-      });
-    }
-  }
+  const result = await apiFetch<ApiCollection<ApiCatalogBook>>(
+    `/books?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG]
+  );
 
   // Most recent year first.
-  return books.sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+  return (result?.data ?? [])
+    .map(normalizeBook)
+    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
 }
 
 /**
@@ -195,8 +226,11 @@ export async function getBookById(
   id: string,
   locale: string
 ): Promise<BookWithTranslator | null> {
-  const books = await getAllBooks(locale);
-  return books.find((b) => String(b.id) === String(id)) ?? null;
+  const result = await apiFetch<ApiResource<ApiCatalogBook>>(
+    `/books/${encodeURIComponent(id)}?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG, bookTag(id)]
+  );
+  return result?.data ? normalizeBook(result.data) : null;
 }
 
 export async function getAuthorBySlug(

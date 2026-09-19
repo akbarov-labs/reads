@@ -35,10 +35,16 @@ export interface Book {
 /**
  * A book enriched with the translator it belongs to, for use in flat
  * cross-translator listing pages (Books, Authors, Publishers discovery).
+ *
+ * The translator fields are optional because a book no longer belongs to a
+ * translator: the catalogue endpoint returns books in their own right, and a
+ * book can reach the site without anyone having translated it yet (a reviewer
+ * adding a book they want to write about, an original-language work). Callers
+ * must treat "no translator" as a normal state, not a data error.
  */
 export interface BookWithTranslator extends Book {
-  translatorSlug: string;
-  translatorName: string;
+  translatorSlug?: string | null;
+  translatorName?: string | null;
 }
 
 /**
