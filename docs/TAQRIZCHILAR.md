@@ -148,10 +148,6 @@ every backfilled row to whichever publisher asked first.
 
 ## Still open
 
-- The site's author and publisher pages still derive from the flattened book
-  list. Both blockers are now gone — `BookResource` emits `authorId` and
-  `publisherId`, and both models resolve by slug or id — so this is a
-  frontend-only change whenever it is wanted.
 - Co-publishing, as above.
 - A taqrizchi has no public reputation or rating; the profile mirrors a
   translator's exactly, as agreed.

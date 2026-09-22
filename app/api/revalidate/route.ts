@@ -1,19 +1,28 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import {
+  AUTHORS_TAG,
   BOOKS_TAG,
+  PUBLISHERS_TAG,
   TAQRIZCHILAR_TAG,
   TRANSLATORS_TAG,
+  authorTag,
   bookTag,
+  publisherTag,
   taqrizchiTag,
   translatorTag,
 } from "@/lib/api";
 
 /**
  * Webhook Reads-admin calls after any write to a translator, book, language
- * pair or social link (see App\Services\SiteRevalidator). Dropping the cache
- * tag rebuilds the affected pages — and the sitemap and llms.txt built from
- * the same fetch — on the next request, instead of waiting out the ISR
+ * pair or social link (see App\Services\SiteRevalidator). `type: "author"` and
+ * `type: "publisher"` are accepted here too, now that getAuthors()/
+ * getPublishers() read their own endpoints — but only take effect once
+ * SiteRevalidator actually sends them; until then, an author/publisher-only
+ * save (no book attached) still refreshes within REVALIDATE_SECONDS via the
+ * ISR window, just not instantly. Dropping the cache tag rebuilds the
+ * affected pages — and the sitemap and llms.txt built from the same fetch —
+ * on the next request, instead of waiting out the ISR
  * window. A new book is therefore indexable within seconds of being saved.
  */
 export const runtime = "nodejs";
@@ -49,7 +58,7 @@ export async function POST(request: Request) {
 
   let slug: string | undefined;
   let id: string | undefined;
-  let type: "translator" | "taqrizchi" | "book" | undefined;
+  let type: "translator" | "taqrizchi" | "book" | "author" | "publisher" | undefined;
 
   try {
     const body = (await request.json()) as {
@@ -75,7 +84,9 @@ export async function POST(request: Request) {
     if (
       body.type === "translator" ||
       body.type === "taqrizchi" ||
-      body.type === "book"
+      body.type === "book" ||
+      body.type === "author" ||
+      body.type === "publisher"
     ) {
       type = body.type;
     }
@@ -84,22 +95,29 @@ export async function POST(request: Request) {
   }
 
   // The collection tags always go. The home page, the sitemap and llms.txt
-  // each list everything, so any single change can alter them, and the
-  // Authors and Publishers pages are derived from the book catalogue.
+  // each list everything, so any single change can alter them.
   //
   // BOOKS_TAG is listed explicitly because getAllBooks() reads /api/books
   // directly. It used to inherit TRANSLATORS_TAG by walking getTranslators(),
   // and without this a saved book would wait out the full ISR window instead
-  // of appearing within seconds.
+  // of appearing within seconds. AUTHORS_TAG and PUBLISHERS_TAG are the same
+  // idea now that getAuthors()/getPublishers() read /api/authors and
+  // /api/publishers directly instead of deriving from the book catalogue.
   revalidateTag(TRANSLATORS_TAG);
   revalidateTag(BOOKS_TAG);
   revalidateTag(TAQRIZCHILAR_TAG);
+  revalidateTag(AUTHORS_TAG);
+  revalidateTag(PUBLISHERS_TAG);
 
   // Then the one page that actually changed, where the ping says which.
   if (type === "book" && id) {
     revalidateTag(bookTag(id));
   } else if (type === "taqrizchi" && slug) {
     revalidateTag(taqrizchiTag(slug));
+  } else if (type === "author" && slug) {
+    revalidateTag(authorTag(slug));
+  } else if (type === "publisher" && slug) {
+    revalidateTag(publisherTag(slug));
   } else if (slug) {
     // Explicitly a translator, or an older caller that sent a bare slug
     // before `type` existed.

@@ -60,6 +60,16 @@ export function taqrizchiTag(slug: string): string {
   return `taqrizchi:${slug}`;
 }
 
+/** One author's page, so saving one author doesn't rebuild the whole list. */
+export function authorTag(slug: string): string {
+  return `author:${slug}`;
+}
+
+/** One publisher's page, so saving one publisher doesn't rebuild the whole list. */
+export function publisherTag(slug: string): string {
+  return `publisher:${slug}`;
+}
+
 interface ApiCollection<T> {
   data: T[];
 }
@@ -81,6 +91,16 @@ type ApiCatalogBook = Book & {
   taqrizlar?: Taqriz[];
   averageScore?: number | null;
 };
+
+/**
+ * What GET /api/authors and GET /api/publishers return per row: the profile
+ * fields Reads-admin owns, plus a `bookCount` it computes itself. Neither
+ * nests its books — the site cross-references them against getAllBooks() by
+ * id, so a profile with zero books (a publisher just created, before their
+ * first book is added) still has somewhere to exist.
+ */
+type ApiAuthor = Omit<Author, "books" | "imageUrl">;
+type ApiPublisher = Omit<Publisher, "books" | "imageUrl">;
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
   // Deliberately does NOT catch network errors. Returning null on failure
@@ -174,6 +194,39 @@ function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
   };
 }
 
+function normalizeAuthor(author: ApiAuthor, books: BookWithTranslator[]): Author {
+  const ownBooks = books.filter(
+    (b) => (author.id && b.authorId === author.id) || b.author.trim() === author.name.trim()
+  );
+
+  return {
+    ...author,
+    portraitUrl: resolveAssetUrl(author.portraitUrl) || null,
+    imageUrl:
+      resolveAssetUrl(author.portraitUrl) || ownBooks[0]?.authorImageUrl || null,
+    books: ownBooks,
+  };
+}
+
+function normalizePublisher(
+  publisher: ApiPublisher,
+  books: BookWithTranslator[]
+): Publisher {
+  const ownBooks = books.filter(
+    (b) =>
+      (publisher.id && b.publisherId === publisher.id) ||
+      b.publisher?.trim() === publisher.name.trim()
+  );
+
+  return {
+    ...publisher,
+    logoUrl: resolveAssetUrl(publisher.logoUrl) || null,
+    imageUrl:
+      resolveAssetUrl(publisher.logoUrl) || ownBooks[0]?.publisherImageUrl || null,
+    books: ownBooks,
+  };
+}
+
 /**
  * The whole book catalogue, each row carrying its translator's name and slug
  * where it has one, so listing pages can link back to the profile.
@@ -198,69 +251,42 @@ export async function getAllBooks(locale: string): Promise<BookWithTranslator[]>
 }
 
 /**
- * Unique authors derived from all books, sorted by book count descending.
- * The first book that has an author photo wins for the card image.
+ * Every author, straight from Reads-admin's own /api/authors — including one
+ * with zero books yet, which the old book-derived list could never show:
+ * grouping books by author name meant an author only existed once their
+ * first book did.
  */
 export async function getAuthors(locale: string): Promise<Author[]> {
-  const books = await getAllBooks(locale);
-  const map = new Map<string, Author>();
+  const [result, books] = await Promise.all([
+    apiFetch<ApiCollection<ApiAuthor>>(
+      `/authors?locale=${encodeURIComponent(locale)}`,
+      [AUTHORS_TAG]
+    ),
+    getAllBooks(locale),
+  ]);
 
-  for (const book of books) {
-    const key = book.author.trim();
-    if (!key) continue;
-
-    const existing = map.get(key);
-    if (existing) {
-      existing.bookCount += 1;
-      existing.books.push(book);
-      // Upgrade image if we don't have one yet.
-      if (!existing.imageUrl && book.authorImageUrl) {
-        existing.imageUrl = book.authorImageUrl;
-      }
-    } else {
-      map.set(key, {
-        slug: slugify(key),
-        name: key,
-        imageUrl: book.authorImageUrl ?? null,
-        bookCount: 1,
-        books: [book],
-      });
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+  return (result?.data ?? [])
+    .map((author) => normalizeAuthor(author, books))
+    .sort((a, b) => b.bookCount - a.bookCount);
 }
 
 /**
- * Unique publishers derived from all books, sorted by book count descending.
+ * Every publisher, straight from Reads-admin's own /api/publishers. Same
+ * reasoning as getAuthors: a publisher added before their first book exists
+ * on the site now has somewhere to appear.
  */
 export async function getPublishers(locale: string): Promise<Publisher[]> {
-  const books = await getAllBooks(locale);
-  const map = new Map<string, Publisher>();
+  const [result, books] = await Promise.all([
+    apiFetch<ApiCollection<ApiPublisher>>(
+      `/publishers?locale=${encodeURIComponent(locale)}`,
+      [PUBLISHERS_TAG]
+    ),
+    getAllBooks(locale),
+  ]);
 
-  for (const book of books) {
-    const key = book.publisher?.trim();
-    if (!key) continue;
-
-    const existing = map.get(key);
-    if (existing) {
-      existing.bookCount += 1;
-      existing.books.push(book);
-      if (!existing.imageUrl && book.publisherImageUrl) {
-        existing.imageUrl = book.publisherImageUrl;
-      }
-    } else {
-      map.set(key, {
-        slug: slugify(key),
-        name: key,
-        imageUrl: book.publisherImageUrl ?? null,
-        bookCount: 1,
-        books: [book],
-      });
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+  return (result?.data ?? [])
+    .map((publisher) => normalizePublisher(publisher, books))
+    .sort((a, b) => b.bookCount - a.bookCount);
 }
 
 export async function getBookById(
@@ -316,12 +342,26 @@ export async function getAuthorBySlug(
   slug: string,
   locale: string
 ): Promise<Author | null> {
-  const authors = await getAuthors(locale);
+  const [result, books] = await Promise.all([
+    apiFetch<ApiResource<ApiAuthor>>(
+      `/authors/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+      [AUTHORS_TAG, authorTag(slug)]
+    ),
+    getAllBooks(locale),
+  ]);
+
+  if (result?.data) return normalizeAuthor(result.data, books);
+
+  // Book pages link to /author/{slugify(book.author)} rather than a real
+  // author slug (a book only carries the author's name and id, not their
+  // slug). That client-computed slug usually matches the real one, but isn't
+  // guaranteed to for every name, so a 404 above falls back to matching by
+  // name against the full list before giving up.
   const cleanSlug = slug.toLowerCase();
+  const authors = await getAuthors(locale);
   return (
     authors.find(
       (a) =>
-        a.slug === cleanSlug ||
         slugify(a.name) === cleanSlug ||
         a.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
     ) ?? null
@@ -332,12 +372,23 @@ export async function getPublisherBySlug(
   slug: string,
   locale: string
 ): Promise<Publisher | null> {
-  const publishers = await getPublishers(locale);
+  const [result, books] = await Promise.all([
+    apiFetch<ApiResource<ApiPublisher>>(
+      `/publishers/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+      [PUBLISHERS_TAG, publisherTag(slug)]
+    ),
+    getAllBooks(locale),
+  ]);
+
+  if (result?.data) return normalizePublisher(result.data, books);
+
+  // Same fallback as getAuthorBySlug, and for the same reason: book pages
+  // link to /publisher/{slugify(book.publisher)}, a client-computed guess.
   const cleanSlug = slug.toLowerCase();
+  const publishers = await getPublishers(locale);
   return (
     publishers.find(
       (p) =>
-        p.slug === cleanSlug ||
         slugify(p.name) === cleanSlug ||
         p.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
     ) ?? null

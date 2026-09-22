@@ -24,6 +24,7 @@ export interface Book {
   /** Portrait photo of the author, relative URL resolved by api.ts. */
   authorImageUrl?: string | null;
   sourceLanguage: string;
+  publisherId?: string | null;
   publisher: string;
   /** Logo or representative image for the publisher, relative URL resolved by api.ts. */
   publisherImageUrl?: string | null;

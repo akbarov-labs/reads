@@ -3,31 +3,51 @@
 Every push to `main` lints and builds a Docker image on GitHub, pushes it to
 GitHub Container Registry, then SSHs into your Contabo server to pull it and
 restart — the same box already running kitoblarim, my-blog, and
-reads-admin behind Caddy.
+reads-admin.
 
 **Footprint:** one container (Next.js standalone output, ~100–150MB RAM),
-no database of its own — it calls Reads-admin's API — joins the Caddy
-network you already have, and reaches reads-admin-app directly over that
-same internal network for server-side rendering.
+no database of its own — it calls Reads-admin's API. It joins two external
+Docker networks, created outside of this repo's compose file:
+
+- `edge` — the standalone `edge` Caddy (caddy-docker-proxy), which picks up
+  routing automatically from the `caddy:` / `caddy.reverse_proxy:` labels on
+  the `app` service in `docker-compose.prod.yml`. No shared Caddyfile for any
+  project to own. That Caddy's own setup lives outside this repo (`~/edge`
+  on the server, mirrored in `infra/edge-caddy/` in
+  `online-shop-telegram-bot`).
+- `reads_net` — a small network shared only with `reads-admin-app`, so
+  server-side rendering can reach the API by container name without
+  depending on any other project's network.
+
+Routing this app used to go through kitoblarim's own Caddy container on its
+`kitoblarim_default` network. That direct coupling — one project's compose
+stack gating another's public traffic — caused an outage on 2026-09-19 and
+was replaced with the `edge` / `reads_net` split above so Reads no longer
+depends on kitoblarim's stack being up.
 
 ## One-time server setup
 
 Do this once, by hand, over SSH.
 
-**1. Find Caddy's Docker network**
+**1. Confirm the two external networks exist**
 
-Already done — kitoblarim's Caddy container (`kitoblarim-caddy-1`) is on the
-`kitoblarim_default` network, and `docker-compose.prod.yml` already targets
-it (this is also the network reads-admin-app is on, so this container can
-reach it by name). If kitoblarim's stack is ever rebuilt under a different
-Compose project name, its network name changes too — re-check with:
+`docker-compose.prod.yml` expects both `edge` and `reads_net` to already
+exist as external networks — it does not create them.
+
+`edge` should already exist if the standalone caddy-docker-proxy setup
+(`~/edge` on the server) is running. Verify with:
 
 ```bash
-docker inspect kitoblarim-caddy-1 --format '{{json .NetworkSettings.Networks}}'
+docker network inspect edge >/dev/null && echo "edge exists"
 ```
 
-and update the `name:` value under `networks: caddy_net:` in
-`docker-compose.prod.yml` in the repo to match.
+`reads_net` is specific to this app and reads-admin; create it once if it
+isn't there yet, then make sure `reads-admin-app`'s own compose file also
+joins it (see reads-admin's `DEPLOY.md`):
+
+```bash
+docker network create reads_net
+```
 
 **2. Create the deploy directory and the real `.env`**
 
@@ -50,12 +70,15 @@ healthy before the first deploy here — see its own `DEPLOY.md`. It isn't a
 hard dependency for the container to *start*, but pages will fail to render
 until it's reachable.
 
-**4. Add the Caddy site block**
+**4. Set `DOMAIN` in `.env`**
 
-Copy the block from `deploy/Caddyfile.snippet` in the repo into your
-existing Caddyfile, then reload Caddy (see the comment in that file for the
-exact command). Caddy will fetch the Let's Encrypt certificate for
-`tarjima.kitoblarim.uz` automatically the first time it's requested.
+There is no Caddyfile to edit. The `edge` Caddy (caddy-docker-proxy) reads
+routing straight off this container's Docker labels
+(`caddy: ${DOMAIN}` / `caddy.reverse_proxy: {{upstreams 3000}}` in
+`docker-compose.prod.yml`), so the only step here is setting `DOMAIN` in the
+server's `.env` (e.g. `DOMAIN=tarjima.kitoblarim.uz`). Caddy fetches the
+Let's Encrypt certificate for it automatically the first time it's
+requested — nothing to reload by hand.
 
 **5. Log the server in to GHCR (one time, for manual operations)**
 
@@ -142,11 +165,13 @@ container.
 
 ## Search-engine setup
 
-Three variables in the server's `.env` drive everything SEO-related. They
-are read at runtime, so changing one needs a container recreate (see
-"Changing `.env` on the server" above) but not a rebuild:
+Three variables in the server's `.env` drive everything SEO-related, plus
+`DOMAIN` for routing (see step 4 above). They are read at runtime, so
+changing one needs a container recreate (see "Changing `.env` on the
+server" above) but not a rebuild:
 
 ```
+DOMAIN=tarjima.kitoblarim.uz
 SITE_URL=https://tarjima.kitoblarim.uz
 SITE_NAME=Reads
 REVALIDATE_SECRET=<openssl rand -hex 32>

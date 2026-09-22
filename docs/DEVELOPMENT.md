@@ -32,16 +32,30 @@ Run it only when `reads-admin` is available at the configured API URL.
 
 ## Homepage data flow
 
-The localized homepage requests three collections in parallel:
+The localized homepage requests four collections in parallel, each through its
+own endpoint in `lib/api.ts`:
 
-- `GET /api/translators?locale={locale}` for translator cards.
-- `GET /api/authors?locale={locale}` for the author catalogue.
-- `GET /api/books?locale={locale}` for the complete book catalogue.
-- `GET /api/publishers?locale={locale}` for the publisher catalogue.
+- `GET /api/translators?locale={locale}` for translator cards (`getTranslators`).
+- `GET /api/books?locale={locale}` for the complete book catalogue (`getAllBooks`).
+- `GET /api/authors?locale={locale}` for the author catalogue (`getAuthors`).
+- `GET /api/publishers?locale={locale}` for the publisher catalogue (`getPublishers`).
+
+`getAuthors`/`getPublishers` also fetch `getAllBooks()` in parallel and
+cross-reference the two by `authorId`/`publisherId` (falling back to a name
+match for older rows) to attach each profile's `books` array and pick a cover
+image when the profile itself has none. This means an author or publisher
+with zero books still appears in the listing and has a working detail page —
+grouping books by name, the previous approach, could only ever show a
+profile once its first book existed.
 
 Each translator card links to `/translator/{slug}`. The translator detail page
 continues to use `GET /api/translators/{slug}` and keeps its existing profile,
-book, excerpt, and inquiry workflow.
+book, excerpt, and inquiry workflow. `getAuthorBySlug`/`getPublisherBySlug`
+call `/api/authors/{slug}` / `/api/publishers/{slug}` directly; if that 404s
+they fall back to a name match against the full list, because the book detail
+page links to `/author/{slugify(book.author)}` and `/publisher/{slugify(book.publisher)}`
+— a client-computed guess at the real slug, not the real one (a book carries
+its author/publisher's id and name, not their slug).
 
 Image paths returned by Laravel are relative to the API origin. `lib/api.ts`
 resolves them against `API_URL` before passing them to Next Image.
@@ -50,11 +64,13 @@ resolves them against `API_URL` before passing them to Next Image.
 
 The shared TypeScript contracts live in `lib/types.ts`.
 
-`Author` includes `id`, `slug`, `name`, localized biography and nationality,
-life dates, optional portrait and website URLs, and `bookCount`.
+`Author` and `Publisher` mirror `/api/authors` and `/api/publishers`
+(`id`, `slug`, `name`, bio/nationality-or-country, life or founding years,
+`portraitUrl`/`logoUrl`, `websiteUrl`, `bookCount`), plus a `books` array the
+frontend attaches itself (see above) — the API doesn't nest it.
 
-`Book` includes `authorId` plus the existing titles, role, source language,
-publisher and `publisherId`, year, cover, and optional excerpt fields.
+`Book` includes `authorId` and `publisherId` plus the existing titles, role,
+source language, publisher, year, cover, and optional excerpt fields.
 
 ## Cache behavior
 
