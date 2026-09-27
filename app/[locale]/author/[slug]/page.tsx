@@ -3,13 +3,15 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getAuthors, getAuthorBySlug } from "@/lib/api";
-import { routing } from "@/i18n/routing";
+import { getBooks, getAuthorBySlug } from "@/lib/api";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, BookOpen, User } from "lucide-react";
 
 type PageParams = { locale: string; slug: string };
+
+/** Enough for almost every author; the rest are a link to /books?author=. */
+const BOOKS_SHOWN = 48;
 
 function initialsColor(name: string): string {
   const colors = [
@@ -61,17 +63,21 @@ export default async function AuthorDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [author, tAuthor, tBookCard] = await Promise.all([
+  const [author, books, tAuthor, tBookCard, tBooks] = await Promise.all([
     getAuthorBySlug(slug, locale),
+    getBooks(locale, { author: slug, perPage: BOOKS_SHOWN }),
     getTranslations("authorDetail"),
     getTranslations("bookCard"),
+    getTranslations("books"),
   ]);
 
   if (!author) notFound();
 
+  const authorBooks = books.items;
+
   // Deduplicate translators who translated this author
   const translatorsMap = new Map<string, { slug: string; name: string }>();
-  for (const b of author.books) {
+  for (const b of authorBooks) {
     if (b.translatorSlug && b.translatorName && !translatorsMap.has(b.translatorSlug)) {
       translatorsMap.set(b.translatorSlug, {
         slug: b.translatorSlug,
@@ -82,7 +88,7 @@ export default async function AuthorDetailPage({
   const translators = Array.from(translatorsMap.values());
 
   const sourceLanguages = Array.from(
-    new Set(author.books.map((b) => b.sourceLanguage).filter(Boolean))
+    new Set(authorBooks.map((b) => b.sourceLanguage).filter(Boolean))
   );
 
   return (
@@ -146,6 +152,9 @@ export default async function AuthorDetailPage({
                 <h1 className="mt-1 font-serif text-3xl sm:text-4xl text-zinc-900 font-semibold">
                   {author.name}
                 </h1>
+                {author.originalName && author.originalName !== author.name && (
+                  <p className="mt-1 font-serif text-lg text-zinc-500">{author.originalName}</p>
+                )}
 
                 <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3.5 py-1 text-xs font-medium text-zinc-700">
@@ -172,20 +181,26 @@ export default async function AuthorDetailPage({
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-              {author.books.map((book) => (
+              {authorBooks.map((book) => (
                 <Link
                   key={book.id}
                   href={`/book/${book.id}`}
                   className="group flex flex-col"
                 >
                   <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-amber-300">
-                    <Image
-                      src={book.coverUrl}
-                      alt={book.uzbekTitle}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                      className="object-cover"
-                    />
+                    {book.coverUrl ? (
+                      <Image
+                        src={book.coverUrl}
+                        alt={book.uzbekTitle}
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center p-4">
+                        <span className="font-serif text-center text-sm text-stone-400">{book.uzbekTitle}</span>
+                      </div>
+                    )}
                     {book.role && (
                       <div className="absolute top-2.5 left-2.5">
                         <span className="inline-block rounded-md border border-white/40 bg-white/90 backdrop-blur-xs px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-800 shadow-xs">
@@ -217,12 +232,23 @@ export default async function AuthorDetailPage({
                       </p>
                     )}
                     <p className="text-xs text-zinc-400 mt-0.5">
-                      {book.publisher} · {book.year}
+                      {[book.publisher, book.year].filter(Boolean).join(" · ")}
                     </p>
                   </div>
                 </Link>
               ))}
             </div>
+
+            {books.total > authorBooks.length && (
+              <div className="mt-10 text-center">
+                <Link
+                  href={`/books?author=${author.slug}`}
+                  className="inline-block rounded-lg border border-stone-300 px-4 py-2 text-sm text-zinc-700 hover:border-amber-400 hover:text-amber-800"
+                >
+                  {tBooks("count", { count: books.total })} →
+                </Link>
+              </div>
+            )}
           </section>
 
           {/* Translators section */}

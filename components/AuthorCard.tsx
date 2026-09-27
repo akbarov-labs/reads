@@ -33,8 +33,8 @@ function initials(name: string): string {
 export function AuthorCard({ author }: AuthorCardProps) {
   const colorClass = initialsColor(author.name);
 
-  // Up to 3 book cover thumbnails
-  const previewBooks = author.books.slice(0, 3).filter((b) => b.coverUrl);
+  // Up to 3 book cover thumbnails; the API sends a few recent ones.
+  const previewCovers = (author.coverUrls ?? []).slice(0, 3);
 
   return (
     <Link href={`/author/${author.slug}`} className="block">
@@ -67,34 +67,32 @@ export function AuthorCard({ author }: AuthorCardProps) {
           <p className="mt-0.5 text-xs text-zinc-400">
             {author.bookCount} book{author.bookCount !== 1 ? "s" : ""} in Uzbek
           </p>
-          {author.books[0]?.sourceLanguage && (
-            <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400">
-              {author.books[0].sourceLanguage}
-            </p>
+          {author.originalName && author.originalName !== author.name && (
+            <p className="mt-1 text-[11px] text-zinc-400">{author.originalName}</p>
           )}
         </div>
       </div>
 
       {/* Book cover previews */}
-      {previewBooks.length > 0 && (
+      {previewCovers.length > 0 && (
         <div className="mt-4 flex gap-2">
-          {previewBooks.map((book) => (
+          {previewCovers.map((coverUrl) => (
             <div
-              key={book.id}
+              key={coverUrl}
               className="relative h-14 w-9 rounded overflow-hidden bg-stone-100 shadow-sm ring-1 ring-stone-200 flex-shrink-0"
             >
               <Image
-                src={book.coverUrl}
-                alt={book.uzbekTitle}
+                src={coverUrl}
+                alt=""
                 fill
                 sizes="36px"
                 className="object-cover"
               />
             </div>
           ))}
-          {author.books.length > 3 && (
+          {author.bookCount > previewCovers.length && (
             <div className="h-14 w-9 rounded bg-stone-100 ring-1 ring-stone-200 flex items-center justify-center text-xs text-zinc-400 font-medium flex-shrink-0">
-              +{author.books.length - 3}
+              +{author.bookCount - previewCovers.length}
             </div>
           )}
         </div>

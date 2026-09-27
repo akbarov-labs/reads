@@ -108,6 +108,18 @@ export default async function TaqrizPage({
                     {taqriz.book.uzbekTitle}
                   </h1>
                   <p className="mt-0.5 text-sm text-zinc-500">{taqriz.book.author}</p>
+                  {taqriz.edition && (taqriz.edition.publisher || taqriz.edition.translators.length > 0) && (
+                    <p className="mt-1 text-xs text-zinc-400">
+                      {t("editionRead")}:{" "}
+                      {[
+                        taqriz.edition.publisher,
+                        taqriz.edition.year,
+                        taqriz.edition.translators.map((tr) => tr.name).join(", "),
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  )}
                 </div>
               </Link>
             )}

@@ -3,13 +3,15 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getPublishers, getPublisherBySlug } from "@/lib/api";
-import { routing } from "@/i18n/routing";
+import { getBooks, getPublisherBySlug } from "@/lib/api";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, BookOpen, Building2 } from "lucide-react";
 
 type PageParams = { locale: string; slug: string };
+
+/** Enough for most publishers; the rest are a link to /books?publisher=. */
+const BOOKS_SHOWN = 48;
 
 function publisherColor(name: string): string {
   const colors = [
@@ -50,19 +52,23 @@ export default async function PublisherDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [publisher, tPublisher, tBookCard] = await Promise.all([
+  const [publisher, books, tPublisher, tBookCard, tBooks] = await Promise.all([
     getPublisherBySlug(slug, locale),
+    getBooks(locale, { publisher: slug, perPage: BOOKS_SHOWN }),
     getTranslations("publisherDetail"),
     getTranslations("bookCard"),
+    getTranslations("books"),
   ]);
 
   if (!publisher) notFound();
+
+  const publisherBooks = books.items;
 
   // Deduplicate authors and translators
   const authorsSet = new Set<string>();
   const translatorsMap = new Map<string, { slug: string; name: string }>();
 
-  for (const b of publisher.books) {
+  for (const b of publisherBooks) {
     if (b.author) authorsSet.add(b.author);
     if (b.translatorSlug && b.translatorName && !translatorsMap.has(b.translatorSlug)) {
       translatorsMap.set(b.translatorSlug, {
@@ -153,20 +159,26 @@ export default async function PublisherDetailPage({
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-              {publisher.books.map((book) => (
+              {publisherBooks.map((book) => (
                 <Link
                   key={book.id}
                   href={`/book/${book.id}`}
                   className="group flex flex-col"
                 >
                   <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-amber-300">
-                    <Image
-                      src={book.coverUrl}
-                      alt={book.uzbekTitle}
-                      fill
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-                      className="object-cover"
-                    />
+                    {book.coverUrl ? (
+                      <Image
+                        src={book.coverUrl}
+                        alt={book.uzbekTitle}
+                        fill
+                        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center p-4">
+                        <span className="font-serif text-center text-sm text-stone-400">{book.uzbekTitle}</span>
+                      </div>
+                    )}
                     {book.role && (
                       <div className="absolute top-2.5 left-2.5">
                         <span className="inline-block rounded-md border border-white/40 bg-white/90 backdrop-blur-xs px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-800 shadow-xs">
@@ -188,14 +200,25 @@ export default async function PublisherDetailPage({
                       {book.author}
                     </p>
                     <p className="mt-1 text-xs text-zinc-400">
-                      {book.translatorName
-                        ? `Tarjimon: ${book.translatorName} · ${book.year}`
-                        : book.year}
+                      {[book.translatorName ? `Tarjimon: ${book.translatorName}` : null, book.year]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </p>
                   </div>
                 </Link>
               ))}
             </div>
+
+            {books.total > publisherBooks.length && (
+              <div className="mt-10 text-center">
+                <Link
+                  href={`/books?publisher=${publisher.slug}`}
+                  className="inline-block rounded-lg border border-stone-300 px-4 py-2 text-sm text-zinc-700 hover:border-amber-400 hover:text-amber-800"
+                >
+                  {tBooks("count", { count: books.total })} →
+                </Link>
+              </div>
+            )}
           </section>
 
           {/* Collaborating Translators & Authors */}

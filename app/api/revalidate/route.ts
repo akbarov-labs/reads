@@ -1,7 +1,9 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import {
+  AUTHORS_TAG,
   BOOKS_TAG,
+  PUBLISHERS_TAG,
   TAQRIZCHILAR_TAG,
   TRANSLATORS_TAG,
   bookTag,
@@ -84,15 +86,13 @@ export async function POST(request: Request) {
   }
 
   // The collection tags always go. The home page, the sitemap and llms.txt
-  // each list everything, so any single change can alter them, and the
-  // Authors and Publishers pages are derived from the book catalogue.
-  //
-  // BOOKS_TAG is listed explicitly because getAllBooks() reads /api/books
-  // directly. It used to inherit TRANSLATORS_TAG by walking getTranslators(),
-  // and without this a saved book would wait out the full ISR window instead
-  // of appearing within seconds.
+  // each list everything, so any single change can alter them. Authors and
+  // Publishers have their own endpoints and tags now, and their counts and
+  // covers change with any edition, so they go too.
   revalidateTag(TRANSLATORS_TAG);
   revalidateTag(BOOKS_TAG);
+  revalidateTag(AUTHORS_TAG);
+  revalidateTag(PUBLISHERS_TAG);
   revalidateTag(TAQRIZCHILAR_TAG);
 
   // Then the one page that actually changed, where the ping says which.

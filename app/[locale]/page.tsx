@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import {
   getTranslators,
-  getAllBooks,
+  getBooks,
   getAuthors,
   getPublishers,
   getTaqrizchilar,
@@ -39,29 +39,31 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [translators, allBooks, authors, publishers, taqrizchilar, t, tTaqrizchilar] =
+  // Only the few rows each section shows; the totals come from the API's
+  // pagination meta rather than from counting a downloaded catalogue.
+  const [translators, books, authors, publishers, taqrizchilar, t, tTaqrizchilar] =
     await Promise.all([
     getTranslators(locale),
-    getAllBooks(locale),
-    getAuthors(locale),
-    getPublishers(locale),
+    getBooks(locale, { perPage: 8 }),
+    getAuthors(locale, { perPage: 6 }),
+    getPublishers(locale, { perPage: 4 }),
     getTaqrizchilar(locale),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
-  const featuredBooks = allBooks.slice(0, 8);
-  const featuredAuthors = authors.slice(0, 6);
-  const featuredPublishers = publishers.slice(0, 4);
+  const featuredBooks = books.items;
+  const featuredAuthors = authors.items;
+  const featuredPublishers = publishers.items;
   const featuredTaqrizchilar = taqrizchilar.slice(0, 3);
 
   // Global hero stats
   const stats = [
     { label: t("statTranslators"), value: translators.length },
-    { label: t("statBooks"), value: allBooks.length },
-    { label: t("statAuthors"), value: authors.length },
-    { label: t("statPublishers"), value: publishers.length },
+    { label: t("statBooks"), value: books.total },
+    { label: t("statAuthors"), value: authors.total },
+    { label: t("statPublishers"), value: publishers.total },
   ];
 
   return (
@@ -134,7 +136,7 @@ export default async function Home({
           <Container>
             <SectionHeader
               title={t("booksTitle")}
-              count={allBooks.length}
+              count={books.total}
               seeMoreHref="/books"
               seeMoreLabel={t("booksSeeAll")}
             />
@@ -155,7 +157,7 @@ export default async function Home({
           <Container>
             <SectionHeader
               title={t("authorsTitle")}
-              count={authors.length}
+              count={authors.total}
               seeMoreHref="/authors"
               seeMoreLabel={t("authorsSeeAll")}
             />
@@ -202,7 +204,7 @@ export default async function Home({
           <Container>
             <SectionHeader
               title={t("publishersTitle")}
-              count={publishers.length}
+              count={publishers.total}
               seeMoreHref="/publishers"
               seeMoreLabel={t("publishersSeeAll")}
             />

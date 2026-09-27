@@ -14,22 +14,100 @@ export interface Excerpt {
   translatedText: string;
 }
 
+export type CreditRole = "author" | "translator" | "editor";
+
+/** Someone credited on an edition, and for what. */
+export interface Credit {
+  slug: string;
+  name: string;
+  role?: CreditRole | null;
+}
+
+export interface AuthorRef {
+  id: string;
+  slug: string;
+  name: string;
+}
+
+export interface CategoryRef {
+  slug: string;
+  name: string;
+  isPrimary?: boolean;
+}
+
+/**
+ * A book as a card: the work, with the cover, publisher, year and
+ * translator of its primary edition flattened in. On a translator's profile
+ * each entry is instead one edition they worked on (see `editionId`).
+ */
 export interface Book {
   id: string;
+  /** Set on translator-profile entries: the edition this card stands for. */
+  editionId?: string | null;
   authorId?: string | null;
-  role?: "author" | "translator" | "editor";
+  role?: CreditRole | null;
   uzbekTitle: string;
-  originalTitle: string;
+  originalTitle?: string | null;
+  /** Every author's name, comma-separated. */
   author: string;
-  /** Portrait photo of the author, relative URL resolved by api.ts. */
+  authors?: AuthorRef[];
+  /** Portrait photo of the first author, relative URL resolved by api.ts. */
   authorImageUrl?: string | null;
-  sourceLanguage: string;
+  sourceLanguage?: string | null;
   publisher: string;
+  publisherSlug?: string | null;
   /** Logo or representative image for the publisher, relative URL resolved by api.ts. */
   publisherImageUrl?: string | null;
-  year: number;
+  year?: number | null;
   coverUrl: string;
-  excerpt?: Excerpt;
+  excerpt?: Excerpt | null;
+  translators?: Credit[];
+  categories?: CategoryRef[];
+  series?: { slug: string; name: string; position?: number | null } | null;
+  /** How many published editions the book has; the card shows one. */
+  editionCount?: number;
+}
+
+/** One printing of a book: this publisher, this ISBN, these translators. */
+export interface Edition {
+  id: string;
+  title?: string | null;
+  isbn?: string | null;
+  publisher?: { slug: string; name: string; logoUrl?: string | null } | null;
+  translators: Credit[];
+  year?: number | null;
+  language?: string | null;
+  script?: string | null;
+  pages?: number | null;
+  coverType?: string | null;
+  coverMaterial?: string | null;
+  paperFormat?: string | null;
+  pageSurface?: string | null;
+  printCountry?: string | null;
+  weight?: string | null;
+  dimensions?: string | null;
+  volumeCount?: number | null;
+  volumePart?: number | null;
+  coverUrl: string;
+  images?: string[];
+  description?: string | null;
+  excerpt?: Excerpt | null;
+}
+
+/** One page of a paginated API listing. */
+export interface Paginated<T> {
+  items: T[];
+  page: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
+}
+
+export interface Category {
+  slug: string;
+  name: string;
+  bookCount: number;
+  children: Category[];
 }
 
 /**
@@ -49,15 +127,21 @@ export interface BookWithTranslator extends Book {
   taqrizlar?: Taqriz[];
   /** Mean of each review's own average, or null when there are none. */
   averageScore?: number | null;
+  /** Book page only: the work's own description. */
+  description?: string | null;
+  /** Book page only: every published edition. */
+  editions?: Edition[];
+  /** Book page only: what to read next, strongest signal first. */
+  relatedBooks?: BookWithTranslator[];
 }
 
-/**
- * A unique author derived from the books collection or author model.
- */
+/** A catalogue author, as /api/authors serves them. */
 export interface Author {
   id?: string;
   slug: string;
   name: string;
+  /** The name in its own script, e.g. "Абдулла Қодирий". */
+  originalName?: string | null;
   bio?: string | null;
   nationality?: string | null;
   birthYear?: number | null;
@@ -66,12 +150,11 @@ export interface Author {
   imageUrl?: string | null;
   websiteUrl?: string | null;
   bookCount: number;
-  books: BookWithTranslator[];
+  /** A few recent covers, for the card. */
+  coverUrls?: string[];
 }
 
-/**
- * A unique publisher derived from the books collection or publisher model.
- */
+/** A catalogue publisher, as /api/publishers serves them. */
 export interface Publisher {
   id?: string;
   slug: string;
@@ -83,7 +166,8 @@ export interface Publisher {
   imageUrl?: string | null;
   websiteUrl?: string | null;
   bookCount: number;
-  books: BookWithTranslator[];
+  /** A few recent covers, for the card. */
+  coverUrls?: string[];
 }
 
 /**
@@ -176,6 +260,14 @@ export interface Taqriz {
     uzbekTitle: string;
     author: string;
     coverUrl?: string | null;
+  } | null;
+  /** The edition the reviewer read — its translation and printing are what was scored. */
+  edition?: {
+    id: string;
+    title?: string | null;
+    publisher?: string | null;
+    year?: number | null;
+    translators: { slug: string; name: string }[];
   } | null;
 }
 

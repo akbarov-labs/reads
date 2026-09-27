@@ -47,18 +47,15 @@ export default async function PublishersPage({
   const { page: pageParam } = await searchParams;
   setRequestLocale(locale);
 
-  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
+  // The API pages the list, most published first.
   const [publishers, t] = await Promise.all([
-    getPublishers(locale),
+    getPublishers(locale, { page: currentPage, perPage: PER_PAGE }),
     getTranslations("publishers"),
   ]);
 
-  const totalPages = Math.ceil(publishers.length / PER_PAGE);
-  const paginatedPublishers = publishers.slice(
-    (currentPage - 1) * PER_PAGE,
-    currentPage * PER_PAGE
-  );
+  const paginatedPublishers = publishers.items;
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
@@ -76,13 +73,13 @@ export default async function PublishersPage({
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {paginatedPublishers.map((publisher) => (
-                  <PublisherCard key={publisher.name} publisher={publisher} />
+                  <PublisherCard key={publisher.slug} publisher={publisher} />
                 ))}
               </div>
               <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                basePath={`/${locale}/publishers`}
+                currentPage={publishers.page}
+                totalPages={publishers.lastPage}
+                basePath="/publishers"
               />
             </>
           ) : (

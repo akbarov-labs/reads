@@ -6,14 +6,27 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  /**
+   * Path without the locale, e.g. "/books" — the i18n Link adds the locale
+   * itself, so passing "/uz/books" would link to /uz/uz/books.
+   */
   basePath: string;
+  /** Other query parameters to keep on every page link (filters, search). */
+  query?: Record<string, string | undefined>;
 }
 
-export function Pagination({ currentPage, totalPages, basePath }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, basePath, query = {} }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   function pageHref(page: number) {
-    return page === 1 ? basePath : `${basePath}?page=${page}`;
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value) params.set(key, value);
+    }
+    if (page > 1) params.set("page", String(page));
+
+    const search = params.toString();
+    return search ? `${basePath}?${search}` : basePath;
   }
 
   // Show at most 7 page buttons; collapse the middle with "…" when needed.

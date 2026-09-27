@@ -6,8 +6,10 @@ import type {
   Publisher,
   Taqriz,
   Taqrizchi,
+  Edition,
+  Category,
+  Paginated,
 } from "@/lib/types";
-import { slugify } from "@/lib/slug";
 
 // Server-only: read directly, never exposed to the browser bundle.
 // Points at the Reads-admin Laravel API (see Reads-admin/README or the
@@ -68,9 +70,16 @@ interface ApiResource<T> {
   data: T;
 }
 
+/** Laravel's paginated resource collection. */
+interface ApiPage<T> {
+  data: T[];
+  meta: { current_page: number; last_page: number; per_page: number; total: number };
+}
+
 /**
- * What GET /api/books returns per row: the Book fields, plus the translator
- * as a nested object rather than the flattened pair the site renders.
+ * What GET /api/books returns per row: the Book fields, plus the primary
+ * edition's first translator as a nested object rather than the flattened
+ * pair the site renders.
  *
  * `translator` is null for a book nobody has translated. Laravel's
  * whenLoaded() already collapses a loaded-but-null relation to null, so this
@@ -80,6 +89,9 @@ type ApiCatalogBook = Book & {
   translator?: { slug: string; name: string } | null;
   taqrizlar?: Taqriz[];
   averageScore?: number | null;
+  description?: string | null;
+  editions?: Edition[];
+  relatedBooks?: ApiCatalogBook[];
 };
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
@@ -160,6 +172,17 @@ function normalizeTaqrizchi(taqrizchi: Taqrizchi): Taqrizchi {
   };
 }
 
+function normalizeEdition(edition: Edition): Edition {
+  return {
+    ...edition,
+    coverUrl: resolveAssetUrl(edition.coverUrl),
+    images: (edition.images ?? []).map((url) => resolveAssetUrl(url)),
+    publisher: edition.publisher
+      ? { ...edition.publisher, logoUrl: resolveAssetUrl(edition.publisher.logoUrl) || null }
+      : null,
+  };
+}
+
 function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
   const { translator, ...rest } = book;
 
@@ -171,96 +194,130 @@ function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
     translatorSlug: translator?.slug ?? null,
     translatorName: translator?.name ?? null,
     taqrizlar: (book.taqrizlar ?? []).map(normalizeTaqriz),
+    editions: book.editions?.map(normalizeEdition),
+    relatedBooks: book.relatedBooks?.map(normalizeBook),
   };
 }
 
+function normalizeAuthor(author: Author): Author {
+  const portraitUrl = resolveAssetUrl(author.portraitUrl) || null;
+
+  return {
+    ...author,
+    portraitUrl,
+    imageUrl: portraitUrl,
+    coverUrls: (author.coverUrls ?? []).map((url) => resolveAssetUrl(url)),
+  };
+}
+
+function normalizePublisher(publisher: Publisher): Publisher {
+  const logoUrl = resolveAssetUrl(publisher.logoUrl) || null;
+
+  return {
+    ...publisher,
+    logoUrl,
+    imageUrl: logoUrl,
+    coverUrls: (publisher.coverUrls ?? []).map((url) => resolveAssetUrl(url)),
+  };
+}
+
+function toPaginated<T, R>(result: ApiPage<T> | null, map: (item: T) => R): Paginated<R> {
+  return {
+    items: (result?.data ?? []).map(map),
+    page: result?.meta.current_page ?? 1,
+    lastPage: result?.meta.last_page ?? 1,
+    perPage: result?.meta.per_page ?? 0,
+    total: result?.meta.total ?? 0,
+  };
+}
+
+function query(params: Record<string, string | number | undefined | null>): string {
+  const search = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== "") {
+      search.set(key, String(value));
+    }
+  }
+
+  return search.toString();
+}
+
+export interface BookFilters {
+  page?: number;
+  perPage?: number;
+  /** Title, author (either spelling) or an ISBN. */
+  q?: string;
+  author?: string;
+  publisher?: string;
+  translator?: string;
+  category?: string;
+  series?: string;
+  sort?: "year" | "title" | "recent";
+}
+
 /**
- * The whole book catalogue, each row carrying its translator's name and slug
- * where it has one, so listing pages can link back to the profile.
- *
- * This reads /api/books directly. It used to walk getTranslators() and flatten
- * every profile's books[], which made "book" a thing that could only exist
- * inside a translator: a book with no translator was not merely unlisted, it
- * was unreachable — absent from listings, from generateStaticParams, and so
- * from the sitemap. The catalogue endpoint owns books in their own right, so
- * they now show up whether or not anyone has translated them.
+ * One page of the catalogue. Every filter is a slug, as used in the site's
+ * own URLs. The catalogue is far too big to fetch whole — Authors,
+ * Publishers and "more by this author" all ask the API for exactly the page
+ * they show.
  */
-export async function getAllBooks(locale: string): Promise<BookWithTranslator[]> {
-  const result = await apiFetch<ApiCollection<ApiCatalogBook>>(
-    `/books?locale=${encodeURIComponent(locale)}`,
+export async function getBooks(
+  locale: string,
+  filters: BookFilters = {}
+): Promise<Paginated<BookWithTranslator>> {
+  const { perPage, ...rest } = filters;
+  const result = await apiFetch<ApiPage<ApiCatalogBook>>(
+    `/books?${query({ locale, per_page: perPage, ...rest })}`,
     [BOOKS_TAG]
   );
 
-  // Most recent year first.
-  return (result?.data ?? [])
-    .map(normalizeBook)
-    .sort((a, b) => (b.year ?? 0) - (a.year ?? 0));
+  return toPaginated(result, normalizeBook);
 }
 
-/**
- * Unique authors derived from all books, sorted by book count descending.
- * The first book that has an author photo wins for the card image.
- */
-export async function getAuthors(locale: string): Promise<Author[]> {
-  const books = await getAllBooks(locale);
-  const map = new Map<string, Author>();
-
-  for (const book of books) {
-    const key = book.author.trim();
-    if (!key) continue;
-
-    const existing = map.get(key);
-    if (existing) {
-      existing.bookCount += 1;
-      existing.books.push(book);
-      // Upgrade image if we don't have one yet.
-      if (!existing.imageUrl && book.authorImageUrl) {
-        existing.imageUrl = book.authorImageUrl;
-      }
-    } else {
-      map.set(key, {
-        slug: slugify(key),
-        name: key,
-        imageUrl: book.authorImageUrl ?? null,
-        bookCount: 1,
-        books: [book],
-      });
-    }
-  }
-
-  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+export interface ListFilters {
+  page?: number;
+  perPage?: number;
+  q?: string;
+  sort?: "books" | "name";
 }
 
-/**
- * Unique publishers derived from all books, sorted by book count descending.
- */
-export async function getPublishers(locale: string): Promise<Publisher[]> {
-  const books = await getAllBooks(locale);
-  const map = new Map<string, Publisher>();
+/** Authors with at least one published book, most published first. */
+export async function getAuthors(
+  locale: string,
+  filters: ListFilters = {}
+): Promise<Paginated<Author>> {
+  const { perPage, ...rest } = filters;
+  const result = await apiFetch<ApiPage<Author>>(
+    `/authors?${query({ locale, per_page: perPage, ...rest })}`,
+    [AUTHORS_TAG, BOOKS_TAG]
+  );
 
-  for (const book of books) {
-    const key = book.publisher?.trim();
-    if (!key) continue;
+  return toPaginated(result, normalizeAuthor);
+}
 
-    const existing = map.get(key);
-    if (existing) {
-      existing.bookCount += 1;
-      existing.books.push(book);
-      if (!existing.imageUrl && book.publisherImageUrl) {
-        existing.imageUrl = book.publisherImageUrl;
-      }
-    } else {
-      map.set(key, {
-        slug: slugify(key),
-        name: key,
-        imageUrl: book.publisherImageUrl ?? null,
-        bookCount: 1,
-        books: [book],
-      });
-    }
-  }
+/** Publishers with at least one published edition, most published first. */
+export async function getPublishers(
+  locale: string,
+  filters: ListFilters = {}
+): Promise<Paginated<Publisher>> {
+  const { perPage, ...rest } = filters;
+  const result = await apiFetch<ApiPage<Publisher>>(
+    `/publishers?${query({ locale, per_page: perPage, ...rest })}`,
+    [PUBLISHERS_TAG, BOOKS_TAG]
+  );
 
-  return Array.from(map.values()).sort((a, b) => b.bookCount - a.bookCount);
+  return toPaginated(result, normalizePublisher);
+}
+
+/** The shelf tree (genres, audiences, lists), each with its book count. */
+export async function getCategories(locale: string): Promise<Category[]> {
+  const result = await apiFetch<ApiCollection<Category>>(
+    `/categories?${query({ locale })}`,
+    [BOOKS_TAG]
+  );
+
+  return result?.data ?? [];
 }
 
 export async function getBookById(
@@ -316,30 +373,20 @@ export async function getAuthorBySlug(
   slug: string,
   locale: string
 ): Promise<Author | null> {
-  const authors = await getAuthors(locale);
-  const cleanSlug = slug.toLowerCase();
-  return (
-    authors.find(
-      (a) =>
-        a.slug === cleanSlug ||
-        slugify(a.name) === cleanSlug ||
-        a.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
-    ) ?? null
+  const result = await apiFetch<ApiResource<Author>>(
+    `/authors/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [AUTHORS_TAG, BOOKS_TAG]
   );
+  return result?.data ? normalizeAuthor(result.data) : null;
 }
 
 export async function getPublisherBySlug(
   slug: string,
   locale: string
 ): Promise<Publisher | null> {
-  const publishers = await getPublishers(locale);
-  const cleanSlug = slug.toLowerCase();
-  return (
-    publishers.find(
-      (p) =>
-        p.slug === cleanSlug ||
-        slugify(p.name) === cleanSlug ||
-        p.name.toLowerCase() === decodeURIComponent(slug).toLowerCase()
-    ) ?? null
+  const result = await apiFetch<ApiResource<Publisher>>(
+    `/publishers/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [PUBLISHERS_TAG, BOOKS_TAG]
   );
+  return result?.data ? normalizePublisher(result.data) : null;
 }

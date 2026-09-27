@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getAllBooks } from "@/lib/api";
+import { getBooks, getCategories } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
@@ -42,25 +42,30 @@ export default async function BooksPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    q?: string;
+    category?: string;
+    author?: string;
+    publisher?: string;
+    series?: string;
+  }>;
 }) {
   const { locale } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, q, category, author, publisher, series } = await searchParams;
   setRequestLocale(locale);
 
-  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
-  const [allBooks, t, tCard] = await Promise.all([
-    getAllBooks(locale),
+  // The API pages the catalogue; this page asks for exactly the slice it shows.
+  const [books, categories, t, tCard] = await Promise.all([
+    getBooks(locale, { page: currentPage, perPage: PER_PAGE, q, category, author, publisher, series }),
+    getCategories(locale),
     getTranslations("books"),
     getTranslations("bookCard"),
   ]);
 
-  const totalPages = Math.ceil(allBooks.length / PER_PAGE);
-  const paginatedBooks = allBooks.slice(
-    (currentPage - 1) * PER_PAGE,
-    currentPage * PER_PAGE
-  );
+  const paginatedBooks = books.items;
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
@@ -72,6 +77,55 @@ export default async function BooksPage({
               {t("pageTitle")}
             </h1>
             <p className="mt-2 text-zinc-500 text-sm">{t("pageDescription")}</p>
+
+            {/* A plain GET form: works without JavaScript, and the query
+                lands in the URL, so a search can be shared and paged. */}
+            <form action="" method="get" className="mt-6 flex gap-2 max-w-xl">
+              {category && <input type="hidden" name="category" value={category} />}
+              <input
+                type="search"
+                name="q"
+                defaultValue={q ?? ""}
+                placeholder={t("searchPlaceholder")}
+                className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-amber-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+              >
+                {t("search")}
+              </button>
+            </form>
+
+            {categories.length > 0 && (
+              <nav className="mt-5 flex flex-wrap gap-2" aria-label={t("categories")}>
+                <Link
+                  href={q ? `/books?q=${encodeURIComponent(q)}` : "/books"}
+                  className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                    !category
+                      ? "border-amber-700 bg-amber-700 text-white"
+                      : "border-stone-300 text-zinc-600 hover:border-amber-400"
+                  }`}
+                >
+                  {t("allCategories")}
+                </Link>
+                {categories.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/books?${new URLSearchParams({ ...(q ? { q } : {}), category: c.slug })}`}
+                    className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                      category === c.slug
+                        ? "border-amber-700 bg-amber-700 text-white"
+                        : "border-stone-300 text-zinc-600 hover:border-amber-400"
+                    }`}
+                  >
+                    {c.name}
+                  </Link>
+                ))}
+              </nav>
+            )}
+
+            <p className="mt-4 text-xs text-zinc-400">{t("count", { count: books.total })}</p>
           </div>
 
           {paginatedBooks.length > 0 ? (
@@ -101,25 +155,36 @@ export default async function BooksPage({
                             </span>
                           </div>
                         )}
-                        {/* Role badge */}
-                        <div className="absolute top-2 left-2">
-                          <span className="inline-block rounded-md border bg-white/90 px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-600 shadow-xs backdrop-blur-xs border-zinc-200">
-                            {book.role === "author"
-                              ? tCard("roleAuthor")
-                              : book.role === "editor"
-                              ? tCard("roleEditor")
-                              : tCard("roleTranslator")}
-                          </span>
-                        </div>
+                        {/* Role badge — only when someone is credited */}
+                        {book.role && (
+                          <div className="absolute top-2 left-2">
+                            <span className="inline-block rounded-md border bg-white/90 px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-600 shadow-xs backdrop-blur-xs border-zinc-200">
+                              {book.role === "author"
+                                ? tCard("roleAuthor")
+                                : book.role === "editor"
+                                ? tCard("roleEditor")
+                                : tCard("roleTranslator")}
+                            </span>
+                          </div>
+                        )}
+                        {(book.editionCount ?? 1) > 1 && (
+                          <div className="absolute bottom-2 right-2">
+                            <span className="inline-block rounded-md bg-zinc-900/75 px-2 py-0.5 text-[10px] font-medium text-white">
+                              {t("editions", { count: book.editionCount ?? 1 })}
+                            </span>
+                          </div>
+                        )}
                       </div>
                       {/* Meta */}
                       <div className="mt-3">
                         <h2 className="font-serif text-sm leading-snug text-zinc-900 group-hover:text-amber-800 transition-colors">
                           {book.uzbekTitle}
                         </h2>
-                        <p className="mt-0.5 text-[11px] italic text-zinc-500 truncate">
-                          {book.originalTitle}
-                        </p>
+                        {book.originalTitle && (
+                          <p className="mt-0.5 text-[11px] italic text-zinc-500 truncate">
+                            {book.originalTitle}
+                          </p>
+                        )}
                         <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400 truncate">
                           {book.author}
                         </p>
@@ -132,7 +197,7 @@ export default async function BooksPage({
                           </p>
                         )}
                         <p className="mt-0.5 text-[11px] text-zinc-400">
-                          {book.publisher} · {book.year}
+                          {[book.publisher, book.year].filter(Boolean).join(" · ")}
                         </p>
                       </div>
                     </article>
@@ -140,9 +205,10 @@ export default async function BooksPage({
                 ))}
               </div>
               <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                basePath={`/${locale}/books`}
+                currentPage={books.page}
+                totalPages={books.lastPage}
+                basePath="/books"
+                query={{ q, category, author, publisher, series }}
               />
             </>
           ) : (

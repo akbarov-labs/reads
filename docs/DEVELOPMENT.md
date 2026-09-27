@@ -32,12 +32,24 @@ Run it only when `reads-admin` is available at the configured API URL.
 
 ## Homepage data flow
 
-The localized homepage requests three collections in parallel:
+The catalogue is paginated by the API (thousands of books after the Asaxiy
+import), so every page asks for exactly the slice it shows. Nothing fetches
+the whole catalogue any more. The homepage requests, in parallel:
 
 - `GET /api/translators?locale={locale}` for translator cards.
-- `GET /api/authors?locale={locale}` for the author catalogue.
-- `GET /api/books?locale={locale}` for the complete book catalogue.
-- `GET /api/publishers?locale={locale}` for the publisher catalogue.
+- `GET /api/books?per_page=8` for featured books, and its `meta.total` for the stat.
+- `GET /api/authors?per_page=6` and `GET /api/publishers?per_page=4`, likewise.
+
+`/books`, `/authors` and `/publishers` pass `?page=` through to the API.
+`/books` also passes `q`, `category`, `author`, `publisher` and `series`.
+Author and publisher pages fetch their profile plus
+`GET /api/books?author={slug}` (or `publisher=`), the first 48 books, and
+link to `/books?author=…` for the rest. The book page gets its editions and
+"read next" list from `GET /api/books/{id}`; it no longer loads every book to
+find related ones.
+
+`Pagination` takes a locale-less `basePath` ("/books"). The i18n `Link` adds
+the locale, so "/uz/books" would link to `/uz/uz/books`.
 
 Each translator card links to `/translator/{slug}`. The translator detail page
 continues to use `GET /api/translators/{slug}` and keeps its existing profile,
@@ -50,11 +62,22 @@ resolves them against `API_URL` before passing them to Next Image.
 
 The shared TypeScript contracts live in `lib/types.ts`.
 
-`Author` includes `id`, `slug`, `name`, localized biography and nationality,
-life dates, optional portrait and website URLs, and `bookCount`.
+In Reads-admin a book is the work, and each printing is an edition
+(publisher, ISBN, year, cover, translators). See `../Reads-admin/docs/DATA-MODEL.md`.
 
-`Book` includes `authorId` plus the existing titles, role, source language,
-publisher and `publisherId`, year, cover, and optional excerpt fields.
+`Book` is a card: the work's titles, `authors[]`, `categories[]` and
+`series`, plus `coverUrl`, `publisher`, `year`, `role` and `translators[]`
+from its primary edition, and `editionCount`. On a translator's profile
+each `books[]` entry is one edition they worked on (`editionId`).
+`BookWithTranslator` on the book page adds `editions[]` (`Edition`),
+`taqrizlar` and `relatedBooks[]`.
+
+`Author` and `Publisher` come from their own endpoints with real slugs,
+`bookCount`, and a few `coverUrls` for their cards. They are no longer
+derived from the book list, which also means Cyrillic names no longer
+slugify to an empty string.
+
+List endpoints return `Paginated<T>` (`items`, `page`, `lastPage`, `total`).
 
 ## Cache behavior
 

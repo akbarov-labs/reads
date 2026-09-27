@@ -22,7 +22,7 @@ function publisherColor(name: string): string {
 
 export function PublisherCard({ publisher }: PublisherCardProps) {
   const gradientClass = publisherColor(publisher.name);
-  const previewBooks = publisher.books.slice(0, 4).filter((b) => b.coverUrl);
+  const previewCovers = (publisher.coverUrls ?? []).slice(0, 4);
 
   return (
     <Link href={`/publisher/${publisher.slug}`} className="block">
@@ -57,26 +57,26 @@ export function PublisherCard({ publisher }: PublisherCardProps) {
       </div>
 
       {/* Book cover strip */}
-      {previewBooks.length > 0 && (
+      {previewCovers.length > 0 && (
         <div className="flex gap-0 h-20">
-          {previewBooks.map((book, i) => (
+          {previewCovers.map((coverUrl, i) => (
             <div
-              key={book.id}
+              key={coverUrl}
               className="relative flex-1 overflow-hidden"
               style={{ opacity: 1 - i * 0.15 }}
             >
               <Image
-                src={book.coverUrl}
-                alt={book.uzbekTitle}
+                src={coverUrl}
+                alt=""
                 fill
                 sizes="100px"
                 className="object-cover"
               />
             </div>
           ))}
-          {publisher.books.length > 4 && (
+          {publisher.bookCount > previewCovers.length && (
             <div className="flex-1 bg-stone-100 flex items-center justify-center text-xs text-zinc-400 font-medium">
-              +{publisher.books.length - 4}
+              +{publisher.bookCount - previewCovers.length}
             </div>
           )}
         </div>

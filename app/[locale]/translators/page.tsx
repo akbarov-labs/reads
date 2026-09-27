@@ -83,7 +83,7 @@ export default async function TranslatorsPage({
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                basePath={`/${locale}/translators`}
+                basePath="/translators"
               />
             </>
           ) : (

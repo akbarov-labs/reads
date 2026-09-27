@@ -37,7 +37,13 @@
     "pageTitle": "Все книги и переводы",
     "pageDescription": "Каждая книга, переведённая на узбекский язык или с узбекского, в одном каталоге.",
     "empty": "Книги не найдены.",
-    "translatedBy": "Перевёл(а)"
+    "translatedBy": "Перевёл(а)",
+    "searchPlaceholder": "Книга, автор или ISBN",
+    "search": "Найти",
+    "categories": "Разделы",
+    "allCategories": "Все",
+    "count": "{count} книг",
+    "editions": "{count} изд."
   },
   "authors": {
     "pageTitle": "Все авторы",
@@ -149,7 +155,20 @@
     "otherByTranslator": "Другие работы этого переводчика",
     "viewAuthor": "Страница автора",
     "viewTranslator": "Профиль переводчика",
-    "viewPublisher": "Страница издательства"
+    "viewPublisher": "Страница издательства",
+    "editions": "Издания",
+    "isbn": "ISBN",
+    "pages": "Страниц",
+    "language": "Язык",
+    "script": "Письменность",
+    "binding": "Переплёт",
+    "format": "Формат",
+    "translatedBy": "Перевод",
+    "editedBy": "Редактор",
+    "related": "Что почитать дальше",
+    "series": "Серия",
+    "seriesPart": "{name}, книга {position}",
+    "categories": "Разделы"
   },
   "authorDetail": {
     "back": "Назад к авторам",
@@ -194,6 +213,7 @@
       "translation": "Качество перевода",
       "cover": "Обложка и качество издания",
       "overall": "Общее впечатление"
-    }
+    },
+    "editionRead": "Прочитанное издание"
   }
 }
