@@ -53,7 +53,12 @@ the locale, so "/uz/books" would link to `/uz/uz/books`.
 
 Each translator card links to `/translator/{slug}`. The translator detail page
 continues to use `GET /api/translators/{slug}` and keeps its existing profile,
-book, excerpt, and inquiry workflow.
+book, excerpt, and inquiry workflow. `getAuthorBySlug`/`getPublisherBySlug`
+call `/api/authors/{slug}` / `/api/publishers/{slug}` directly; if that 404s
+they fall back to a name match against the full list, because the book detail
+page links to `/author/{slugify(book.author)}` and `/publisher/{slugify(book.publisher)}`
+— a client-computed guess at the real slug, not the real one (a book carries
+its author/publisher's id and name, not their slug).
 
 Image paths returned by Laravel are relative to the API origin. `lib/api.ts`
 resolves them against `API_URL` before passing them to Next Image.
@@ -72,10 +77,14 @@ each `books[]` entry is one edition they worked on (`editionId`).
 `BookWithTranslator` on the book page adds `editions[]` (`Edition`),
 `taqrizlar` and `relatedBooks[]`.
 
+`Book` also carries `authorId` and `publisherId` alongside the names.
+
 `Author` and `Publisher` come from their own endpoints with real slugs,
 `bookCount`, and a few `coverUrls` for their cards. They are no longer
 derived from the book list, which also means Cyrillic names no longer
-slugify to an empty string.
+slugify to an empty string. The listings only include profiles with at least
+one published book; a profile with none still has a working detail page
+(`/api/authors/{slug}`), just no card in the list.
 
 List endpoints return `Paginated<T>` (`items`, `page`, `lastPage`, `total`).
 

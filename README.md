@@ -1,24 +1,44 @@
-# Book Translator Portfolio — Prototype
+# Reads
 
-A Next.js 15 prototype of a translator profile page for **Reads**, built for
-stakeholder demos and user testing. Editorial-minimalist aesthetic, zinc/stone
-neutral palette, sans-serif UI type paired with a literary serif for prose.
+The public Next.js site for **Reads** — a catalogue of Uzbek book
+translators, the authors and publishers behind their books, and reader
+reviews ("taqrizlar") written by registered reviewers ("taqrizchilar").
+
+Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, `next-intl`
+for `uz` / `ru` / `en` locales. All content is served by the private
+`reads-admin` Laravel + Filament application — this repo has no database
+of its own.
+
+## What's included
+
+- `app/[locale]/` — localized pages: home, translators/authors/publishers/
+  books listings and detail pages, taqrizchilar listing and profile pages,
+  taqriz permalinks, per-book reviews section.
+- `app/og/[locale]/[slug]` — generated Open Graph images.
+- `app/api/revalidate` — webhook the admin panel calls to bust ISR cache
+  tags on save.
+- `app/sitemap.ts`, `app/robots.ts`, `app/llms.txt` — SEO/discovery routes.
+- `lib/api.ts` — all data fetching against the Laravel API, cache tags, and
+  normalization of API responses into the frontend's types.
+- `lib/types.ts` — shared TypeScript contracts (`Translator`, `Book`,
+  `Author`, `Publisher`, `Taqrizchi`, `Taqriz`, ...).
+- `components/` — cards, grids, profile headers, score badges, and other
+  shared UI.
+- `i18n/`, `messages/` — `next-intl` routing config and translation files
+  for `uz`, `ru`, `en`.
 
 ## Run it in Docker (recommended)
 
-Development server with hot reload, at `http://localhost:3000`:
-
 ```bash
-docker compose up
+docker compose up -d web
 ```
 
-Production build (optimized, standalone output):
+The site is available at `http://localhost:3000`. It expects the Laravel
+API at `API_URL` (defaults to `http://host.docker.internal:8000/api` in
+development, so `reads-admin` must be running and publishing port 8000).
 
-```bash
-docker compose --profile prod up --build web-prod
-```
-
-Stop everything with `docker compose down`.
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the local workflow and
+validation commands, and [DEPLOY.md](DEPLOY.md) for production deployment.
 
 ## Run it without Docker
 
@@ -27,22 +47,9 @@ npm install
 npm run dev
 ```
 
-## What's included
+## Related repository
 
-- `app/page.tsx` — translator listing / landing page
-- `app/translator/[slug]/page.tsx` — the profile page MVP (header, stats,
-  book grid, excerpt reader)
-- `components/` — ProfileHeader, StatsBar, BookGrid, BookCard, ExcerptReader,
-  and shared UI pieces
-- `data/translators.ts` — realistic mock data for one Uzbek translator with
-  three translated books (fictional titles, to keep the mock data free of
-  copyrighted text)
-- `public/` — generated SVG avatar and book covers (typographic, in-palette)
-
-## Notes for the next iteration
-
-- Swap `data/translators.ts` for a real data source (CMS or API) behind the
-  same `Translator`/`Book` types in `lib/types.ts`.
-- Replace the SVG covers/avatar in `public/` with real photography and cover
-  scans once available — the `2:3` aspect ratio and `<Image fill>` usage in
-  `BookCard` already expect real raster images.
+Translators, authors, books, publishers, taqrizchilar, and the admin panel
+all live in the private `reads-admin` repository. Backend changes belong
+there — read its `docs/DEVELOPMENT.md` before changing migrations or API
+resources.

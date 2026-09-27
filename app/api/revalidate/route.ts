@@ -6,16 +6,22 @@ import {
   PUBLISHERS_TAG,
   TAQRIZCHILAR_TAG,
   TRANSLATORS_TAG,
+  authorTag,
   bookTag,
+  publisherTag,
   taqrizchiTag,
   translatorTag,
 } from "@/lib/api";
 
 /**
  * Webhook Reads-admin calls after any write to a translator, book, language
- * pair or social link (see App\Services\SiteRevalidator). Dropping the cache
- * tag rebuilds the affected pages — and the sitemap and llms.txt built from
- * the same fetch — on the next request, instead of waiting out the ISR
+ * pair or social link (see App\Services\SiteRevalidator). `type: "author"` and
+ * `type: "publisher"` are accepted too and drop that one profile's tag —
+ * though SiteRevalidator does not send them yet, so an author/publisher-only
+ * save still relies on the collection tags below (which every ping drops).
+ * Dropping the cache tag rebuilds the
+ * affected pages — and the sitemap and llms.txt built from the same fetch —
+ * on the next request, instead of waiting out the ISR
  * window. A new book is therefore indexable within seconds of being saved.
  */
 export const runtime = "nodejs";
@@ -51,7 +57,7 @@ export async function POST(request: Request) {
 
   let slug: string | undefined;
   let id: string | undefined;
-  let type: "translator" | "taqrizchi" | "book" | undefined;
+  let type: "translator" | "taqrizchi" | "book" | "author" | "publisher" | undefined;
 
   try {
     const body = (await request.json()) as {
@@ -77,7 +83,9 @@ export async function POST(request: Request) {
     if (
       body.type === "translator" ||
       body.type === "taqrizchi" ||
-      body.type === "book"
+      body.type === "book" ||
+      body.type === "author" ||
+      body.type === "publisher"
     ) {
       type = body.type;
     }
@@ -87,7 +95,7 @@ export async function POST(request: Request) {
 
   // The collection tags always go. The home page, the sitemap and llms.txt
   // each list everything, so any single change can alter them. Authors and
-  // Publishers have their own endpoints and tags now, and their counts and
+  // Publishers have their own endpoints and tags, and their counts and
   // covers change with any edition, so they go too.
   revalidateTag(TRANSLATORS_TAG);
   revalidateTag(BOOKS_TAG);
@@ -100,6 +108,10 @@ export async function POST(request: Request) {
     revalidateTag(bookTag(id));
   } else if (type === "taqrizchi" && slug) {
     revalidateTag(taqrizchiTag(slug));
+  } else if (type === "author" && slug) {
+    revalidateTag(authorTag(slug));
+  } else if (type === "publisher" && slug) {
+    revalidateTag(publisherTag(slug));
   } else if (slug) {
     // Explicitly a translator, or an older caller that sent a bare slug
     // before `type` existed.

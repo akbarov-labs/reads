@@ -62,6 +62,16 @@ export function taqrizchiTag(slug: string): string {
   return `taqrizchi:${slug}`;
 }
 
+/** One author's page, so saving one author doesn't rebuild the whole list. */
+export function authorTag(slug: string): string {
+  return `author:${slug}`;
+}
+
+/** One publisher's page, so saving one publisher doesn't rebuild the whole list. */
+export function publisherTag(slug: string): string {
+  return `publisher:${slug}`;
+}
+
 interface ApiCollection<T> {
   data: T[];
 }
@@ -375,7 +385,7 @@ export async function getAuthorBySlug(
 ): Promise<Author | null> {
   const result = await apiFetch<ApiResource<Author>>(
     `/authors/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
-    [AUTHORS_TAG, BOOKS_TAG]
+    [AUTHORS_TAG, BOOKS_TAG, authorTag(slug)]
   );
   return result?.data ? normalizeAuthor(result.data) : null;
 }
@@ -386,7 +396,7 @@ export async function getPublisherBySlug(
 ): Promise<Publisher | null> {
   const result = await apiFetch<ApiResource<Publisher>>(
     `/publishers/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
-    [PUBLISHERS_TAG, BOOKS_TAG]
+    [PUBLISHERS_TAG, BOOKS_TAG, publisherTag(slug)]
   );
   return result?.data ? normalizePublisher(result.data) : null;
 }
