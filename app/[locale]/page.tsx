@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import {
   getTranslators,
   getBooks,
@@ -37,6 +40,12 @@ export default async function Home({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+
+  // The layout 404s an unknown locale too, but pages render alongside it,
+  // so without this /favicon.ico (read as locale "favicon.ico") would still
+  // fire every homepage API call first — and log an error for each.
+  if (!hasLocale(routing.locales, locale)) notFound();
+
   setRequestLocale(locale);
 
   // Only the few rows each section shows; the totals come from the API's
