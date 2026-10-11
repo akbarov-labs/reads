@@ -127,7 +127,9 @@
   },
   "footer": {
     "quote": "Literature is the deepest echo of the human soul.",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "botLead": "Finish what you start, in Telegram:",
+    "botName": "Kitoblarim bot"
   },
   "error": {
     "title": "Something went wrong",
@@ -166,6 +168,7 @@
     "translatedBy": "Translated by",
     "editedBy": "Edited by",
     "related": "Read next",
+    "planInBot": "Plan reading this book in Telegram",
     "series": "Series",
     "seriesPart": "{name}, book {position}",
     "categories": "Shelves"

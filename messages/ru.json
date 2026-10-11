@@ -127,7 +127,9 @@
   },
   "footer": {
     "quote": "Литература — самое глубокое эхо человеческой души.",
-    "rights": "Все права защищены."
+    "rights": "Все права защищены.",
+    "botLead": "Дочитывайте книги в Telegram:",
+    "botName": "бот Kitoblarim"
   },
   "error": {
     "title": "Что-то пошло не так",
@@ -166,6 +168,7 @@
     "translatedBy": "Перевод",
     "editedBy": "Редактор",
     "related": "Что почитать дальше",
+    "planInBot": "План чтения этой книги в Telegram",
     "series": "Серия",
     "seriesPart": "{name}, книга {position}",
     "categories": "Разделы"

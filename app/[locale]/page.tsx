@@ -229,26 +229,6 @@ export default async function Home({
           </Container>
         </section>
       </main>
-
-      {/* ─── FOOTER ──────────────────────────────────────────── */}
-      <footer className="border-t border-stone-200 py-10 text-center text-xs text-zinc-400 bg-stone-50">
-        <Container>
-          <p className="font-serif italic text-sm text-zinc-600 mb-1">
-            «{getFooterQuote(locale)}»
-          </p>
-          <p>© {new Date().getFullYear()} Reads.</p>
-        </Container>
-      </footer>
     </div>
   );
-}
-
-/** Inline footer quote since it's static per locale — avoids an extra getTranslations call. */
-function getFooterQuote(locale: string): string {
-  const quotes: Record<string, string> = {
-    uz: "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
-    ru: "Литература — самое глубокое эхо человеческой души.",
-    en: "Literature is the deepest echo of the human soul.",
-  };
-  return quotes[locale] ?? quotes.en;
 }

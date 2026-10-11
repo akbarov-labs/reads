@@ -9,6 +9,7 @@ import "@fontsource/newsreader/400.css";
 import "@fontsource/newsreader/400-italic.css";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
+import { SiteFooter } from "@/components/SiteFooter";
 import {
   OG_LOCALE,
   SITE_NAME,
@@ -113,7 +114,10 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className="bg-stone-50 font-sans text-zinc-900 antialiased">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {children}
+          <SiteFooter />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

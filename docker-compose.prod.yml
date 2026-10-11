@@ -28,7 +28,7 @@ services:
       - edge
       - reads_net
     labels:
-      caddy: ${DOMAIN:?set DOMAIN in .env, e.g. kitoblarim.uz}
+      caddy: ${DOMAIN:?set DOMAIN in .env, e.g. tarjima.kitoblarim.uz}
       caddy.reverse_proxy: "{{upstreams 3000}}"
 
 networks:
