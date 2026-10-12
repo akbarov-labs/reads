@@ -10,6 +10,7 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, BookOpen, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { ReaderReviews } from "@/components/ReaderReviews";
 import { botPlanUrl } from "@/lib/bot";
 
 type PageParams = { locale: string; id: string };
@@ -357,6 +358,16 @@ export default async function BookDetailPage({
               </div>
             )}
           </section>
+
+          {/* Kitoblarim bot readers: anonymous stars and the reviews they
+              chose to publish. Hidden when there are neither. */}
+          <ReaderReviews
+            rating={book.readerRating}
+            reviews={book.readerReviews ?? []}
+            locale={locale}
+            botHref={botHref}
+            t={tDetail}
+          />
 
           {/* Every printing of the book: publisher, ISBN, translators. */}
           {editions.length > 1 && (

@@ -9,6 +9,8 @@ import type {
   Edition,
   Category,
   Paginated,
+  ReaderRating,
+  ReaderReview,
 } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -99,6 +101,8 @@ type ApiCatalogBook = Book & {
   translator?: { slug: string; name: string } | null;
   taqrizlar?: Taqriz[];
   averageScore?: number | null;
+  readerRating?: ReaderRating | null;
+  readerReviews?: ReaderReview[];
   description?: string | null;
   editions?: Edition[];
   relatedBooks?: ApiCatalogBook[];
@@ -204,6 +208,7 @@ function normalizeBook(book: ApiCatalogBook): BookWithTranslator {
     translatorSlug: translator?.slug ?? null,
     translatorName: translator?.name ?? null,
     taqrizlar: (book.taqrizlar ?? []).map(normalizeTaqriz),
+    readerReviews: book.readerReviews ?? [],
     editions: book.editions?.map(normalizeEdition),
     relatedBooks: book.relatedBooks?.map(normalizeBook),
   };

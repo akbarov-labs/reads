@@ -171,7 +171,12 @@
     "planInBot": "Plan reading this book in Telegram",
     "series": "Series",
     "seriesPart": "{name}, book {position}",
-    "categories": "Shelves"
+    "categories": "Shelves",
+    "readersTitle": "Kitoblarim readers",
+    "readersLead": "People who read this book in the Kitoblarim bot and rated it.",
+    "readersCount": "{count, plural, one {# rating} other {# ratings}}",
+    "readerAnonymous": "A Kitoblarim reader",
+    "readersRate": "Read it and rate it in Telegram"
   },
   "authorDetail": {
     "back": "Back to authors",
