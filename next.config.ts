@@ -75,6 +75,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // Metadata in <head> for every visitor. Next 15 streams it into <body>
+  // for user agents it does not recognise as bots, and its list misses the
+  // crawlers behind answer engines (GPTBot, ClaudeBot, PerplexityBot) and
+  // Telegram's link previews. The page's own data is cached, so blocking on
+  // metadata costs nothing measurable.
+  htmlLimitedBots: /.*/,
+  experimental: {
+    // The stylesheet is small (about 9 KB) and every page needs all of it, so
+    // it ships inside the HTML instead of as a request the first paint waits
+    // for: one round trip fewer on a slow phone connection.
+    inlineCss: true,
+  },
   // Nothing gains from announcing the framework in every response.
   poweredByHeader: false,
   images: {

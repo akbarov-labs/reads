@@ -9,13 +9,8 @@ interface PublisherCardProps {
 
 /** Deterministic warm-tone background for publishers without an image. */
 function publisherColor(name: string): string {
-  const colors = [
-    "from-stone-100 to-stone-200 text-stone-700",
-    "from-amber-50 to-amber-100 text-amber-800",
-    "from-orange-50 to-orange-100 text-orange-800",
-    "from-yellow-50 to-yellow-100 text-yellow-800",
-    "from-lime-50 to-lime-100 text-lime-800",
-  ];
+  // One accent: every placeholder is the same quiet brand tint.
+  const colors = ["from-forest-50 to-forest-100 text-forest-800"];
   const idx = name.charCodeAt(0) % colors.length;
   return colors[idx];
 }
@@ -26,7 +21,7 @@ export function PublisherCard({ publisher }: PublisherCardProps) {
 
   return (
     <Link href={`/publisher/${publisher.slug}`} className="block">
-      <article className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:border-amber-300 hover:shadow-md transition-all duration-200">
+      <article className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:border-forest-300 hover:shadow-md transition-all duration-200">
       {/* Publisher header band */}
       <div
         className={`relative h-20 flex items-center px-5 bg-gradient-to-r ${gradientClass}`}
@@ -47,7 +42,7 @@ export function PublisherCard({ publisher }: PublisherCardProps) {
           </div>
         )}
         <div className="ml-3 min-w-0">
-          <h3 className="font-serif text-base font-medium text-zinc-900 leading-snug group-hover:text-amber-800 transition-colors truncate">
+          <h3 className="font-serif text-base font-medium text-zinc-900 leading-snug group-hover:text-forest-800 transition-colors truncate">
             {publisher.name}
           </h3>
           <p className="text-xs text-zinc-500 mt-0.5">

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { CirclePlay } from "lucide-react";
+import { ArrowRight, CirclePlay } from "lucide-react";
 import type { Taqriz } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { safeExternalUrl } from "@/lib/safeUrl";
@@ -63,7 +63,7 @@ export function TaqrizCard({
               <>
                 <Link
                   href={`/book/${taqriz.book.id}`}
-                  className="font-serif text-base text-zinc-900 hover:text-amber-800 transition-colors line-clamp-1"
+                  className="font-serif text-base text-zinc-900 hover:text-forest-800 transition-colors line-clamp-1"
                 >
                   {taqriz.book.uzbekTitle}
                 </Link>
@@ -74,7 +74,7 @@ export function TaqrizCard({
                 <>
                   <Link
                     href={`/taqrizchi/${taqriz.taqrizchi.slug}`}
-                    className="font-serif text-base text-zinc-900 hover:text-amber-800 transition-colors"
+                    className="font-serif text-base text-zinc-900 hover:text-forest-800 transition-colors"
                   >
                     {taqriz.taqrizchi.name}
                   </Link>
@@ -99,16 +99,17 @@ export function TaqrizCard({
       <div className="mt-4 flex items-center gap-4">
         <Link
           href={`/taqriz/${taqriz.id}`}
-          className="text-xs font-medium text-amber-700 hover:text-amber-900 transition-colors"
+          className="text-xs font-medium text-forest-700 hover:text-forest-900 transition-colors"
         >
-          {readMoreLabel} →
+          {readMoreLabel}
+          <ArrowRight aria-hidden="true" className="ml-1 inline h-3.5 w-3.5 align-[-2px]" />
         </Link>
         {video && (
           <a
             href={video}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-red-600 transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-forest-800 transition-colors"
           >
             <CirclePlay className="h-3.5 w-3.5" />
             Video

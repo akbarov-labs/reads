@@ -87,11 +87,11 @@ export default async function BooksPage({
                 name="q"
                 defaultValue={q ?? ""}
                 placeholder={t("searchPlaceholder")}
-                className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-amber-500 focus:outline-none"
+                className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-forest-500 focus:outline-none"
               />
               <button
                 type="submit"
-                className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+                className="rounded-lg bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800"
               >
                 {t("search")}
               </button>
@@ -103,8 +103,8 @@ export default async function BooksPage({
                   href={q ? `/books?q=${encodeURIComponent(q)}` : "/books"}
                   className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                     !category
-                      ? "border-amber-700 bg-amber-700 text-white"
-                      : "border-stone-300 text-zinc-600 hover:border-amber-400"
+                      ? "border-forest-700 bg-forest-700 text-white"
+                      : "border-stone-300 text-zinc-600 hover:border-forest-400"
                   }`}
                 >
                   {t("allCategories")}
@@ -115,8 +115,8 @@ export default async function BooksPage({
                     href={`/books?${new URLSearchParams({ ...(q ? { q } : {}), category: c.slug })}`}
                     className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                       category === c.slug
-                        ? "border-amber-700 bg-amber-700 text-white"
-                        : "border-stone-300 text-zinc-600 hover:border-amber-400"
+                        ? "border-forest-700 bg-forest-700 text-white"
+                        : "border-stone-300 text-zinc-600 hover:border-forest-400"
                     }`}
                   >
                     {c.name}
@@ -131,7 +131,7 @@ export default async function BooksPage({
           {paginatedBooks.length > 0 ? (
             <>
               <div className="grid grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {paginatedBooks.map((book) => (
+                {paginatedBooks.map((book, index) => (
                   <Link
                     key={book.id}
                     href={`/book/${book.id}`}
@@ -139,7 +139,7 @@ export default async function BooksPage({
                   >
                     <article>
                       {/* Cover */}
-                      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-stone-100 shadow-sm ring-1 ring-stone-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-amber-300">
+                      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-stone-100 shadow-sm ring-1 ring-stone-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-forest-300">
                         {book.coverUrl ? (
                           <Image
                             src={book.coverUrl}
@@ -147,6 +147,7 @@ export default async function BooksPage({
                             fill
                             sizes="(min-width: 1024px) 20vw, (min-width: 640px) 25vw, 50vw"
                             className="object-cover"
+                            priority={index < 5}
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center p-4">
@@ -158,7 +159,7 @@ export default async function BooksPage({
                         {/* Role badge — only when someone is credited */}
                         {book.role && (
                           <div className="absolute top-2 left-2">
-                            <span className="inline-block rounded-md border bg-white/90 px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-600 shadow-xs backdrop-blur-xs border-zinc-200">
+                            <span className="inline-block rounded-md border bg-white/90 px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-600 shadow-sm backdrop-blur-sm border-zinc-200">
                               {book.role === "author"
                                 ? tCard("roleAuthor")
                                 : book.role === "editor"
@@ -177,7 +178,7 @@ export default async function BooksPage({
                       </div>
                       {/* Meta */}
                       <div className="mt-3">
-                        <h2 className="font-serif text-sm leading-snug text-zinc-900 group-hover:text-amber-800 transition-colors">
+                        <h2 className="font-serif text-sm leading-snug text-zinc-900 group-hover:text-forest-800 transition-colors">
                           {book.uzbekTitle}
                         </h2>
                         {book.originalTitle && (

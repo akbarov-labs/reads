@@ -25,6 +25,19 @@ const API_URL = process.env.API_URL ?? "http://localhost:8000/api";
 // We resolve against the same origin we used for API_URL.
 const ASSET_BASE_URL = API_URL.replace(/\/api\/?$/, "");
 
+// In production API_URL is the internal Docker address
+// (http://reads-admin-app/api), so covers resolve to a host only this
+// container can reach. That is right for the image optimizer, which fetches
+// them server-side, and wrong for any URL handed to the outside world: an
+// og:image or structured-data image has to be one a scraper can fetch.
+const PUBLIC_ASSET_BASE_URL = (process.env.PUBLIC_ASSET_URL ?? "https://dashboard.kitoblarim.uz").replace(/\/$/, "");
+
+/** An asset URL as the outside world can fetch it, or undefined. SVG placeholders are not shareable images. */
+export function publicAssetUrl(url: string | null | undefined): string | undefined {
+  if (!url || /\.svg(\?|$)/i.test(url)) return undefined;
+  return url.startsWith(ASSET_BASE_URL) ? PUBLIC_ASSET_BASE_URL + url.slice(ASSET_BASE_URL.length) : url;
+}
+
 function resolveAssetUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (/^https?:\/\//.test(path)) return path;
@@ -405,3 +418,20 @@ export async function getPublisherBySlug(
   );
   return result?.data ? normalizePublisher(result.data) : null;
 }
+
+/** What the sitemap lists, from reads-admin's /api/sitemap (ids, slugs, dates). */
+export interface SitemapIndex {
+  books: { id: string; updatedAt: string | null }[];
+  authors: { slug: string; updatedAt: string | null }[];
+  publishers: { slug: string; updatedAt: string | null }[];
+}
+
+/**
+ * Every approved book, author and publisher in one request. Null until
+ * reads-admin serves the endpoint (an older deploy answers 404), in which
+ * case the sitemap simply lists the profile pages it always did.
+ */
+export async function getSitemapIndex(): Promise<SitemapIndex | null> {
+  return apiFetch<SitemapIndex>("/sitemap", [BOOKS_TAG]);
+}
+

@@ -92,7 +92,6 @@ export default async function TranslatorProfilePage({
         })}
       />
       <SiteHeader
-        name={translator.name}
         subtitle={translator.title || tSite("roleTag")}
       />
       <main>

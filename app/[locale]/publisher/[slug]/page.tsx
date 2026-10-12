@@ -5,8 +5,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getBooks, getPublisherBySlug } from "@/lib/api";
 import { SiteHeader } from "@/components/SiteHeader";
+import { JsonLd } from "@/components/JsonLd";
+import { publisherPageGraph } from "@/lib/jsonld";
+import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
-import { ArrowLeft, BookOpen, Building2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, Building2 } from "lucide-react";
 
 type PageParams = { locale: string; slug: string };
 
@@ -14,13 +17,8 @@ type PageParams = { locale: string; slug: string };
 const BOOKS_SHOWN = 48;
 
 function publisherColor(name: string): string {
-  const colors = [
-    "from-stone-100 to-stone-200 text-stone-700",
-    "from-amber-50 to-amber-100 text-amber-800",
-    "from-orange-50 to-orange-100 text-orange-800",
-    "from-yellow-50 to-yellow-100 text-yellow-800",
-    "from-lime-50 to-lime-100 text-lime-800",
-  ];
+  // One accent: every placeholder is the same quiet brand tint.
+  const colors = ["from-forest-50 to-forest-100 text-forest-800"];
   const idx = name.charCodeAt(0) % colors.length;
   return colors[idx];
 }
@@ -35,12 +33,21 @@ export async function generateMetadata({
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const publisher = await getPublisherBySlug(slug, locale);
+  const [publisher, t] = await Promise.all([
+    getPublisherBySlug(slug, locale),
+    getTranslations({ locale, namespace: "publisherDetail" }),
+  ]);
   if (!publisher) return { robots: { index: false, follow: false } };
 
+  const title = t("metaTitle", { name: publisher.name });
+  const description = t("metaDescription", { name: publisher.name });
+  // Its own address in each language; otherwise it inherits the home page's.
+  const alternates = localeAlternates(locale as Locale, `/publisher/${slug}`);
   return {
-    title: `${publisher.name} — Nashriyot kitoblari | Reads`,
-    description: `${publisher.name} nashriyoti tomonidan chop etilgan tarjima kitoblar, mualliflar va tarjimonlar.`,
+    title,
+    description,
+    alternates,
+    openGraph: { type: "profile", title, description, url: alternates.canonical },
   };
 }
 
@@ -84,6 +91,18 @@ export default async function PublisherDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={publisherPageGraph({
+          publisher,
+          locale: locale as Locale,
+          path: `/publisher/${slug}`,
+          trail: [
+            { name: "Kitoblarim", path: "" },
+            { name: tPublisher("breadcrumbPublishers"), path: "/publishers" },
+            { name: publisher.name, path: `/publisher/${slug}` },
+          ],
+        })}
+      />
       <SiteHeader />
       <main className="py-10 sm:py-14">
         <Container>
@@ -99,11 +118,11 @@ export default async function PublisherDetailPage({
 
             <nav className="hidden sm:flex items-center gap-2 text-xs text-zinc-400">
               <Link href="/" className="hover:text-zinc-600 transition-colors">
-                Reads
+                Kitoblarim
               </Link>
               <span>/</span>
               <Link href="/publishers" className="hover:text-zinc-600 transition-colors">
-                Publishers
+                {tPublisher("breadcrumbPublishers")}
               </Link>
               <span>/</span>
               <span className="text-zinc-700 truncate max-w-xs">{publisher.name}</span>
@@ -111,7 +130,7 @@ export default async function PublisherDetailPage({
           </div>
 
           {/* Publisher Header */}
-          <div className="rounded-2xl border border-stone-200 overflow-hidden bg-white shadow-xs">
+          <div className="rounded-2xl border border-stone-200 overflow-hidden bg-white shadow-sm">
             <div className={`p-8 sm:p-10 bg-gradient-to-r ${gradientClass}`}>
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
                 {publisher.imageUrl ? (
@@ -132,15 +151,12 @@ export default async function PublisherDetailPage({
                 )}
 
                 <div className="flex-1">
-                  <span className="text-xs uppercase tracking-widest text-zinc-600 font-semibold">
-                    Nashriyot
-                  </span>
-                  <h1 className="mt-1 font-serif text-3xl sm:text-4xl text-zinc-900 font-semibold">
+                  <h1 className="font-serif text-3xl sm:text-4xl text-zinc-900 font-semibold">
                     {publisher.name}
                   </h1>
 
                   <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 shadow-xs px-3.5 py-1 text-xs font-medium text-zinc-800">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 shadow-sm px-3.5 py-1 text-xs font-medium text-zinc-800">
                       <BookOpen className="h-3.5 w-3.5 text-zinc-500" />
                       {tPublisher("totalBooks", { count: publisher.bookCount })}
                     </span>
@@ -165,7 +181,7 @@ export default async function PublisherDetailPage({
                   href={`/book/${book.id}`}
                   className="group flex flex-col"
                 >
-                  <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-amber-300">
+                  <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-all duration-200 group-hover:shadow-md group-hover:ring-forest-300">
                     {book.coverUrl ? (
                       <Image
                         src={book.coverUrl}
@@ -181,7 +197,7 @@ export default async function PublisherDetailPage({
                     )}
                     {book.role && (
                       <div className="absolute top-2.5 left-2.5">
-                        <span className="inline-block rounded-md border border-white/40 bg-white/90 backdrop-blur-xs px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-800 shadow-xs">
+                        <span className="inline-block rounded-md border border-white/40 bg-white/90 backdrop-blur-sm px-2 py-0.5 text-[10px] font-medium tracking-wide text-zinc-800 shadow-sm">
                           {book.role === "author"
                             ? tBookCard("roleAuthor")
                             : book.role === "editor"
@@ -193,7 +209,7 @@ export default async function PublisherDetailPage({
                   </div>
 
                   <div className="mt-3.5">
-                    <h3 className="font-serif text-base sm:text-lg text-zinc-900 font-medium group-hover:text-amber-800 transition-colors leading-snug">
+                    <h3 className="font-serif text-base sm:text-lg text-zinc-900 font-medium group-hover:text-forest-800 transition-colors leading-snug">
                       {book.uzbekTitle}
                     </h3>
                     <p className="mt-1 text-xs uppercase tracking-wider text-zinc-500">
@@ -213,9 +229,10 @@ export default async function PublisherDetailPage({
               <div className="mt-10 text-center">
                 <Link
                   href={`/books?publisher=${publisher.slug}`}
-                  className="inline-block rounded-lg border border-stone-300 px-4 py-2 text-sm text-zinc-700 hover:border-amber-400 hover:text-amber-800"
+                  className="inline-block rounded-lg border border-stone-300 px-4 py-2 text-sm text-zinc-700 hover:border-forest-400 hover:text-forest-800"
                 >
-                  {tBooks("count", { count: books.total })} →
+                  {tBooks("count", { count: books.total })}
+                  <ArrowRight aria-hidden="true" className="ml-1 inline h-3.5 w-3.5 align-[-2px]" />
                 </Link>
               </div>
             )}
@@ -239,7 +256,7 @@ export default async function PublisherDetailPage({
                       <Link
                         key={t.slug}
                         href={`/translator/${t.slug}`}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-stone-200 px-3.5 py-1.5 text-xs text-zinc-700 hover:border-amber-300 hover:text-amber-800 transition-colors"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-stone-200 px-3.5 py-1.5 text-xs text-zinc-700 hover:border-forest-300 hover:text-forest-800 transition-colors"
                       >
                         {t.name}
                       </Link>

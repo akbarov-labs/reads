@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -16,6 +17,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages, basePath, query = {} }: PaginationProps) {
+  const t = useTranslations("pagination");
   if (totalPages <= 1) return null;
 
   function pageHref(page: number) {
@@ -64,22 +66,22 @@ export function Pagination({ currentPage, totalPages, basePath, query = {} }: Pa
   return (
     <nav
       className="flex items-center justify-center gap-1 mt-12"
-      aria-label="Pagination"
+      aria-label={t("nav")}
     >
       {/* Previous */}
       {currentPage > 1 ? (
         <Link
           href={pageHref(currentPage - 1)}
           className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors"
-          aria-label="Previous page"
+          aria-label={t("previousPage")}
         >
           <ChevronLeft className="h-4 w-4" />
-          Prev
+          {t("previous")}
         </Link>
       ) : (
-        <span className="flex items-center gap-1 px-3 py-2 text-sm text-zinc-300 cursor-not-allowed">
+        <span aria-hidden="true" className="invisible flex items-center gap-1 px-3 py-2 text-sm">
           <ChevronLeft className="h-4 w-4" />
-          Prev
+          {t("previous")}
         </span>
       )}
 
@@ -99,10 +101,10 @@ export function Pagination({ currentPage, totalPages, basePath, query = {} }: Pa
               href={pageHref(page)}
               className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg font-medium transition-colors ${
                 page === currentPage
-                  ? "bg-amber-700 text-white"
+                  ? "bg-forest-700 text-white"
                   : "text-zinc-600 hover:bg-stone-100 hover:text-zinc-900"
               }`}
-              aria-label={`Page ${page}`}
+              aria-label={t("page", { page })}
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
@@ -116,14 +118,14 @@ export function Pagination({ currentPage, totalPages, basePath, query = {} }: Pa
         <Link
           href={pageHref(currentPage + 1)}
           className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors"
-          aria-label="Next page"
+          aria-label={t("nextPage")}
         >
-          Next
+          {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="flex items-center gap-1 px-3 py-2 text-sm text-zinc-300 cursor-not-allowed">
-          Next
+        <span aria-hidden="true" className="invisible flex items-center gap-1 px-3 py-2 text-sm">
+          {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>
       )}

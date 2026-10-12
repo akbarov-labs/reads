@@ -21,10 +21,10 @@ export function ScoreBadge({
 
   return (
     <span
-      className={`inline-flex items-baseline gap-0.5 rounded-full bg-amber-50 border border-amber-200 font-medium text-amber-900 ${sizes[size]}`}
+      className={`inline-flex items-baseline gap-0.5 rounded-full bg-forest-50 border border-forest-200 font-medium text-forest-900 ${sizes[size]}`}
     >
       <span className="font-serif">{score.toFixed(1)}</span>
-      <span className="text-amber-600/70 text-[0.8em]">/10</span>
+      <span className="text-forest-600/70 text-[0.8em]">/10</span>
     </span>
   );
 }
@@ -60,7 +60,7 @@ export function AspectBreakdown({
               className="hidden sm:block h-1 w-20 rounded-full bg-stone-200 overflow-hidden"
             >
               <span
-                className="block h-full rounded-full bg-amber-400"
+                className="block h-full rounded-full bg-forest-400"
                 style={{ width: `${(value / 10) * 100}%` }}
               />
             </span>

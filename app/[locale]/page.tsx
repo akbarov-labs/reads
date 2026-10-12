@@ -12,6 +12,8 @@ import {
 } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
+import { JsonLd } from "@/components/JsonLd";
+import { siteGraph } from "@/lib/jsonld";
 import { Container } from "@/components/Container";
 import { SectionHeader } from "@/components/SectionHeader";
 import { TaqrizchiCard } from "@/components/TaqrizchiCard";
@@ -50,7 +52,7 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, t, tTaqrizchilar] =
+  const [translators, books, authors, publishers, taqrizchilar, t, tTaqrizchilar, tSite] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
@@ -59,6 +61,7 @@ export default async function Home({
     getTaqrizchilar(locale),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
+    getTranslations("site"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
@@ -77,21 +80,20 @@ export default async function Home({
 
   return (
     <div className="min-h-screen flex flex-col bg-stone-50">
+      <JsonLd
+        data={siteGraph({
+          locale: locale as Locale,
+          name: tSite("homeTitle"),
+          description: tSite("homeDescription"),
+        })}
+      />
       <SiteHeader />
 
       <main className="flex-1">
         {/* ─── HERO ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden border-b border-stone-200 bg-white">
-          {/* Subtle warm gradient */}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(217,119,6,0.07),transparent)]"
-          />
+        <section className="relative overflow-hidden border-b border-stone-200 bg-stone-50">
           <Container className="relative py-20 sm:py-28">
             <div className="max-w-2xl">
-              <p className="text-xs font-semibold uppercase tracking-widest2 text-amber-700 mb-5">
-                Reads
-              </p>
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-zinc-900 leading-[1.1] tracking-tight whitespace-pre-line">
                 {t("heroHeadline")}
               </h1>
@@ -101,7 +103,7 @@ export default async function Home({
             </div>
 
             {/* Stats row */}
-            <dl className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-stone-200 rounded-2xl overflow-hidden shadow-sm border border-stone-200">
+            <dl className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-stone-200 rounded-2xl overflow-hidden border border-stone-200">
               {stats.map((stat) => (
                 <div
                   key={stat.label}

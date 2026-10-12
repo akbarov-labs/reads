@@ -63,7 +63,7 @@ export default async function TaqrizchiProfilePage({
         <Container className="py-10 sm:py-14">
           <Link
             href="/taqrizchilar"
-            className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-amber-800 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-forest-800 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             {t("seeAll")}

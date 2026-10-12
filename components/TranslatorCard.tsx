@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { ArrowRight, MapPin } from "lucide-react";
 import type { Translator } from "@/lib/types";
 import { LanguagePairBadge } from "@/components/LanguagePairBadge";
 
@@ -9,10 +10,11 @@ interface TranslatorCardProps {
 }
 
 export function TranslatorCard({ translator }: TranslatorCardProps) {
+  const t = useTranslations("translatorCard");
   return (
     <Link
       href={`/translator/${translator.slug}`}
-      className="group block bg-white rounded-2xl border border-stone-200 p-5 hover:border-amber-300 hover:shadow-md transition-all duration-200"
+      className="group block bg-white rounded-2xl border border-stone-200 p-5 hover:border-forest-300 hover:shadow-md transition-all duration-200"
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
@@ -34,7 +36,7 @@ export function TranslatorCard({ translator }: TranslatorCardProps) {
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-serif text-lg text-zinc-900 leading-tight group-hover:text-amber-800 transition-colors truncate">
+          <h3 className="font-serif text-lg text-zinc-900 leading-tight group-hover:text-forest-800 transition-colors truncate">
             {translator.name}
           </h3>
           {translator.title && (
@@ -70,10 +72,11 @@ export function TranslatorCard({ translator }: TranslatorCardProps) {
       {/* Book count footer */}
       <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between">
         <span className="text-xs text-zinc-400">
-          {translator.totalBooksTranslated} book{translator.totalBooksTranslated !== 1 ? "s" : ""}
+          {t("books", { count: translator.totalBooksTranslated })}
         </span>
-        <span className="text-xs font-medium text-amber-700 group-hover:text-amber-900 transition-colors">
-          View profile →
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-forest-700 group-hover:text-forest-900 transition-colors">
+          {t("viewProfile")}
+          <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
         </span>
       </div>
     </Link>

@@ -1,11 +1,12 @@
 {
   "site": {
-    "brand": "Reads",
+    "brand": "Kitoblarim",
     "roleTag": "Translator & Author",
-    "homeTitle": "Reads — Uzbek Literary World",
+    "homeTitle": "Kitoblarim — a catalogue of Uzbek books",
     "homeDescription": "Discover the translators, authors, books and publishers shaping Uzbek literature today.",
-    "profileTitle": "{name}, Reads",
-    "languageLabel": "Language"
+    "profileTitle": "{name}, Kitoblarim",
+    "languageLabel": "Language",
+    "brandSection": "catalogue"
   },
   "home": {
     "empty": "No translator profiles have been added yet.",
@@ -168,7 +169,7 @@
     "translatedBy": "Translated by",
     "editedBy": "Edited by",
     "related": "Read next",
-    "planInBot": "Plan reading this book in Telegram",
+    "planInBot": "Finish this book in Telegram",
     "series": "Series",
     "seriesPart": "{name}, book {position}",
     "categories": "Shelves",
@@ -176,7 +177,8 @@
     "readersLead": "People who read this book in the Kitoblarim bot and rated it.",
     "readersCount": "{count, plural, one {# rating} other {# ratings}}",
     "readerAnonymous": "A Kitoblarim reader",
-    "readersRate": "Read it and rate it in Telegram"
+    "readersRate": "Read it and rate it in Telegram",
+    "breadcrumbBooks": "Books"
   },
   "authorDetail": {
     "back": "Back to authors",
@@ -184,14 +186,21 @@
     "about": "About author",
     "works": "Works in Uzbek",
     "translators": "Translators of this author",
-    "sourceLanguage": "Primary source language"
+    "sourceLanguage": "Primary source language",
+    "breadcrumbAuthors": "Authors",
+    "metaTitle": "{name} — works translated into Uzbek",
+    "metaDescription": "Uzbek translations of {name}'s works: books, editions and translators.",
+    "translatorProfile": "Translator profile"
   },
   "publisherDetail": {
     "back": "Back to publishers",
     "totalBooks": "{count} titles published",
     "catalog": "Published translations",
     "translatorsAndAuthors": "Collaborating creators",
-    "booksInCatalog": "Books in catalog"
+    "booksInCatalog": "Books in catalog",
+    "breadcrumbPublishers": "Publishers",
+    "metaTitle": "{name} — books from this publisher",
+    "metaDescription": "Books published by {name}: translations, authors and translators."
   },
   "taqrizchilar": {
     "pageTitle": "All reviewers",
@@ -223,5 +232,17 @@
       "overall": "Overall impression"
     },
     "editionRead": "Edition read"
+  },
+  "pagination": {
+    "nav": "Pages",
+    "previous": "Previous",
+    "next": "Next",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page {page}"
+  },
+  "translatorCard": {
+    "books": "{count, plural, one {# book} other {# books}}",
+    "viewProfile": "View profile"
   }
 }

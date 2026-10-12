@@ -131,19 +131,19 @@ export function InquiryForm({
 
   if (status === "success") {
     return (
-      <div className="w-full rounded-lg border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-900">
+      <div className="w-full rounded-lg border border-forest-200 bg-forest-50 p-5 text-sm text-forest-900">
         <p className="flex items-center gap-2 font-medium">
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           {t("successTitle")}
         </p>
-        <p className="mt-1 text-emerald-800">{t("successBody")}</p>
+        <p className="mt-1 text-forest-800">{t("successBody")}</p>
         <button
           type="button"
           onClick={() => {
             setStatus("idle");
             setOpen(false);
           }}
-          className="mt-3 text-sm font-medium text-emerald-900 underline underline-offset-2 hover:text-emerald-700"
+          className="mt-3 text-sm font-medium text-forest-900 underline underline-offset-2 hover:text-forest-700"
         >
           {t("sendAnother")}
         </button>
@@ -152,7 +152,7 @@ export function InquiryForm({
   }
 
   const inputClasses =
-    "w-full min-h-11 rounded-md border border-zinc-300 bg-white px-3 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-900/10";
+    "w-full min-h-11 rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-forest-700 focus:outline-none focus:ring-2 focus:ring-forest-700/15";
   const labelClasses = "block text-sm font-medium text-zinc-700";
 
   function fieldError(name: string) {

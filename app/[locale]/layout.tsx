@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import "@fontsource/inter/400.css";
-import "@fontsource/inter/500.css";
-import "@fontsource/inter/600.css";
-import "@fontsource/newsreader/400.css";
-import "@fontsource/newsreader/400-italic.css";
+// Kitoblarim's faces, as on the bot's landing page: Onest for the interface,
+// Literata for book titles. Self-hosted, variable weights.
+import "@fontsource-variable/onest/wght.css";
+import "@fontsource-variable/literata/wght.css";
+import "@fontsource-variable/literata/wght-italic.css";
 import "../globals.css";
 import { routing } from "@/i18n/routing";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -43,7 +43,8 @@ export function generateStaticParams(): { locale: string }[] {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#fafaf9",
+  // Bone Paper, the page ground.
+  themeColor: "#F6F7F4",
   colorScheme: "light",
 };
 
@@ -65,7 +66,7 @@ export async function generateMetadata({
     // default covers pages that set none.
     title: {
       default: t("homeTitle"),
-      template: `%s · ${SITE_NAME}`,
+      template: `%s | ${SITE_NAME}`,
     },
     description: t("homeDescription"),
     applicationName: SITE_NAME,

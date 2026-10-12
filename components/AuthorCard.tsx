@@ -8,16 +8,8 @@ interface AuthorCardProps {
 
 /** Deterministic pastel background from author name for fallback avatar. */
 function initialsColor(name: string): string {
-  const colors = [
-    "bg-amber-100 text-amber-800",
-    "bg-stone-200 text-stone-700",
-    "bg-orange-100 text-orange-800",
-    "bg-yellow-100 text-yellow-800",
-    "bg-lime-100 text-lime-800",
-    "bg-teal-100 text-teal-800",
-    "bg-sky-100 text-sky-800",
-    "bg-violet-100 text-violet-800",
-  ];
+  // One accent: every placeholder is the same quiet brand tint.
+  const colors = ["bg-forest-50 text-forest-800"];
   const idx = name.charCodeAt(0) % colors.length;
   return colors[idx];
 }
@@ -38,7 +30,7 @@ export function AuthorCard({ author }: AuthorCardProps) {
 
   return (
     <Link href={`/author/${author.slug}`} className="block">
-      <article className="group bg-white rounded-2xl border border-stone-200 p-5 hover:border-amber-300 hover:shadow-md transition-all duration-200">
+      <article className="group bg-white rounded-2xl border border-stone-200 p-5 hover:border-forest-300 hover:shadow-md transition-all duration-200">
       <div className="flex items-start gap-4">
         {/* Author image or initials avatar */}
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-stone-200">
@@ -61,7 +53,7 @@ export function AuthorCard({ author }: AuthorCardProps) {
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-serif text-base text-zinc-900 leading-snug group-hover:text-amber-800 transition-colors">
+          <h3 className="font-serif text-base text-zinc-900 leading-snug group-hover:text-forest-800 transition-colors">
             {author.name}
           </h3>
           <p className="mt-0.5 text-xs text-zinc-400">

@@ -1,16 +1,17 @@
 {
   "site": {
-    "brand": "Reads",
+    "brand": "Kitoblarim",
     "roleTag": "Tarjimon va Muallif",
-    "homeTitle": "Reads — O'zbek Adabiy Dunyosi",
-    "homeDescription": "O'zbek adabiyotini shakllantirayotgan tarjimonlar, mualliflar, kitoblar va nashriyotlar.",
-    "profileTitle": "{name}, Reads",
-    "languageLabel": "Til"
+    "homeTitle": "Kitoblarim — oʻzbek kitoblari katalogi",
+    "homeDescription": "Oʻzbek adabiyotini shakllantirayotgan tarjimonlar, mualliflar, kitoblar va nashriyotlar.",
+    "profileTitle": "{name}, Kitoblarim",
+    "languageLabel": "Til",
+    "brandSection": "katalog"
   },
   "home": {
-    "empty": "Hozircha tarjimon profili qo'shilmagan.",
-    "heroHeadline": "O'zbek Adabiy Dunyosi,\nBir Joyda",
-    "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bog'liq, hammasi kashf qilinishi mumkin.",
+    "empty": "Hozircha tarjimon profili qoʻshilmagan.",
+    "heroHeadline": "Oʻzbek Adabiy Dunyosi,\nBir Joyda",
+    "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bogʻliq, hammasi kashf qilinishi mumkin.",
     "statTranslators": "Tarjimonlar",
     "statBooks": "Asarlar va tarjimalar",
     "statAuthors": "Mualliflar",
@@ -26,7 +27,7 @@
   },
   "translators": {
     "pageTitle": "Barcha Tarjimonlar",
-    "pageDescription": "O'zbek tiliga yoki o'zbek tilidan tarjima qiluvchi barcha tarjimonlar.",
+    "pageDescription": "Oʻzbek tiliga yoki oʻzbek tilidan tarjima qiluvchi barcha tarjimonlar.",
     "sectionTitle": "Tarjimonlar",
     "count": "{count} ta tarjimon",
     "defaultRole": "Tarjimon",
@@ -35,12 +36,12 @@
   },
   "books": {
     "pageTitle": "Barcha Kitoblar va Tarjimalar",
-    "pageDescription": "O'zbek tiliga yoki o'zbek tilidan tarjima qilingan har bir kitob.",
+    "pageDescription": "Oʻzbek tiliga yoki oʻzbek tilidan tarjima qilingan har bir kitob.",
     "empty": "Kitoblar topilmadi.",
     "translatedBy": "Tarjima qilgan",
     "searchPlaceholder": "Kitob, muallif yoki ISBN",
     "search": "Qidirish",
-    "categories": "Bo'limlar",
+    "categories": "Boʻlimlar",
     "allCategories": "Hammasi",
     "count": "{count} ta kitob",
     "editions": "{count} ta nashr"
@@ -64,7 +65,7 @@
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
     "yearsActive": "Ijodiy faoliyat",
-    "languagePairs": "Til yo'nalishlari",
+    "languagePairs": "Til yoʻnalishlari",
     "booksValue": "{count}+",
     "yearsValue": "{years} yil"
   },
@@ -91,19 +92,19 @@
     "cancel": "Bekor qilish",
     "formTitle": "Buyurtma yuborish",
     "successTitle": "Rahmat, buyurtmangiz yuborildi.",
-    "successBody": "Tarjimon buyurtmalarni o'zi ko'rib chiqadi va sizga elektron pochta orqali javob beradi.",
+    "successBody": "Tarjimon buyurtmalarni oʻzi koʻrib chiqadi va sizga elektron pochta orqali javob beradi.",
     "sendAnother": "Yana bir buyurtma yuborish",
-    "fixFields": "Iltimos, quyida belgilangan maydonlarni to'g'rilang.",
-    "tooMany": "Juda ko'p urinish. Iltimos, bir daqiqadan so'ng qayta urinib ko'ring.",
-    "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan so'ng qayta urinib ko'ring.",
+    "fixFields": "Iltimos, quyida belgilangan maydonlarni toʻgʻrilang.",
+    "tooMany": "Juda koʻp urinish. Iltimos, bir daqiqadan soʻng qayta urinib koʻring.",
+    "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan soʻng qayta urinib koʻring.",
     "labelName": "Ismingiz",
     "labelEmail": "Email",
-    "labelPair": "Til yo'nalishi",
-    "choosePair": "Til yo'nalishini tanlang",
-    "pairMismatch": "Ushbu tarjimon bunday til yo'nalishi bilan ishlamaydi.",
+    "labelPair": "Til yoʻnalishi",
+    "choosePair": "Til yoʻnalishini tanlang",
+    "pairMismatch": "Ushbu tarjimon bunday til yoʻnalishi bilan ishlamaydi.",
     "labelProjectType": "Loyiha turi",
     "chooseProjectType": "Loyiha turini tanlang",
-    "labelWordCount": "So'zlar soni",
+    "labelWordCount": "Soʻzlar soni",
     "optional": "(ixtiyoriy)",
     "labelBudget": "Byudjet",
     "labelDeadline": "Muddat",
@@ -113,7 +114,7 @@
       "book": "Kitob",
       "article": "Maqola",
       "certified_document": "Tasdiqlangan hujjat",
-      "interpretation": "Og'zaki tarjima",
+      "interpretation": "Ogʻzaki tarjima",
       "other": "Boshqa"
     },
     "budget": {
@@ -121,24 +122,24 @@
       "under_100": "$100 dan kam",
       "100_500": "$100 - $500",
       "500_1000": "$500 - $1 000",
-      "over_1000": "$1 000 dan ko'p",
+      "over_1000": "$1 000 dan koʻp",
       "not_sure": "Hali aniq emas"
     }
   },
   "footer": {
     "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
     "rights": "Barcha huquqlar himoyalangan.",
-    "botLead": "Boshlagan kitobingizni Telegramda oxirigacha o'qing:",
+    "botLead": "Boshlagan kitobingizni Telegramda oxirigacha oʻqing:",
     "botName": "Kitoblarim boti"
   },
   "error": {
     "title": "Xatolik yuz berdi",
-    "body": "Sahifani yuklab bo'lmadi. Odatda bu vaqtinchalik holat.",
+    "body": "Sahifani yuklab boʻlmadi. Odatda bu vaqtinchalik holat.",
     "retry": "Qayta urinish"
   },
   "notFound": {
-    "title": "Bunday sahifa yo'q",
-    "body": "Havola eskirgan bo'lishi yoki profil o'chirilgan bo'lishi mumkin.",
+    "title": "Bunday sahifa yoʻq",
+    "body": "Havola eskirgan boʻlishi yoki profil oʻchirilgan boʻlishi mumkin.",
     "home": "Bosh sahifaga"
   },
   "bookDetail": {
@@ -152,7 +153,7 @@
     "role": "Loyihadagi roli",
     "excerptTitle": "Kitobdan parcha",
     "originalText": "Asl matn",
-    "translatedText": "O'zbekcha tarjimasi",
+    "translatedText": "Oʻzbekcha tarjimasi",
     "otherByAuthor": "Ushbu muallifning boshqa asarlari",
     "otherByTranslator": "Ushbu tarjimonning boshqa ishlari",
     "viewAuthor": "Muallif sahifasi",
@@ -167,31 +168,39 @@
     "format": "Format",
     "translatedBy": "Tarjima",
     "editedBy": "Muharrir",
-    "related": "Keyingi o'qish uchun",
-    "planInBot": "Bu kitobni Telegramda o'qish rejasi",
+    "related": "Keyingi oʻqish uchun",
+    "planInBot": "Bu kitobni Telegramda oxirigacha oʻqing",
     "series": "Turkum",
     "seriesPart": "{name}, {position}-kitob",
-    "categories": "Bo'limlar",
-    "readersTitle": "Kitoblarim o'quvchilari",
-    "readersLead": "Kitoblarim botida bu kitobni o'qib, baho berganlar.",
+    "categories": "Boʻlimlar",
+    "readersTitle": "Kitoblarim oʻquvchilari",
+    "readersLead": "Kitoblarim botida bu kitobni oʻqib, baho berganlar.",
     "readersCount": "{count} ta baho",
-    "readerAnonymous": "Kitoblarim o'quvchisi",
-    "readersRate": "O'qing va Telegramda baho bering"
+    "readerAnonymous": "Kitoblarim oʻquvchisi",
+    "readersRate": "Oʻqing va Telegramda baho bering",
+    "breadcrumbBooks": "Kitoblar"
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",
-    "totalBooks": "{count} ta kitob o'zbek tilida",
+    "totalBooks": "{count} ta kitob oʻzbek tilida",
     "about": "Muallif haqida",
-    "works": "O'zbek tilidagi asarlari",
-    "translators": "Muallif asarlarini o'girgan tarjimonlar",
-    "sourceLanguage": "Asosiy ijod tili"
+    "works": "Oʻzbek tilidagi asarlari",
+    "translators": "Muallif asarlarini oʻgirgan tarjimonlar",
+    "sourceLanguage": "Asosiy ijod tili",
+    "breadcrumbAuthors": "Mualliflar",
+    "metaTitle": "{name} — Oʻzbek tiliga tarjima qilingan asarlari",
+    "metaDescription": "{name} asarlarining oʻzbekcha tarjimalari, kitoblari va tarjimonlari haqida toʻliq maʼlumot.",
+    "translatorProfile": "Tarjimon profili"
   },
   "publisherDetail": {
     "back": "Nashriyotlarga qaytish",
     "totalBooks": "{count} ta nashr",
     "catalog": "Nashr qilingan tarjimalar",
     "translatorsAndAuthors": "Hamkor ijodkorlar",
-    "booksInCatalog": "Katalogdagi kitoblar"
+    "booksInCatalog": "Katalogdagi kitoblar",
+    "breadcrumbPublishers": "Nashriyotlar",
+    "metaTitle": "{name} — Nashriyot kitoblari",
+    "metaDescription": "{name} nashriyoti tomonidan chop etilgan tarjima kitoblar, mualliflar va tarjimonlar."
   },
   "taqrizchilar": {
     "pageTitle": "Barcha taqrizchilar",
@@ -199,20 +208,20 @@
     "sectionTitle": "Taqrizchilar",
     "count": "{count, plural, one {# taqrizchi} other {# taqrizchi}}",
     "taqrizlar": "{count, plural, one {# taqriz} other {# taqriz}}",
-    "empty": "Hozircha taqrizchilar yo'q.",
-    "viewProfile": "Profilni ko'rish",
+    "empty": "Hozircha taqrizchilar yoʻq.",
+    "viewProfile": "Profilni koʻrish",
     "defaultRole": "Taqrizchi",
     "seeAll": "Barcha taqrizchilar"
   },
   "taqriz": {
     "sectionTitle": "Taqrizlar",
     "empty": "Bu kitobga hali taqriz yozilmagan.",
-    "readMore": "To'liq o'qish",
+    "readMore": "Toʻliq oʻqish",
     "overall": "Umumiy baho",
     "breakdown": "Baholar",
     "writtenBy": "Taqrizchi",
     "about": "Kitob",
-    "watchVideo": "Videoni ko'rish",
+    "watchVideo": "Videoni koʻrish",
     "backToBook": "Kitobga qaytish",
     "notFound": "Taqriz topilmadi.",
     "aspects": {
@@ -222,6 +231,18 @@
       "cover": "Muqova va nashr sifati",
       "overall": "Umumiy taassurot"
     },
-    "editionRead": "O'qilgan nashr"
+    "editionRead": "Oʻqilgan nashr"
+  },
+  "pagination": {
+    "nav": "Sahifalar",
+    "previous": "Oldingi",
+    "next": "Keyingi",
+    "previousPage": "Oldingi sahifa",
+    "nextPage": "Keyingi sahifa",
+    "page": "{page}-sahifa"
+  },
+  "translatorCard": {
+    "books": "{count} ta kitob",
+    "viewProfile": "Profilni koʻrish"
   }
 }
