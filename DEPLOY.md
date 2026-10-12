@@ -80,6 +80,11 @@ server's `.env` (e.g. `DOMAIN=tarjima.kitoblarim.uz`). Caddy fetches the
 Let's Encrypt certificate for it automatically the first time it's
 requested — nothing to reload by hand.
 
+`kitoblarim.uz` itself belongs to the Kitoblarim bot's landing page now, which
+redirects old Reads links here. Reads must be on `tarjima.kitoblarim.uz`
+*before* that switch; the order is in `docs/domain-switch.md` of the
+kitoblarim repo.
+
 **5. Log the server in to GHCR (one time, for manual operations)**
 
 The deploy workflow authenticates its own pull using the `GITHUB_TOKEN`

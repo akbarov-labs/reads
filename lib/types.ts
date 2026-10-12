@@ -128,6 +128,10 @@ export interface BookWithTranslator extends Book {
   taqrizlar?: Taqriz[];
   /** Mean of each review's own average, or null when there are none. */
   averageScore?: number | null;
+  /** Book page only: Kitoblarim bot readers' stars, anonymous; null when nobody rated. */
+  readerRating?: ReaderRating | null;
+  /** Book page only: reviews bot readers chose to publish, approved, newest first. */
+  readerReviews?: ReaderReview[];
   /** Book page only: the work's own description. */
   description?: string | null;
   /** Book page only: every published edition. */
@@ -238,6 +242,22 @@ export const ASPECT_KEYS = [
 ] as const satisfies readonly (keyof AspectScores)[];
 
 export type AspectKey = (typeof ASPECT_KEYS)[number];
+
+/** The Kitoblarim bot readers' rating of a book: 1 to 5 stars. */
+export interface ReaderRating {
+  average: number;
+  count: number;
+}
+
+/** A review a Kitoblarim bot reader wrote and chose to publish here. */
+export interface ReaderReview {
+  id: string;
+  /** Their first name in the bot, or null. */
+  authorName: string | null;
+  rating: number | null;
+  body: string;
+  writtenAt: string | null;
+}
 
 /** One review, as it appears on a book page, a profile, or its own permalink. */
 export interface Taqriz {

@@ -10,6 +10,8 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, BookOpen, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ScoreBadge } from "@/components/ScoreBadge";
+import { ReaderReviews } from "@/components/ReaderReviews";
+import { botPlanUrl } from "@/lib/bot";
 
 type PageParams = { locale: string; id: string };
 
@@ -73,6 +75,8 @@ export default async function BookDetailPage({
   // genre) — the page no longer loads the whole catalogue to work it out.
   const relatedBooks = book.relatedBooks ?? [];
   const editions = book.editions ?? [];
+  // The bot finds the book by ISBN; any printing with one will do.
+  const botHref = botPlanUrl(editions.find((edition) => edition.isbn)?.isbn);
 
   return (
     <>
@@ -270,6 +274,17 @@ export default async function BookDetailPage({
                   </div>
                 </dl>
               </div>
+
+              <p className="mt-4 text-sm">
+                <a
+                  href={botHref}
+                  target="_blank"
+                  rel="noopener"
+                  className="text-zinc-500 underline underline-offset-4 decoration-stone-300 hover:text-amber-800 hover:decoration-amber-800 transition-colors"
+                >
+                  {tDetail("planInBot")} →
+                </a>
+              </p>
             </div>
           </div>
 
@@ -343,6 +358,16 @@ export default async function BookDetailPage({
               </div>
             )}
           </section>
+
+          {/* Kitoblarim bot readers: anonymous stars and the reviews they
+              chose to publish. Hidden when there are neither. */}
+          <ReaderReviews
+            rating={book.readerRating}
+            reviews={book.readerReviews ?? []}
+            locale={locale}
+            botHref={botHref}
+            t={tDetail}
+          />
 
           {/* Every printing of the book: publisher, ISBN, translators. */}
           {editions.length > 1 && (

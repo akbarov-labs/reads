@@ -127,7 +127,9 @@
   },
   "footer": {
     "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
-    "rights": "Barcha huquqlar himoyalangan."
+    "rights": "Barcha huquqlar himoyalangan.",
+    "botLead": "Boshlagan kitobingizni Telegramda oxirigacha o'qing:",
+    "botName": "Kitoblarim boti"
   },
   "error": {
     "title": "Xatolik yuz berdi",
@@ -166,9 +168,15 @@
     "translatedBy": "Tarjima",
     "editedBy": "Muharrir",
     "related": "Keyingi o'qish uchun",
+    "planInBot": "Bu kitobni Telegramda o'qish rejasi",
     "series": "Turkum",
     "seriesPart": "{name}, {position}-kitob",
-    "categories": "Bo'limlar"
+    "categories": "Bo'limlar",
+    "readersTitle": "Kitoblarim o'quvchilari",
+    "readersLead": "Kitoblarim botida bu kitobni o'qib, baho berganlar.",
+    "readersCount": "{count} ta baho",
+    "readerAnonymous": "Kitoblarim o'quvchisi",
+    "readersRate": "O'qing va Telegramda baho bering"
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",
