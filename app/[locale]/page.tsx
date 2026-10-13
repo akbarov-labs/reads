@@ -72,9 +72,9 @@ export default async function Home({
 
   // Global hero stats
   const stats = [
-    { label: t("statTranslators"), value: translators.length },
     { label: t("statBooks"), value: books.total },
     { label: t("statAuthors"), value: authors.total },
+    { label: t("statTranslators"), value: translators.length },
     { label: t("statPublishers"), value: publishers.total },
   ];
 
@@ -121,29 +121,8 @@ export default async function Home({
           </Container>
         </section>
 
-        {/* ─── TRANSLATORS ─────────────────────────────────────── */}
-        <section className="py-16 sm:py-20">
-          <Container>
-            <SectionHeader
-              title={t("translatorsTitle")}
-              count={translators.length}
-              seeMoreHref="/translators"
-              seeMoreLabel={t("translatorsSeeAll")}
-            />
-            {featuredTranslators.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {featuredTranslators.map((translator) => (
-                  <TranslatorCard key={translator.slug} translator={translator} />
-                ))}
-              </div>
-            ) : (
-              <p className="text-zinc-400 text-sm">{t("empty")}</p>
-            )}
-          </Container>
-        </section>
-
         {/* ─── BOOKS ───────────────────────────────────────────── */}
-        <section className="py-16 sm:py-20 bg-white border-y border-stone-200">
+        <section className="py-16 sm:py-20 bg-white border-b border-stone-200">
           <Container>
             <SectionHeader
               title={t("booksTitle")}
@@ -176,6 +155,27 @@ export default async function Home({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {featuredAuthors.map((author) => (
                   <AuthorCard key={author.name} author={author} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-zinc-400 text-sm">{t("empty")}</p>
+            )}
+          </Container>
+        </section>
+
+        {/* ─── TRANSLATORS ─────────────────────────────────────── */}
+        <section className="py-16 sm:py-20 bg-white border-y border-stone-200">
+          <Container>
+            <SectionHeader
+              title={t("translatorsTitle")}
+              count={translators.length}
+              seeMoreHref="/translators"
+              seeMoreLabel={t("translatorsSeeAll")}
+            />
+            {featuredTranslators.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {featuredTranslators.map((translator) => (
+                  <TranslatorCard key={translator.slug} translator={translator} />
                 ))}
               </div>
             ) : (
