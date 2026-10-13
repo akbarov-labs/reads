@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { Translator } from "@/lib/types";
+import type { BookWithTranslator, Translator } from "@/lib/types";
 import {
   HREFLANG,
   OG_LOCALE,
@@ -112,4 +112,22 @@ export function translatorMetadata({
 /** hreflang tag for a locale, exposed for the sitemap's alternates block. */
 export function hreflangFor(locale: Locale): string {
   return HREFLANG[locale];
+}
+
+/**
+ * A book page's description: one plain sentence a search result or an
+ * answer engine can quote — the title, who wrote and translated it, and who
+ * published it when, in the page's language. Clauses with no data are
+ * dropped, never filled with "null".
+ */
+export function bookDescription(book: BookWithTranslator, t: (key: string) => string): string {
+  const year = (book.editions ?? []).find((edition) => edition.year)?.year ?? book.year;
+  const title = `${book.uzbekTitle}${book.originalTitle && book.originalTitle !== book.uzbekTitle ? ` (${book.originalTitle})` : ""}`;
+  return [
+    book.author ? `${title} — ${book.author}.` : `${title}.`,
+    book.translatorName ? `${t("translator")}: ${book.translatorName}.` : null,
+    book.publisher ? `${t("publisher")}: ${book.publisher}${year ? `, ${year}` : ""}.` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 }

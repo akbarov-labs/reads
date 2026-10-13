@@ -15,30 +15,13 @@ import { botPlanUrl } from "@/lib/bot";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
+import { bookDescription } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
 
 export async function generateStaticParams(): Promise<PageParams[]> {
   return [];
-}
-
-/**
- * One plain sentence a search result or an answer engine can quote: the
- * title, who wrote and translated it, and who published it when, in the
- * page's language. Clauses with no data are dropped, never filled with
- * "null".
- */
-function bookDescription(book: BookWithTranslator, t: (key: string) => string): string {
-  const year = (book.editions ?? []).find((edition) => edition.year)?.year ?? book.year;
-  const translator = book.translatorName;
-  return [
-    `${book.uzbekTitle}${book.originalTitle && book.originalTitle !== book.uzbekTitle ? ` (${book.originalTitle})` : ""} — ${book.author}.`,
-    translator ? `${t("translator")}: ${translator}.` : null,
-    book.publisher ? `${t("publisher")}: ${book.publisher}${year ? `, ${year}` : ""}.` : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
 }
 
 export async function generateMetadata({

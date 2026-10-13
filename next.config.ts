@@ -87,6 +87,8 @@ const nextConfig: NextConfig = {
     // for: one round trip fewer on a slow phone connection.
     inlineCss: true,
   },
+  // `next lint` covers its default folders plus the test suite.
+  eslint: { dirs: ["app", "components", "lib", "tests"] },
   // Nothing gains from announcing the framework in every response.
   poweredByHeader: false,
   images: {

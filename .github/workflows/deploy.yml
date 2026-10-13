@@ -15,9 +15,11 @@ env:
   NEXT_PUBLIC_API_URL: https://dashboard.kitoblarim.uz/api
 
 jobs:
-  # Cheap, fast gate: a lint failure means the build is likely broken too,
-  # so catch it before spending time on a Docker build.
-  lint:
+  # Cheap, fast gate before any time goes on a Docker build: a lint failure
+  # means the build is likely broken too, and a failing test means a canonical,
+  # hreflang, sitemap or structured-data guarantee has regressed — either one
+  # stops the deploy.
+  checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,8 +37,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test
+
   build-and-push:
-    needs: lint
+    needs: checks
     runs-on: ubuntu-latest
     permissions:
       contents: read
