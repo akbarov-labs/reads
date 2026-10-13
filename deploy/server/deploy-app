@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# The only thing CI is allowed to do on the Contabo server.
+#
+# Installed root-owned at /usr/local/sbin/deploy-app (see
+# docs/server-hardening.md). CI never gets a shell: each repo's key in
+# /home/deployer/.ssh/authorized_keys is pinned to one app by a forced
+# command, and sudoers lets `deployer` run this script and nothing else:
+#
+#   restrict,command="sudo -n /usr/local/sbin/deploy-app reads \"$SSH_ORIGINAL_COMMAND\"" ssh-ed25519 AAAA... ci-reads
+#
+# So a leaked CI key can only redeploy an image tag of that one app that
+# already exists in GHCR. Everything that decides *what* runs — the compose
+# file, .env, the image name — lives on the server, owned by root, and CI
+# cannot change it.
+#
+# Usage (what the forced command runs):
+#   deploy-app <app> <image-tag>
+# stdin: line 1 = GitHub username, line 2 = registry token (the run's
+# GITHUB_TOKEN). Neither is written to disk.
+
+set -euo pipefail
+umask 077
+
+die() { echo "deploy-app: $*" >&2; logger -t deploy-app "refused: $*" || true; exit 1; }
+
+app=${1:-}
+tag=${2:-}
+
+[[ $app =~ ^[a-z0-9-]{1,40}$ ]] || die "bad app name"
+# Commit SHAs only — the workflow tags every image with one. Never `latest`,
+# so a deploy always names exactly what it runs.
+[[ $tag =~ ^[0-9a-f]{7,40}$ ]] || die "bad image tag"
+
+conf=/etc/deploy-app/$app.conf
+[[ -f $conf ]] || die "unknown app: $app"
+
+# Root-owned config: APP_DIR, REPO, and optionally COMPOSE_FILE, KEEP_IMAGES.
+# shellcheck source=/dev/null
+source "$conf"
+: "${APP_DIR:?APP_DIR missing in $conf}"
+: "${REPO:?REPO missing in $conf}"
+COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.prod.yml}
+KEEP_IMAGES=${KEEP_IMAGES:-3}
+
+IFS= read -r registry_user || die "no registry user on stdin"
+IFS= read -r registry_token || die "no registry token on stdin"
+[[ $registry_user =~ ^[A-Za-z0-9-]{1,39}(\[bot\])?$ ]] || die "bad registry user"
+[[ -n $registry_token ]] || die "empty registry token"
+
+# One deploy per app at a time, whatever triggered it.
+exec 9>"/run/lock/deploy-app-$app.lock"
+flock 9
+
+logger -t deploy-app "app=$app tag=$tag by=$registry_user"
+cd "$APP_DIR"
+
+echo "--- disk before"
+df -h /
+
+# Free space before pulling, but only this app's images: other projects on
+# this server keep theirs. Keeps the newest $KEEP_IMAGES as rollback targets;
+# the one the running container uses refuses removal, which is fine.
+docker image ls "$REPO" --format '{{.Repository}}:{{.Tag}}' \
+  | grep -v ':<none>$' \
+  | tail -n +$((KEEP_IMAGES + 1)) \
+  | xargs -r docker rmi 2>/dev/null || true
+
+# Log in with a throwaway config so the short-lived token never lands in
+# /root/.docker/config.json — that would also overwrite the long-lived
+# read:packages login kept there for manual pulls (DEPLOY.md step 5).
+docker_cfg=$(mktemp -d)
+trap 'rm -rf "$docker_cfg"' EXIT
+printf '%s' "$registry_token" \
+  | docker --config "$docker_cfg" login ghcr.io -u "$registry_user" --password-stdin >/dev/null
+unset registry_token
+docker --config "$docker_cfg" pull "$REPO:$tag"
+rm -rf "$docker_cfg"
+
+# The image is local now, so compose does not need registry access.
+# IMAGE is set explicitly so .env can never point compose at another image
+# than the one just pulled.
+IMAGE="$REPO" IMAGE_TAG="$tag" \
+  docker compose -f "$COMPOSE_FILE" up -d --force-recreate --remove-orphans
+
+# Dangling layers only — safe on a shared server.
+docker image prune -f >/dev/null || true
+
+echo "--- running"
+IMAGE="$REPO" IMAGE_TAG="$tag" docker compose -f "$COMPOSE_FILE" ps
+echo "--- disk after"
+df -h /
+logger -t deploy-app "app=$app tag=$tag done"
