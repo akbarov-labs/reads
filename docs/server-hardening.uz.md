@@ -197,13 +197,17 @@ qiling va menga yozing.
 
 ```bash
 ssh -p $PORT -i ~/.ssh/ci_reads -o IdentitiesOnly=yes deployer@$HOST
-# → deploy-app: bad image tag   (terminal ochilmaydi, ulanish yopiladi)
 ssh -p $PORT -i ~/.ssh/ci_reads -o IdentitiesOnly=yes deployer@$HOST 'cat /etc/shadow'
-# → deploy-app: bad image tag   (yuborilgan buyruq shunchaki "tag" deb qabul qilinadi va rad etiladi)
 ```
 
-Ikkalasida ham `bad image tag` chiqsa, hammasi toʻgʻri: kalit faqat deploy
-qila oladi.
+Ikkalasida ham `deploy-app: bad image tag` chiqib, ulanish yopilsa,
+hammasi toʻgʻri: terminal ochilmaydi, yuborilgan buyruq esa shunchaki "tag"
+deb qabul qilinib rad etiladi. Kalit faqat deploy qila oladi.
+`PTY allocation request failed` chiqishi ham normal: bu kalitga terminal
+ochish taqiqlangan.
+
+> Eslatma: kod bloklaridagi `# …` bilan boshlanadigan izohlarni Mac
+> terminaliga nusxalamang. zsh ularni buyruq deb oʻylab xato beradi.
 
 Serverda barcha rad etishlar yoziladi: `sudo journalctl -t deploy-app -n 20`.
 

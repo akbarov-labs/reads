@@ -146,10 +146,12 @@ On your laptop:
 
 ```bash
 ssh -p $PORT -i ~/.ssh/ci_reads -o IdentitiesOnly=yes deployer@$HOST
-# → deploy-app: bad image tag   (no shell, connection closes)
 ssh -p $PORT -i ~/.ssh/ci_reads -o IdentitiesOnly=yes deployer@$HOST 'cat /etc/shadow'
-# → deploy-app: bad image tag   (the command is just treated as a tag)
 ```
+
+Both must answer `deploy-app: bad image tag` and close: no shell, and the
+command is just treated as a tag. `PTY allocation request failed` is
+expected too — the key may not open a terminal.
 
 Refusals are logged on the server: `sudo journalctl -t deploy-app -n 20`.
 
