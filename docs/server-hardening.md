@@ -1,5 +1,7 @@
 # Hardening the Contabo server
 
+> Oʻzbekcha: [server-hardening.uz.md](server-hardening.uz.md)
+
 Goal: CI never gets a shell, and a leaked CI key can do one thing only —
 redeploy an image that already exists for one app.
 
