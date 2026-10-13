@@ -6,23 +6,6 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const isDev = process.env.NODE_ENV !== "production";
 
 /**
- * The visitor's own browser posts the inquiry form straight to Reads-admin,
- * which is a different origin, so connect-src has to name it. Falls back to
- * 'self' only, which is correct for a deployment where nothing calls out.
- */
-function apiOrigin(): string | null {
-  const url = process.env.NEXT_PUBLIC_API_URL;
-
-  if (!url) return null;
-
-  try {
-    return new URL(url).origin;
-  } catch {
-    return null;
-  }
-}
-
-/**
  * Content-Security-Policy.
  *
  * script-src keeps 'unsafe-inline' on purpose. The alternative — a per-request
@@ -34,8 +17,6 @@ function apiOrigin(): string | null {
  * object-src, base-uri, form-action and frame-ancestors.
  */
 function contentSecurityPolicy(): string {
-  const api = apiOrigin();
-
   return [
     "default-src 'self'",
     // 'unsafe-eval' is only ever added in development, where Next's hot
@@ -47,7 +28,9 @@ function contentSecurityPolicy(): string {
     // image optimizer's own output and inlined SVG icons.
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
-    `connect-src 'self'${api ? ` ${api}` : ""}${isDev ? " ws: wss:" : ""}`,
+    // The inquiry form posts to this site's own /api/inquiries, which
+    // forwards it server-side, so the browser talks to nothing else.
+    `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -128,6 +111,10 @@ const nextConfig: NextConfig = {
       // same-origin /_next/image URLs. No port here on purpose: :80 is the
       // default for http and normalizes away when the URL is parsed.
       { protocol: "http", hostname: "reads-admin-app" },
+      // Staging's own Reads-admin, once it has one. images.remotePatterns
+      // is fixed at build time and staging runs the production image, so
+      // its host has to be listed here rather than in an env var.
+      { protocol: "http", hostname: "reads-admin-staging-app" },
       // The public admin host, used when an admin uploads a share image:
       // og:image has to be an absolute URL a scraper can fetch.
       { protocol: "https", hostname: "dashboard.kitoblarim.uz" },

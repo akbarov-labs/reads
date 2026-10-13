@@ -12,12 +12,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-# NEXT_PUBLIC_* vars are inlined into the client bundle at build time, not
-# read from the environment at container start — so this one has to arrive
-# as a build arg (set by .github/workflows/deploy.yml), not via
-# docker-compose's `environment:`/`env_file:` at runtime.
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+# No build args, on purpose: everything environment-specific (API_URL,
+# SITE_URL, …) is read at runtime from the server's .env, so this one image
+# runs on staging and is then promoted unchanged to production. Never add a
+# NEXT_PUBLIC_* value here — it would be frozen into the client bundle.
 RUN npm run build
 
 # ---- runner: minimal runtime image using Next.js standalone output ----
@@ -25,14 +23,6 @@ FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Also needed at *runtime*, not just at build: next.config.ts derives the
-# Content-Security-Policy's connect-src from it, and next.config is loaded
-# when the server starts. Without it the browser would block the inquiry
-# form's cross-origin POST to the admin API. Public value either way -- it
-# is already inlined in the client bundle.
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs

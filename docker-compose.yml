@@ -13,11 +13,6 @@ services:
       # host's port 8000 — host.docker.internal reaches it from inside
       # this container. Override in a .env file if that changes.
       - API_URL=${API_URL:-http://host.docker.internal:8000/api}
-      # Browser-facing — the visitor's own browser calls this directly (the
-      # inquiry form submits client-side), so it must be an address *their*
-      # browser can reach, not this container's. Always "localhost" here,
-      # never host.docker.internal.
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:

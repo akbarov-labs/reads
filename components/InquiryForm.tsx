@@ -21,13 +21,6 @@ const BUDGET_RANGE_VALUES = [
   "not_sure",
 ] as const;
 
-// Browser-side only: the visitor's own browser makes this request, so it
-// needs a URL reachable from wherever they actually are, never the
-// server-only API_URL used for SSR (which, in local Docker dev, points at
-// host.docker.internal, meaningless outside the container).
-const PUBLIC_API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api";
-
 type FieldErrors = Record<string, string[]>;
 
 function pairKey(pair: LanguagePair) {
@@ -81,8 +74,10 @@ export function InquiryForm({
     };
 
     try {
+      // Same origin: app/api/inquiries/[slug] forwards it to Reads-admin,
+      // so the browser never needs the admin's address.
       const response = await fetch(
-        `${PUBLIC_API_URL}/translators/${encodeURIComponent(slug)}/inquiries`,
+        `/api/inquiries/${encodeURIComponent(slug)}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json", Accept: "application/json" },
