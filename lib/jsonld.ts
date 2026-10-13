@@ -1,4 +1,5 @@
 import type { Book, Translator } from "@/lib/types";
+import { publicAssetUrl } from "@/lib/api";
 import { HREFLANG, SITE_NAME, SITE_URL, absoluteUrl, type Locale } from "@/lib/site";
 import { routing } from "@/i18n/routing";
 import { safeExternalUrl } from "@/lib/safeUrl";
@@ -202,4 +203,257 @@ export function translatorGraph({
   }
 
   return { "@context": "https://schema.org", "@graph": graph };
+}
+
+// ---------------------------------------------------------------------------
+// The catalogue's own pages. Each graph names the page, the thing on it and
+// the way back, cross-referenced by @id, with only facts the page shows.
+// ---------------------------------------------------------------------------
+
+const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+
+/** Who publishes the catalogue: Kitoblarim, the same name as the Telegram bot. */
+function organizationNode(): Node {
+  return {
+    "@type": "Organization",
+    "@id": ORGANIZATION_ID,
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/apple-icon.png`,
+    sameAs: ["https://t.me/kitob_javonim_bot"],
+  };
+}
+
+function breadcrumbNode(locale: Locale, pageUrl: string, trail: { name: string; path: string }[]): Node {
+  return {
+    "@type": "BreadcrumbList",
+    "@id": `${pageUrl}#breadcrumb`,
+    itemListElement: trail.map((step, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: step.name,
+      item: absoluteUrl(locale, step.path),
+    })),
+  };
+}
+
+function pageNode(type: string, locale: Locale, url: string, name: string, about: string, description?: string): Node {
+  return compact({
+    "@type": type,
+    "@id": url,
+    url,
+    name,
+    description,
+    inLanguage: HREFLANG[locale],
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": about },
+    mainEntity: { "@id": about },
+    breadcrumb: { "@id": `${url}#breadcrumb` },
+  });
+}
+
+/**
+ * The home page's graph: the site, its publisher, and the search box an
+ * answer engine or Google can hand a query to (the books listing's ?q=).
+ */
+export function siteGraph({ locale, name, description }: { locale: Locale; name: string; description: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      organizationNode(),
+      {
+        "@type": "WebSite",
+        "@id": WEBSITE_ID,
+        url: SITE_URL,
+        name,
+        description,
+        inLanguage: routing.locales.map((code) => HREFLANG[code]),
+        publisher: { "@id": ORGANIZATION_ID },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: { "@type": "EntryPoint", urlTemplate: `${absoluteUrl(locale, "/books")}?q={search_term_string}` },
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  };
+}
+
+type BookPageInput = {
+  book: import("@/lib/types").BookWithTranslator;
+  locale: Locale;
+  path: string;
+  description: string;
+  trail: { name: string; path: string }[];
+};
+
+/**
+ * One book's page: the work, every printing of it with its ISBN, who wrote,
+ * translated and published it, critics' reviews (taqrizlar, scored out of
+ * 10) and Kitoblarim readers' rating and reviews (out of 5). A rating only
+ * appears when readers gave one: an empty aggregate is a false claim.
+ */
+export function bookPageGraph({ book, locale, path, description, trail }: BookPageInput) {
+  const url = absoluteUrl(locale, path);
+  const bookId = `${url}#book`;
+  const editions = book.editions ?? [];
+  const firstIsbn = editions.find((edition) => edition.isbn)?.isbn;
+  const authors = (book.authors ?? []).map((author) => ({
+    "@type": "Person",
+    name: author.name,
+    url: absoluteUrl(locale, `/author/${author.slug}`),
+  }));
+  const translators = new Map<string, Node>();
+  for (const edition of editions) {
+    for (const credit of edition.translators) {
+      if ((credit.role ?? "translator") !== "translator") continue;
+      translators.set(credit.slug, { "@type": "Person", name: credit.name, url: absoluteUrl(locale, `/translator/${credit.slug}`) });
+    }
+  }
+
+  const reviews: Node[] = [
+    ...(book.taqrizlar ?? []).map((taqriz) =>
+      compact({
+        "@type": "Review",
+        url: absoluteUrl(locale, `/taqriz/${taqriz.id}`),
+        author: taqriz.taqrizchi ? { "@type": "Person", name: taqriz.taqrizchi.name } : undefined,
+        datePublished: taqriz.createdAt ?? undefined,
+        reviewBody: taqriz.body,
+        reviewRating:
+          taqriz.averageScore != null
+            ? { "@type": "Rating", ratingValue: taqriz.averageScore, bestRating: 10, worstRating: 0 }
+            : undefined,
+      }),
+    ),
+    ...(book.readerReviews ?? []).map((review) =>
+      compact({
+        "@type": "Review",
+        author: { "@type": "Person", name: review.authorName || "Kitoblarim" },
+        datePublished: review.writtenAt ?? undefined,
+        reviewBody: review.body,
+        reviewRating: review.rating ? { "@type": "Rating", ratingValue: review.rating, bestRating: 5, worstRating: 1 } : undefined,
+      }),
+    ),
+  ];
+
+  const bookNodeFull = compact({
+    "@type": "Book",
+    "@id": bookId,
+    url,
+    name: book.uzbekTitle,
+    alternateName: book.originalTitle && book.originalTitle !== book.uzbekTitle ? book.originalTitle : undefined,
+    description: book.description ?? undefined,
+    image: publicAssetUrl(book.coverUrl),
+    inLanguage: BOOK_LANGUAGE,
+    isbn: firstIsbn ?? undefined,
+    author: authors.length ? authors : book.author ? { "@type": "Person", name: book.author } : undefined,
+    translator: translators.size ? [...translators.values()] : undefined,
+    genre: book.categories?.map((category) => category.name),
+    translationOfWork:
+      translators.size && book.originalTitle
+        ? compact({ "@type": "Book", name: book.originalTitle, inLanguage: language(book.sourceLanguage) })
+        : undefined,
+    workExample: editions.map((edition) =>
+      compact({
+        "@type": "Book",
+        name: edition.title || book.uzbekTitle,
+        isbn: edition.isbn ?? undefined,
+        bookEdition: edition.year ? String(edition.year) : undefined,
+        datePublished: edition.year ? String(edition.year) : undefined,
+        numberOfPages: edition.pages ?? undefined,
+        publisher: edition.publisher ? { "@type": "Organization", name: edition.publisher.name } : undefined,
+        inLanguage: edition.language ?? undefined,
+      }),
+    ),
+    aggregateRating:
+      book.readerRating && book.readerRating.count > 0
+        ? {
+            "@type": "AggregateRating",
+            ratingValue: book.readerRating.average,
+            ratingCount: book.readerRating.count,
+            bestRating: 5,
+            worstRating: 1,
+          }
+        : undefined,
+    review: reviews,
+  });
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      pageNode("ItemPage", locale, url, book.uzbekTitle, bookId, description),
+      bookNodeFull,
+      breadcrumbNode(locale, url, trail),
+    ],
+  };
+}
+
+/** An author's page: the person, and the way back. */
+export function authorPageGraph({
+  author,
+  locale,
+  path,
+  trail,
+}: {
+  author: import("@/lib/types").Author;
+  locale: Locale;
+  path: string;
+  trail: { name: string; path: string }[];
+}) {
+  const url = absoluteUrl(locale, path);
+  const personId = `${url}#person`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      pageNode("ProfilePage", locale, url, author.name, personId),
+      compact({
+        "@type": "Person",
+        "@id": personId,
+        url,
+        name: author.name,
+        alternateName: author.originalName && author.originalName !== author.name ? author.originalName : undefined,
+        description: author.bio ?? undefined,
+        nationality: author.nationality ?? undefined,
+        birthDate: author.birthYear ? String(author.birthYear) : undefined,
+        deathDate: author.deathYear ? String(author.deathYear) : undefined,
+        image: publicAssetUrl(author.portraitUrl || author.imageUrl),
+        sameAs: safeExternalUrl(author.websiteUrl) ?? undefined,
+      }),
+      breadcrumbNode(locale, url, trail),
+    ],
+  };
+}
+
+/** A publisher's page: the organization, and the way back. */
+export function publisherPageGraph({
+  publisher,
+  locale,
+  path,
+  trail,
+}: {
+  publisher: import("@/lib/types").Publisher;
+  locale: Locale;
+  path: string;
+  trail: { name: string; path: string }[];
+}) {
+  const url = absoluteUrl(locale, path);
+  const orgId = `${url}#publisher`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      pageNode("ProfilePage", locale, url, publisher.name, orgId),
+      compact({
+        "@type": "Organization",
+        "@id": orgId,
+        url,
+        name: publisher.name,
+        description: publisher.bio ?? undefined,
+        foundingDate: publisher.establishedYear ? String(publisher.establishedYear) : undefined,
+        logo: publicAssetUrl(publisher.logoUrl),
+        sameAs: safeExternalUrl(publisher.websiteUrl) ?? undefined,
+      }),
+      breadcrumbNode(locale, url, trail),
+    ],
+  };
 }

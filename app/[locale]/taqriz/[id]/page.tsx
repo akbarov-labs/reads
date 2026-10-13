@@ -75,7 +75,7 @@ export default async function TaqrizPage({
           {taqriz.book && (
             <Link
               href={`/book/${taqriz.book.id}`}
-              className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-amber-800 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-forest-800 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               {t("backToBook")}
@@ -87,7 +87,7 @@ export default async function TaqrizPage({
             {taqriz.book && (
               <Link
                 href={`/book/${taqriz.book.id}`}
-                className="group flex items-start gap-4 rounded-2xl border border-stone-200 bg-white p-4 hover:border-amber-300 transition-colors"
+                className="group flex items-start gap-4 rounded-2xl border border-stone-200 bg-white p-4 hover:border-forest-300 transition-colors"
               >
                 <div className="relative h-24 w-16 shrink-0 overflow-hidden rounded bg-stone-100 ring-1 ring-stone-200">
                   {taqriz.book.coverUrl && (
@@ -104,7 +104,7 @@ export default async function TaqrizPage({
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                     {t("about")}
                   </span>
-                  <h1 className="font-serif text-xl text-zinc-900 group-hover:text-amber-800 transition-colors">
+                  <h1 className="font-serif text-xl text-zinc-900 group-hover:text-forest-800 transition-colors">
                     {taqriz.book.uzbekTitle}
                   </h1>
                   <p className="mt-0.5 text-sm text-zinc-500">{taqriz.book.author}</p>
@@ -150,7 +150,7 @@ export default async function TaqrizPage({
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                       {t("writtenBy")}
                     </span>
-                    <p className="font-serif text-base text-zinc-900 group-hover:text-amber-800 transition-colors">
+                    <p className="font-serif text-base text-zinc-900 group-hover:text-forest-800 transition-colors">
                       {taqriz.taqrizchi.name}
                     </p>
                   </div>

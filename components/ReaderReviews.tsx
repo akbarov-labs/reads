@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import type { ReaderRating, ReaderReview } from "@/lib/types";
 
 /**
@@ -31,7 +31,7 @@ export function ReaderReviews({
         {rating && (
           <div className="text-right shrink-0">
             <span className="inline-flex items-center gap-1 font-serif text-2xl text-zinc-900">
-              <Star className="h-5 w-5 fill-amber-500 text-amber-500" aria-hidden="true" />
+              <Star className="h-5 w-5 fill-star text-star" aria-hidden="true" />
               {rating.average.toFixed(1)}
             </span>
             <span className="block text-xs text-zinc-500">{t("readersCount", { count: rating.count })}</span>
@@ -65,9 +65,10 @@ export function ReaderReviews({
           href={botHref}
           target="_blank"
           rel="noopener"
-          className="text-zinc-500 underline underline-offset-4 decoration-stone-300 hover:text-amber-800 hover:decoration-amber-800 transition-colors"
+          className="text-zinc-500 underline underline-offset-4 decoration-stone-300 hover:text-forest-800 hover:decoration-forest-800 transition-colors"
         >
-          {t("readersRate")} →
+          {t("readersRate")}
+          <ArrowRight aria-hidden="true" className="ml-1 inline h-3.5 w-3.5 align-[-2px]" />
         </a>
       </p>
     </section>
@@ -80,7 +81,7 @@ function Stars({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <Star
           key={star}
-          className={star <= rating ? "h-3.5 w-3.5 fill-amber-500 text-amber-500" : "h-3.5 w-3.5 text-stone-300"}
+          className={star <= rating ? "h-3.5 w-3.5 fill-star text-star" : "h-3.5 w-3.5 text-stone-300"}
           aria-hidden="true"
         />
       ))}

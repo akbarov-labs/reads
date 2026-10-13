@@ -178,7 +178,7 @@ server" above) but not a rebuild:
 ```
 DOMAIN=tarjima.kitoblarim.uz
 SITE_URL=https://tarjima.kitoblarim.uz
-SITE_NAME=Reads
+SITE_NAME=Kitoblarim
 REVALIDATE_SECRET=<openssl rand -hex 32>
 ```
 

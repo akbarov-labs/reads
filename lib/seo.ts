@@ -62,7 +62,7 @@ export function translatorMetadata({
   const noindex = translator.seo?.noindex ?? false;
 
   return {
-    // `absolute` opts out of the layout's "%s · Reads" template. The API
+    // `absolute` opts out of the layout's "%s | Kitoblarim" template. The API
     // already resolved a complete title (and an admin may have written it by
     // hand), so appending a suffix would both double the branding and make
     // the panel's preview a lie about what search engines see.

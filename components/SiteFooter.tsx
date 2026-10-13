@@ -16,12 +16,12 @@ export async function SiteFooter() {
             href={botUrl()}
             target="_blank"
             rel="noopener"
-            className="underline underline-offset-4 decoration-stone-300 hover:text-amber-800 hover:decoration-amber-800 transition-colors"
+            className="underline underline-offset-4 decoration-stone-300 hover:text-forest-800 hover:decoration-forest-800 transition-colors"
           >
             {t("botName")}
           </a>
         </p>
-        <p>© {new Date().getFullYear()} Reads.</p>
+        <p>© {new Date().getFullYear()} Kitoblarim</p>
       </Container>
     </footer>
   );

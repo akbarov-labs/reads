@@ -2,16 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Literata draws the Uzbek ʻ (U+02BB, as in Oʻzbek) with zero width, so it
+   lands on the letter before it. These two 1 KB files are Literata's own ‘
+   (U+2018) served for ʻ, weight axis intact (built from the fontsource
+   files with fontTools; see public/fonts). Only ʻ ever loads them. */
+@font-face {
+  font-family: "Literata Okina";
+  src: url("/fonts/literata-okina-wght-normal.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+02BB;
+}
+@font-face {
+  font-family: "Literata Okina";
+  src: url("/fonts/literata-okina-wght-italic.woff2") format("woff2");
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+02BB;
+}
+
+/* Kitoblarim's faces, self-hosted (app/[locale]/layout.tsx imports them):
+   Onest for everything, Literata for book titles and headings. */
 :root {
-  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-newsreader: "Newsreader", ui-serif, Georgia, serif;
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-book: "Literata Okina", "Literata Variable", Georgia, "Times New Roman", serif;
+  accent-color: theme("colors.forest.700");
+  caret-color: theme("colors.forest.700");
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: theme("colors.stone.50");
+  color: theme("colors.zinc.900");
+  -webkit-font-smoothing: antialiased;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* The parts the browser draws carry the brand too. */
 ::selection {
-  background-color: theme("colors.zinc.800");
-  color: theme("colors.stone.50");
+  background-color: theme("colors.forest.100");
+  color: theme("colors.forest.900");
+}
+
+:focus-visible {
+  outline: 2px solid theme("colors.forest.700");
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+a {
+  text-decoration-color: theme("colors.forest.300");
+  text-underline-offset: 0.25em;
+}
+
+/* Counts and years line up in rows and tables. */
+dd,
+time {
+  font-variant-numeric: tabular-nums;
+}
+
+* {
+  scrollbar-color: theme("colors.stone.300") transparent;
 }

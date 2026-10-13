@@ -3,20 +3,42 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getBookById } from "@/lib/api";
+import { getBookById, publicAssetUrl } from "@/lib/api";
 import type { BookWithTranslator, Edition } from "@/lib/types";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ArrowLeft, BookOpen, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
 import { botPlanUrl } from "@/lib/bot";
+import { JsonLd } from "@/components/JsonLd";
+import { bookPageGraph } from "@/lib/jsonld";
+import { localeAlternates, type Locale } from "@/lib/site";
+import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
 
 export async function generateStaticParams(): Promise<PageParams[]> {
   return [];
+}
+
+/**
+ * One plain sentence a search result or an answer engine can quote: the
+ * title, who wrote and translated it, and who published it when, in the
+ * page's language. Clauses with no data are dropped, never filled with
+ * "null".
+ */
+function bookDescription(book: BookWithTranslator, t: (key: string) => string): string {
+  const year = (book.editions ?? []).find((edition) => edition.year)?.year ?? book.year;
+  const translator = book.translatorName;
+  return [
+    `${book.uzbekTitle}${book.originalTitle && book.originalTitle !== book.uzbekTitle ? ` (${book.originalTitle})` : ""} — ${book.author}.`,
+    translator ? `${t("translator")}: ${translator}.` : null,
+    book.publisher ? `${t("publisher")}: ${book.publisher}${year ? `, ${year}` : ""}.` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 export async function generateMetadata({
@@ -25,20 +47,30 @@ export async function generateMetadata({
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   const { locale, id } = await params;
-  const book = await getBookById(id, locale);
+  const [book, t] = await Promise.all([
+    getBookById(id, locale),
+    getTranslations({ locale, namespace: "bookDetail" }),
+  ]);
   if (!book) return { robots: { index: false, follow: false } };
 
-  // A book with no translator must not advertise "tarjimon: null" to search
-  // engines, so the clause is dropped rather than left empty.
-  const credits = [
-    `muallif: ${book.author}`,
-    book.translatorName ? `tarjimon: ${book.translatorName}` : null,
-    `nashriyot: ${book.publisher}`,
-  ].filter(Boolean);
+  const description = bookDescription(book, t);
+  const cover = publicAssetUrl(book.coverUrl);
 
   return {
-    title: `${book.uzbekTitle} — ${book.author} | Reads`,
-    description: `${book.uzbekTitle} (${book.originalTitle}), ${credits.join(", ")}.`,
+    title: `${book.uzbekTitle} — ${book.author}`,
+    description,
+    // Its own address, and its own in each language. Without this the page
+    // inherits the layout's, which points at the home page and tells search
+    // engines every book is a copy of it.
+    alternates: localeAlternates(locale as Locale, `/book/${id}`),
+    openGraph: {
+      type: "book",
+      title: `${book.uzbekTitle} — ${book.author}`,
+      description,
+      url: localeAlternates(locale as Locale, `/book/${id}`).canonical,
+      ...(cover ? { images: [{ url: cover, alt: book.uzbekTitle }] } : {}),
+      isbn: (book.editions ?? []).find((edition) => edition.isbn)?.isbn ?? undefined,
+    },
   };
 }
 
@@ -80,6 +112,19 @@ export default async function BookDetailPage({
 
   return (
     <>
+      <JsonLd
+        data={bookPageGraph({
+          book,
+          locale: locale as Locale,
+          path: `/book/${id}`,
+          description: bookDescription(book, tDetail),
+          trail: [
+            { name: "Kitoblarim", path: "" },
+            { name: tDetail("breadcrumbBooks"), path: "/books" },
+            { name: book.uzbekTitle, path: `/book/${id}` },
+          ],
+        })}
+      />
       <SiteHeader />
       <main className="py-10 sm:py-14">
         <Container>
@@ -95,11 +140,11 @@ export default async function BookDetailPage({
 
             <nav className="hidden sm:flex items-center gap-2 text-xs text-zinc-400">
               <Link href="/" className="hover:text-zinc-600 transition-colors">
-                Reads
+                Kitoblarim
               </Link>
               <span>/</span>
               <Link href="/books" className="hover:text-zinc-600 transition-colors">
-                Books
+                {tDetail("breadcrumbBooks")}
               </Link>
               <span>/</span>
               <span className="text-zinc-700 truncate max-w-xs">{book.uzbekTitle}</span>
@@ -151,7 +196,7 @@ export default async function BookDetailPage({
                   {tDetail("series")}:{" "}
                   <Link
                     href={`/books?series=${book.series.slug}`}
-                    className="text-amber-800 hover:underline underline-offset-4"
+                    className="text-forest-800 hover:underline underline-offset-4"
                   >
                     {book.series.position
                       ? tDetail("seriesPart", { name: book.series.name, position: book.series.position })
@@ -166,7 +211,7 @@ export default async function BookDetailPage({
                     <Link
                       key={category.slug}
                       href={`/books?category=${category.slug}`}
-                      className="rounded-full border border-stone-300 px-3 py-1 text-xs text-zinc-600 hover:border-amber-400 hover:text-amber-800 transition-colors"
+                      className="rounded-full border border-stone-300 px-3 py-1 text-xs text-zinc-600 hover:border-forest-400 hover:text-forest-800 transition-colors"
                     >
                       {category.name}
                     </Link>
@@ -185,9 +230,9 @@ export default async function BookDetailPage({
                 {/* Author Card */}
                 <Link
                   href={firstAuthor ? `/author/${firstAuthor.slug}` : "/authors"}
-                  className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-amber-300 hover:shadow-sm transition-all"
+                  className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-forest-300 hover:shadow-sm transition-all"
                 >
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-stone-200 bg-amber-50 flex items-center justify-center text-amber-800 font-serif font-medium">
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-stone-200 bg-forest-50 flex items-center justify-center text-forest-800 font-serif font-medium">
                     {book.authorImageUrl ? (
                       <Image
                         src={book.authorImageUrl}
@@ -204,7 +249,7 @@ export default async function BookDetailPage({
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                       {tDetail("author")}
                     </span>
-                    <p className="font-serif text-base font-medium text-zinc-900 group-hover:text-amber-800 transition-colors truncate">
+                    <p className="font-serif text-base font-medium text-zinc-900 group-hover:text-forest-800 transition-colors truncate">
                       {book.author}
                     </p>
                   </div>
@@ -214,7 +259,7 @@ export default async function BookDetailPage({
                 {book.translatorSlug && (
                 <Link
                   href={`/translator/${book.translatorSlug}`}
-                  className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-amber-300 hover:shadow-sm transition-all"
+                  className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-forest-300 hover:shadow-sm transition-all"
                 >
                   <div className="h-12 w-12 shrink-0 rounded-full border border-stone-200 bg-stone-100 flex items-center justify-center text-stone-600">
                     <User className="h-5 w-5" />
@@ -223,7 +268,7 @@ export default async function BookDetailPage({
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                       {tDetail("translator")}
                     </span>
-                    <p className="font-serif text-base font-medium text-zinc-900 group-hover:text-amber-800 transition-colors truncate">
+                    <p className="font-serif text-base font-medium text-zinc-900 group-hover:text-forest-800 transition-colors truncate">
                       {book.translatorName}
                     </p>
                   </div>
@@ -245,7 +290,7 @@ export default async function BookDetailPage({
                       {book.publisherSlug ? (
                         <Link
                           href={`/publisher/${book.publisherSlug}`}
-                          className="hover:text-amber-800 underline-offset-4 hover:underline transition-colors"
+                          className="hover:text-forest-800 underline-offset-4 hover:underline transition-colors"
                         >
                           {book.publisher}
                         </Link>
@@ -275,16 +320,18 @@ export default async function BookDetailPage({
                 </dl>
               </div>
 
-              <p className="mt-4 text-sm">
-                <a
-                  href={botHref}
-                  target="_blank"
-                  rel="noopener"
-                  className="text-zinc-500 underline underline-offset-4 decoration-stone-300 hover:text-amber-800 hover:decoration-amber-800 transition-colors"
-                >
-                  {tDetail("planInBot")} →
-                </a>
-              </p>
+              {/* The catalogue's hand-off: the same Kitoblarim, in Telegram,
+                  where the reader plans this book and reads it to the end. */}
+              <a
+                href={botHref}
+                target="_blank"
+                rel="noopener"
+                className="group mt-4 inline-flex items-center gap-2.5 rounded-xl py-2 pl-2 pr-3.5 text-sm font-medium text-forest-700 transition-colors duration-200 hover:bg-forest-100"
+              >
+                <BrandMark size={24} className="shrink-0" />
+                <span>{tDetail("planInBot")}</span>
+                <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
+              </a>
             </div>
           </div>
 
@@ -292,10 +339,7 @@ export default async function BookDetailPage({
           {book.excerpt && (
             <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12 sm:pt-16">
               <div className="mb-8">
-                <span className="text-xs font-semibold uppercase tracking-widest text-amber-800">
-                  {book.uzbekTitle}
-                </span>
-                <h2 className="mt-1 font-serif text-2xl sm:text-3xl text-zinc-900">
+                <h2 className="font-serif text-2xl sm:text-3xl text-zinc-900">
                   {tDetail("excerptTitle")}
                 </h2>
               </div>
@@ -313,7 +357,7 @@ export default async function BookDetailPage({
 
                 {/* Translated text */}
                 <div className="flex flex-col border-t md:border-t-0 md:border-l border-stone-200 pt-6 md:pt-0 md:pl-8">
-                  <span className="text-xs uppercase tracking-wider text-amber-800 font-semibold mb-3">
+                  <span className="text-xs uppercase tracking-wider text-forest-800 font-semibold mb-3">
                     {tDetail("translatedText")} (O&apos;zbek tili)
                   </span>
                   <div className="prose prose-stone font-serif text-base sm:text-lg leading-relaxed text-zinc-900 whitespace-pre-wrap font-medium">
@@ -429,7 +473,7 @@ function EditionCard({ edition, t }: { edition: Edition; t: Translate }) {
       <div className="min-w-0 flex-1 text-sm">
         <p className="font-serif text-base text-zinc-900">
           {edition.publisher ? (
-            <Link href={`/publisher/${edition.publisher.slug}`} className="hover:text-amber-800">
+            <Link href={`/publisher/${edition.publisher.slug}`} className="hover:text-forest-800">
               {edition.publisher.name}
             </Link>
           ) : (
@@ -469,7 +513,7 @@ function Credits({ credits }: { credits: Edition["translators"] }) {
       {credits.map((credit, i) => (
         <span key={credit.slug}>
           {i > 0 && ", "}
-          <Link href={`/translator/${credit.slug}`} className="text-zinc-700 hover:text-amber-800">
+          <Link href={`/translator/${credit.slug}`} className="text-zinc-700 hover:text-forest-800">
             {credit.name}
           </Link>
         </span>
@@ -481,7 +525,7 @@ function Credits({ credits }: { credits: Edition["translators"] }) {
 function RelatedBook({ book }: { book: BookWithTranslator }) {
   return (
     <Link href={`/book/${book.id}`} className="group flex flex-col">
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-shadow group-hover:shadow-md">
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-active:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
         {book.coverUrl ? (
           <Image
             src={book.coverUrl}
@@ -496,7 +540,7 @@ function RelatedBook({ book }: { book: BookWithTranslator }) {
           </div>
         )}
       </div>
-      <h3 className="mt-3 font-serif text-base text-zinc-900 group-hover:text-amber-800 transition-colors line-clamp-1">
+      <h3 className="mt-3 font-serif text-base text-zinc-900 group-hover:text-forest-800 transition-colors line-clamp-1">
         {book.uzbekTitle}
       </h3>
       <p className="text-xs text-zinc-500 truncate">{[book.author, book.year].filter(Boolean).join(" · ")}</p>

@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T18:48:27.207Z",
+  "title": "Design System: Kitoblarim — katalog",
+  "extensions": {
+    "colorMeta": {
+      "deep-forest": {
+        "role": "primary",
+        "displayName": "Deep Forest Green",
+        "canonical": "oklch(37.9% 0.073 152.0)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-700",
+        "note": "Logo tile and every action."
+      },
+      "forest-press": {
+        "role": "primary",
+        "displayName": "Forest Press",
+        "canonical": "oklch(31.4% 0.060 152.3)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-800"
+      },
+      "forest-night": {
+        "role": "primary",
+        "displayName": "Forest Night",
+        "canonical": "oklch(25.8% 0.048 152.5)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-900"
+      },
+      "forest-steady": {
+        "role": "primary",
+        "displayName": "Forest Steady",
+        "canonical": "oklch(45.6% 0.082 152.3)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-600"
+      },
+      "sage": {
+        "role": "secondary",
+        "displayName": "Sage",
+        "canonical": "oklch(54.3% 0.081 151.1)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-500",
+        "note": "The ribbon in the mark."
+      },
+      "sage-light": {
+        "role": "secondary",
+        "displayName": "Sage Light",
+        "canonical": "oklch(65.0% 0.073 149.5)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-400"
+      },
+      "fern-line": {
+        "role": "secondary",
+        "displayName": "Fern Line",
+        "canonical": "oklch(78.3% 0.053 146.8)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-300"
+      },
+      "fern-border": {
+        "role": "secondary",
+        "displayName": "Fern Border",
+        "canonical": "oklch(87.3% 0.032 143.8)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-200"
+      },
+      "forest-mist": {
+        "role": "secondary",
+        "displayName": "Forest Mist",
+        "canonical": "oklch(93.4% 0.016 142.6)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-100"
+      },
+      "forest-wash": {
+        "role": "secondary",
+        "displayName": "Forest Wash",
+        "canonical": "oklch(96.6% 0.008 139.4)",
+        "tonalRamp": [
+          "#0F2A18",
+          "#163A22",
+          "#1F4D2E",
+          "#2F6440",
+          "#4A7D57",
+          "#6F9C77",
+          "#C9DBC8",
+          "#F1F5F0"
+        ],
+        "tailwind": "forest-50"
+      },
+      "star-gold": {
+        "role": "tertiary",
+        "displayName": "Star Gold",
+        "canonical": "oklch(70.9% 0.141 78.9)",
+        "tonalRamp": [
+          "#2E1E01",
+          "#4E3504",
+          "#704E08",
+          "#94690E",
+          "#B98415",
+          "#D39821",
+          "#F1C681",
+          "#FFECCD"
+        ],
+        "tailwind": "star",
+        "note": "Readers' star ratings only. Ramp synthesized in OKLCH at hue 78.9."
+      },
+      "bone-paper": {
+        "role": "neutral",
+        "displayName": "Bone Paper",
+        "canonical": "oklch(97.5% 0.004 121.6)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-50 / zinc-50",
+        "note": "Page ground and theme-color."
+      },
+      "paper-shade": {
+        "role": "neutral",
+        "displayName": "Paper Shade",
+        "canonical": "oklch(95.4% 0.007 132.4)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-100 / zinc-100"
+      },
+      "paper-line": {
+        "role": "neutral",
+        "displayName": "Paper Line",
+        "canonical": "oklch(91.7% 0.009 134.9)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-200 / zinc-200"
+      },
+      "paper-rule": {
+        "role": "neutral",
+        "displayName": "Paper Rule",
+        "canonical": "oklch(85.6% 0.014 138.7)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-300 / zinc-300"
+      },
+      "ink-quiet": {
+        "role": "neutral",
+        "displayName": "Ink Quiet",
+        "canonical": "oklch(50.8% 0.014 156.7)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-400 / zinc-400",
+        "note": "Lightest text tone; 5.4:1 on Bone Paper."
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "oklch(46.2% 0.013 158.5)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-500 / zinc-500"
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(40.5% 0.011 160.9)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-600 / zinc-600"
+      },
+      "ink-strong": {
+        "role": "neutral",
+        "displayName": "Ink Strong",
+        "canonical": "oklch(34.1% 0.011 156.6)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-700 / zinc-700"
+      },
+      "ink-deep": {
+        "role": "neutral",
+        "displayName": "Ink Deep",
+        "canonical": "oklch(28.2% 0.011 156.4)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-800 / zinc-800"
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(21.0% 0.012 156.1)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "stone-900 / zinc-900"
+      },
+      "card-white": {
+        "role": "neutral",
+        "displayName": "Card White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "#0B0F0C",
+          "#141A16",
+          "#343A36",
+          "#535B56",
+          "#5F6862",
+          "#CBD2C9",
+          "#EEF1EC",
+          "#F6F7F4"
+        ],
+        "tailwind": "white"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Home hero headline only; 2.25rem, 3rem at 640px, 3.75rem at 1024px.",
+        "tailwind": "font-serif text-4xl sm:text-5xl lg:text-6xl leading-[1.1] tracking-tight"
+      },
+      "headline-book": {
+        "displayName": "Headline, book",
+        "purpose": "A book's own title on its page; the only semibold Literata.",
+        "tailwind": "font-serif text-3xl sm:text-4xl font-semibold tracking-tight"
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles and section headings; 1.5rem, 1.875rem at 640px.",
+        "tailwind": "font-serif text-2xl sm:text-3xl tracking-tight"
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Book titles under covers, names on cards.",
+        "tailwind": "font-serif text-lg leading-snug"
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Stats, reader average, scores; tabular.",
+        "tailwind": "font-serif text-4xl"
+      },
+      "reading": {
+        "displayName": "Reading",
+        "purpose": "Long-form taqriz text and excerpts.",
+        "tailwind": "font-serif text-[17px] leading-relaxed"
+      },
+      "wordmark": {
+        "displayName": "Wordmark",
+        "purpose": "\"Kitoblarim\" in the lockup.",
+        "tailwind": "text-[1.125rem] font-bold tracking-[-0.025em]"
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions, review bodies, lead lines.",
+        "tailwind": "text-sm leading-relaxed"
+      },
+      "ui": {
+        "displayName": "UI",
+        "purpose": "Buttons, links that act, locale switcher, pagination, bot hand-off.",
+        "tailwind": "text-sm font-medium"
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Meta lines, counts, breadcrumbs, chips.",
+        "tailwind": "text-xs"
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels naming the value below them.",
+        "tailwind": "text-[11px] font-semibold uppercase tracking-wider"
+      },
+      "label-spaced": {
+        "displayName": "Label, spaced",
+        "purpose": "Stats labels, section counts, author line under a cover.",
+        "tailwind": "text-xs font-medium uppercase tracking-widest2"
+      }
+    },
+    "shadows": [
+      {
+        "name": "cover-rest",
+        "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "purpose": "Shelf covers and thumbnails at rest, with a 1px Paper Line ring (Tailwind shadow-sm)."
+      },
+      {
+        "name": "lift",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "purpose": "A hovered or touched cover or card (shadow-md)."
+      },
+      {
+        "name": "hero-cover",
+        "value": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+        "purpose": "The single large cover on a book page, with a 1px Ink/10% ring (shadow-xl)."
+      },
+      {
+        "name": "menu",
+        "value": "0 12px 32px -12px rgba(20,26,22,0.28), 0 2px 6px rgba(20,26,22,0.06)",
+        "purpose": "The open locale menu, the only borderless floating plate."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px",
+        "purpose": "Global :focus-visible on every focusable element."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-brand",
+        "value": "cubic-bezier(.32,.72,0,1)",
+        "purpose": "The landing page's curve; Tailwind's DEFAULT and ease-out timing in this project."
+      },
+      {
+        "name": "duration-colors",
+        "value": "150ms",
+        "purpose": "Colour and border changes (transition-colors default)."
+      },
+      {
+        "name": "duration-nudge",
+        "value": "200ms",
+        "purpose": "Arrow nudges (2px right), chevron flip, card hover."
+      },
+      {
+        "name": "duration-lift",
+        "value": "300ms",
+        "purpose": "Shelf cover lift (-4px) and the header mark tilt (-3deg)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Cover lift off, smooth scroll off."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "content-max",
+        "value": "72rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Header Lockup",
+      "kind": "nav",
+      "refersTo": "site-header",
+      "description": "Sticky header: mark tile, wordmark, divider, section word; locale switcher on the right.",
+      "html": "<header class=\"ds-header\"><a class=\"ds-lockup\" href=\"#\"><svg class=\"ds-mark\" viewBox=\"0 0 100 100\" width=\"32\" height=\"32\" aria-hidden=\"true\"><rect width=\"100\" height=\"100\" rx=\"22.5\" fill=\"#1F4D2E\"/><g transform=\"translate(50 50) scale(.62) translate(-50 -50)\"><path d=\"M18.25 14H33.75A1.25 1.25 0 0 1 33.75 16.5H18.25A3.25 3.25 0 0 0 18.25 23H34Q35 23 35 24V85Q35 86 34 86H17.5A5 5 0 0 1 12.5 81V19.75A5.75 5.75 0 0 1 18.25 14Z\" fill=\"#F6F7F4\"/><path d=\"M37.5 41.5L63.9 15.1Q65 14 66.6 14H87.5L37.5 64Z\" fill=\"#F6F7F4\"/><path d=\"M41.5 64L53.5 52L87.5 86H65.5L52 72.5V86L46.75 81.5L41.5 86Z\" fill=\"#4A7D57\"/></g></svg><span class=\"ds-word\">Kitoblarim</span><span class=\"ds-divider\"></span><span class=\"ds-section\">katalog</span></a><details class=\"ds-locale\"><summary><svg class=\"ds-ic\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"/><path d=\"M2 12h20\"/></svg><span>Oʻzbekcha</span><svg class=\"ds-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></summary></details></header>",
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; background: rgba(246,247,244,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid #E1E5DF; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-lockup { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; border-radius: 8px; } .ds-lockup .ds-mark { flex-shrink: 0; transition: transform 300ms cubic-bezier(.32,.72,0,1); } .ds-lockup:hover .ds-mark { transform: rotate(-3deg); } .ds-lockup:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; } .ds-word { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; color: #141A16; } .ds-divider { width: 1px; height: 16px; background: #CBD2C9; } .ds-section { font-size: 0.875rem; font-weight: 500; color: #535B56; } .ds-locale summary { display: flex; align-items: center; gap: 6px; list-style: none; cursor: pointer; padding: 6px 8px; border-radius: 8px; font-size: 0.875rem; font-weight: 500; color: #444B47; transition: background-color 150ms cubic-bezier(.32,.72,0,1), color 150ms cubic-bezier(.32,.72,0,1); } .ds-locale summary::-webkit-details-marker { display: none; } .ds-locale summary:hover { background: #EEF1EC; color: #141A16; } .ds-locale .ds-ic, .ds-locale .ds-chev { color: #535B56; }"
+    },
+    {
+      "name": "Locale Menu",
+      "kind": "nav",
+      "refersTo": "locale-menu",
+      "description": "The open language list: each language by its own name, the active one in forest with a check.",
+      "html": "<nav class=\"ds-locale-menu\" aria-label=\"Til\"><a href=\"#\" aria-current=\"true\" class=\"ds-active\">Oʻzbekcha<svg  width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></a><a href=\"#\">Русский</a><a href=\"#\">English</a></nav>",
+      "css": ".ds-locale-menu { width: 176px; padding: 6px; background: #FFFFFF; border-radius: 12px; box-shadow: 0 12px 32px -12px rgba(20,26,22,0.28), 0 2px 6px rgba(20,26,22,0.06); font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-locale-menu a { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; font-size: 0.875rem; color: #343A36; text-decoration: none; transition: background-color 150ms cubic-bezier(.32,.72,0,1), color 150ms cubic-bezier(.32,.72,0,1); } .ds-locale-menu a:hover { background: #EEF1EC; color: #141A16; } .ds-locale-menu a.ds-active { color: #1F4D2E; font-weight: 500; } .ds-locale-menu a.ds-active:hover { background: transparent; } .ds-locale-menu a:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Search Field and Button",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "The catalogue search: a plain GET form, white field and the one filled forest button.",
+      "html": "<form class=\"ds-search\" onsubmit=\"return false\"><input type=\"search\" placeholder=\"Kitob, muallif yoki ISBN\" /><button type=\"submit\">Qidirish</button></form>",
+      "css": ".ds-search { display: flex; gap: 8px; max-width: 36rem; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-search input { flex: 1; padding: 8px 12px; background: #FFFFFF; border: 1px solid #CBD2C9; border-radius: 8px; font: inherit; font-size: 0.875rem; color: #141A16; outline: none; transition: border-color 150ms cubic-bezier(.32,.72,0,1); } .ds-search input::placeholder { color: #5F6862; } .ds-search input:focus { border-color: #4A7D57; } .ds-search button { padding: 8px 16px; background: #1F4D2E; color: #FFFFFF; border: 0; border-radius: 8px; font: inherit; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background-color 150ms cubic-bezier(.32,.72,0,1); } .ds-search button:hover { background: #163A22; } .ds-search button:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single filled button style: Deep Forest Green, white text, 8px corners.",
+      "html": "<button class=\"ds-btn-primary\">Qidirish</button>",
+      "css": ".ds-btn-primary { padding: 8px 16px; background: #1F4D2E; color: #FFFFFF; border: 0; border-radius: 8px; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: background-color 150ms cubic-bezier(.32,.72,0,1); } .ds-btn-primary:hover { background: #163A22; } .ds-btn-primary:active { background: #0F2A18; } .ds-btn-primary:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Category Chips",
+      "kind": "chip",
+      "refersTo": "chip-category",
+      "description": "Pill filters; the active one fills forest.",
+      "html": "<nav class=\"ds-chips\"><a href=\"#\" class=\"ds-chip ds-chip-active\">Hammasi</a><a href=\"#\" class=\"ds-chip\">Badiiy adabiyot</a><a href=\"#\" class=\"ds-chip\">Jahon adabiyoti</a></nav>",
+      "css": ".ds-chips { display: flex; flex-wrap: wrap; gap: 8px; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-chip { padding: 4px 12px; border: 1px solid #CBD2C9; border-radius: 9999px; font-size: 0.75rem; color: #444B47; text-decoration: none; transition: border-color 150ms cubic-bezier(.32,.72,0,1), color 150ms cubic-bezier(.32,.72,0,1); } .ds-chip:hover { border-color: #6F9C77; color: #163A22; } .ds-chip-active, .ds-chip-active:hover { background: #1F4D2E; border-color: #1F4D2E; color: #FFFFFF; } .ds-chip:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Score Badge",
+      "kind": "chip",
+      "refersTo": "score-badge",
+      "description": "An editor's taqriz score out of ten; forest, never gold.",
+      "html": "<span class=\"ds-score\"><span class=\"ds-score-n\">8.5</span><span class=\"ds-score-of\">/10</span></span>",
+      "css": ".ds-score { display: inline-flex; align-items: baseline; gap: 2px; padding: 4px 10px; background: #F1F5F0; border: 1px solid #C9DBC8; border-radius: 9999px; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); font-size: 0.875rem; font-weight: 500; color: #0F2A18; } .ds-score-n { font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); } .ds-score-of { font-size: 0.8em; color: rgba(47,100,64,0.7); }"
+    },
+    {
+      "name": "Book Card",
+      "kind": "card",
+      "refersTo": "book-cover-shelf",
+      "description": "The shelf: a 2:3 cover that lifts off the shelf on hover and touch, then title, original title, author, publisher and year.",
+      "html": "<a class=\"ds-book\" href=\"#\"><div class=\"ds-cover\"><span class=\"ds-role\">Badiiy tarjima</span><span class=\"ds-cover-ph\">Sichqonlar va odamlar</span></div><h3>Sichqonlar va odamlar</h3><p class=\"ds-orig\">Of Mice and Men</p><p class=\"ds-author\">Jon Steynbek</p><p class=\"ds-meta\">Muharrir · 2023</p></a>",
+      "css": ".ds-book { display: block; width: 160px; text-decoration: none; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-cover { position: relative; aspect-ratio: 2 / 3; overflow: hidden; border-radius: 2px; background: #EEF1EC; box-shadow: 0 0 0 1px #E1E5DF, 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: transform 300ms cubic-bezier(.32,.72,0,1), box-shadow 300ms cubic-bezier(.32,.72,0,1); display: flex; align-items: center; justify-content: center; } .ds-book:hover .ds-cover, .ds-book:active .ds-cover { transform: translateY(-4px); box-shadow: 0 0 0 1px #E1E5DF, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } @media (prefers-reduced-motion: reduce) { .ds-cover { transition: none; } .ds-book:hover .ds-cover, .ds-book:active .ds-cover { transform: none; } } .ds-cover-ph { padding: 12px; text-align: center; font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); font-size: 0.875rem; color: #5F6862; } .ds-role { position: absolute; top: 10px; left: 10px; padding: 2px 8px; border: 1px solid #E1E5DF; border-radius: 6px; background: rgba(255,255,255,0.9); font-size: 10px; font-weight: 500; letter-spacing: 0.025em; color: #343A36; } .ds-book h3 { margin: 16px 0 0; font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); font-size: 1.125rem; font-weight: 400; line-height: 1.375; color: #141A16; } .ds-orig { margin: 2px 0 0; font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); font-style: italic; font-size: 0.875rem; color: #535B56; } .ds-author { margin: 8px 0 0; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: #5F6862; } .ds-meta { margin: 4px 0 0; font-size: 0.75rem; color: #5F6862; } .ds-book:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Person Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A translator or author plate: white on paper, flat at rest, fern border and lift on hover.",
+      "html": "<a class=\"ds-person\" href=\"#\"><div class=\"ds-person-top\"><span class=\"ds-avatar\">N</span><div><h3>Niyat Sultonmurodov</h3><p>Tarjimon</p></div></div><div class=\"ds-person-foot\"><span>12 ta kitob</span><span class=\"ds-view\">Profilni koʻrish<svg  width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></span></div></a>",
+      "css": ".ds-person { display: block; max-width: 300px; padding: 20px; background: #FFFFFF; border: 1px solid #E1E5DF; border-radius: 16px; text-decoration: none; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); transition: border-color 200ms cubic-bezier(.32,.72,0,1), box-shadow 200ms cubic-bezier(.32,.72,0,1); } .ds-person:hover { border-color: #A3C2A5; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-person-top { display: flex; gap: 16px; align-items: flex-start; } .ds-avatar { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; flex-shrink: 0; border-radius: 9999px; border: 1px solid #E1E5DF; background: #F1F5F0; color: #163A22; font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); font-size: 1.125rem; } .ds-person h3 { margin: 0; font-family: var(--font-book, \"Literata Okina\", \"Literata Variable\", Georgia, \"Times New Roman\", serif); font-size: 1.125rem; font-weight: 400; line-height: 1.25; color: #141A16; transition: color 150ms cubic-bezier(.32,.72,0,1); } .ds-person:hover h3 { color: #163A22; } .ds-person-top p { margin: 2px 0 0; font-size: 0.75rem; color: #535B56; } .ds-person-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #EEF1EC; font-size: 0.75rem; color: #5F6862; } .ds-view { display: inline-flex; align-items: center; gap: 4px; font-weight: 500; color: #1F4D2E; } .ds-view svg { transition: transform 200ms cubic-bezier(.32,.72,0,1); } .ds-person:hover .ds-view { color: #0F2A18; } .ds-person:hover .ds-view svg { transform: translateX(2px); } .ds-person:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Bot Hand-off",
+      "kind": "custom",
+      "refersTo": "bot-handoff",
+      "description": "The catalogue's handshake with the Kitoblarim bot on every book page: the mark, the promise, an arrow. A quiet line, never a banner.",
+      "html": "<a class=\"ds-handoff\" href=\"#\"><svg class=\"ds-mark\" viewBox=\"0 0 100 100\" width=\"24\" height=\"24\" aria-hidden=\"true\"><rect width=\"100\" height=\"100\" rx=\"22.5\" fill=\"#1F4D2E\"/><g transform=\"translate(50 50) scale(.62) translate(-50 -50)\"><path d=\"M18.25 14H33.75A1.25 1.25 0 0 1 33.75 16.5H18.25A3.25 3.25 0 0 0 18.25 23H34Q35 23 35 24V85Q35 86 34 86H17.5A5 5 0 0 1 12.5 81V19.75A5.75 5.75 0 0 1 18.25 14Z\" fill=\"#F6F7F4\"/><path d=\"M37.5 41.5L63.9 15.1Q65 14 66.6 14H87.5L37.5 64Z\" fill=\"#F6F7F4\"/><path d=\"M41.5 64L53.5 52L87.5 86H65.5L52 72.5V86L46.75 81.5L41.5 86Z\" fill=\"#4A7D57\"/></g></svg><span>Bu kitobni Telegramda oxirigacha oʻqing</span><svg class=\"ds-arrow\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></a>",
+      "css": ".ds-handoff { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 8px; border-radius: 12px; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); font-size: 0.875rem; font-weight: 500; color: #1F4D2E; text-decoration: none; transition: background-color 200ms cubic-bezier(.32,.72,0,1); } .ds-handoff .ds-mark { flex-shrink: 0; } .ds-handoff:hover { background: #E3ECE2; } .ds-handoff .ds-arrow { transition: transform 200ms cubic-bezier(.32,.72,0,1); } .ds-handoff:hover .ds-arrow { transform: translateX(2px); } .ds-handoff:focus-visible { outline: 2px solid #1F4D2E; outline-offset: 3px; border-radius: 6px; }"
+    },
+    {
+      "name": "Reader Review",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "A Kitoblarim reader's published review: first name, gold stars, the body, the date.",
+      "html": "<article class=\"ds-review\"><div class=\"ds-review-head\"><span class=\"ds-review-name\">Ism</span><span class=\"ds-stars\" role=\"img\" aria-label=\"4/5\"><svg class=\"ds-on\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/></svg><svg class=\"ds-on\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/></svg><svg class=\"ds-on\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/></svg><svg class=\"ds-on\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/></svg><svg class=\"ds-off\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/></svg></span></div><p>Kitobxon sharhi matni.</p><time>12 oktyabr 2026</time></article>",
+      "css": ".ds-review { max-width: 360px; padding: 20px; background: #FFFFFF; border: 1px solid #E1E5DF; border-radius: 16px; font-family: var(--font-sans, \"Onest Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif); } .ds-review-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; } .ds-review-name { font-size: 0.875rem; font-weight: 500; color: #141A16; } .ds-stars { display: inline-flex; gap: 2px; } .ds-stars .ds-on { fill: #D0951A; color: #D0951A; } .ds-stars .ds-off { color: #CBD2C9; } .ds-review p { margin: 12px 0 0; font-size: 15px; line-height: 1.625; color: #343A36; } .ds-review time { display: block; margin-top: 12px; font-size: 0.75rem; color: #5F6862; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Same Hand",
+    "overview": "The catalogue is drawn by the same hand as the Kitoblarim bot and its landing page, so a reader who follows a book from here into Telegram feels a page turn, not a change of shop. It is a quiet paper world: Bone Paper ground, ink neutrals tinted toward one forest green, the book-spine K in its green tile, Literata for every title and Onest for everything a reader operates. The layout of the older Reads site was kept, and only its identity changed. That is why the structure reads as an ordinary editorial catalogue and the character comes from the materials.\n\nDensity is calm and phone-first. Sections breathe (64px, 80px from 640px up), cards are white plates on paper with hairline borders, and the only motion is small and physical: a cover lifts off the shelf, an arrow nudges forward, the mark tips by three degrees. Colour is almost absent. Green marks what you can act on, gold marks what readers rated, and nothing else is coloured.\n\nThe direction refuses the generic amber-on-stone \"literary site\" and refuses a second brand. The hero carries no kicker and no decorative gradient. The hand-off to the bot is the same brand's next step, set as a quiet green line with the mark beside it, never as a banner.",
+    "keyCharacteristics": [
+      "One accent (Deep Forest Green); all neutrals tinted toward it.",
+      "Literata for books, names, headings and figures; Onest for interface.",
+      "White plates on Bone Paper, separated by hairlines, flat at rest.",
+      "2:3 covers on a shelf that lift when touched.",
+      "Light only, as built; the bot's dark tokens exist upstream."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Deep Forest Green is the only colour that means \"act here\". Every link, button, active state and focus ring uses the `forest` scale. The site does not add a second hue for emphasis.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gold Is For Stars Rule",
+        "body": "Star Gold appears only on readers' star ratings. The editors' taqriz scores (out of ten) are forest, never gold, so the two sources of judgement stay distinguishable.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Ink Rule",
+        "body": "Neutrals come from the aliased `stone`/`zinc` ink scale and nowhere else. Tailwind's default grays, emerald and amber are not part of this world.",
+        "section": "colors"
+      },
+      {
+        "name": "The Titles Are Books Rule",
+        "body": "Literata is used for book titles, people's and publishers' names, headings and figures. Onest is used for every control, label and line of interface text. If a reader can click or type into it, it is Onest.",
+        "section": "typography"
+      },
+      {
+        "name": "The Okina Rule",
+        "body": "Literata draws the Uzbek ʻ (U+02BB) with zero width. The serif stack always starts with \"Literata Okina\", a 1 KB face that serves Literata's own ‘ for that one code point. Uzbek text is written with U+02BB (Oʻzbek), not an ASCII apostrophe.",
+        "section": "typography"
+      },
+      {
+        "name": "The Off The Shelf Rule",
+        "body": "A shelf cover rises 4px and its shadow deepens from Cover rest to Lift on hover and on touch (`:active`), over 300ms on the brand curve. With reduced motion it stays put. This is the bot's own gesture, and it is the catalogue's one piece of physical motion.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Flat Plate Rule",
+        "body": "Cards are flat at rest with a Paper Line border. On hover the border turns Fern Line and a shadow appears. Shadow is a response, never decoration.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use the `forest` scale for anything a reader can act on, with Deep Forest Green (`forest-700`) at rest and Forest Press (`forest-800`) on hover.",
+      "**Do** set titles, names, headings and figures in Literata through `font-serif`, so the \"Literata Okina\" face is always first in the stack.",
+      "**Do** write Uzbek with ʻ (U+02BB) in every new string.",
+      "**Do** keep text at Ink Quiet (`400`) or darker. Paper Rule (`300`) is for lines and empty icons only.",
+      "**Do** draw the mark with `BrandMark` (paths from the bot's `public/brand/app-icon.svg`) at 32px in the header and 24px beside the hand-off.",
+      "**Do** use the brand curve `cubic-bezier(.32,.72,0,1)`, which is Tailwind's default and `ease-out` here, and honour `prefers-reduced-motion`.",
+      "**Do** keep covers at 2:3 with a Paper Line ring, and let shelf covers lift 4px on hover and touch."
+    ],
+    "donts": [
+      "**Don't** introduce a second accent. Keep amber-on-stone, Tailwind's default grays and emerald out of new work.",
+      "**Don't** use Star Gold for anything except readers' star ratings, and never as text colour.",
+      "**Don't** put a kicker above the hero headline or a decorative gradient behind it. The hero is a Literata headline on paper.",
+      "**Don't** set the bot hand-off as a filled banner or ad. It is a quiet green line with the mark, placed where a reader has just judged a book.",
+      "**Don't** redraw, recolour or re-letter the mark, and don't add a second name beside \"Kitoblarim\" other than the muted section word."
+    ]
+  }
+}

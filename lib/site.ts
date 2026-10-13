@@ -14,7 +14,8 @@ export const SITE_URL = (
   process.env.SITE_URL ?? "https://tarjima.kitoblarim.uz"
 ).replace(/\/$/, "");
 
-export const SITE_NAME = process.env.SITE_NAME ?? "Reads";
+// The catalogue is part of Kitoblarim, under the same name as the bot.
+export const SITE_NAME = process.env.SITE_NAME ?? "Kitoblarim";
 
 export type Locale = (typeof routing.locales)[number];
 

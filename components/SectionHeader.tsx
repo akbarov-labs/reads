@@ -29,7 +29,7 @@ export function SectionHeader({
       {seeMoreHref && (
         <Link
           href={seeMoreHref}
-          className="group flex items-center gap-1 text-sm font-medium text-amber-700 hover:text-amber-900 transition-colors"
+          className="group flex items-center gap-1 text-sm font-medium text-forest-700 hover:text-forest-900 transition-colors"
         >
           {seeMoreLabel}
           <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />

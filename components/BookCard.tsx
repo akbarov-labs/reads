@@ -15,24 +15,31 @@ export async function BookCard({ book }: { book: Book }) {
 
   const roleStyle =
     book.role === "author"
-      ? "bg-amber-100/90 text-amber-900 border-amber-300"
+      ? "bg-forest-100/90 text-forest-900 border-forest-300"
       : book.role === "editor"
-      ? "bg-emerald-50/90 text-emerald-800 border-emerald-200"
+      ? "bg-forest-50/90 text-forest-800 border-forest-200"
       : "bg-white/90 text-zinc-700 border-zinc-200";
 
   return (
     <Link href={`/book/${book.id}`} className="block group">
       <article>
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-shadow group-hover:shadow-md">
-        <Image
-          src={book.coverUrl}
-          alt={t("coverAlt", { title: book.uzbekTitle })}
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-          className="object-cover"
-        />
+      {/* Lifted off the shelf when touched or hovered, as in the bot. */}
+      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-sm bg-zinc-100 shadow-sm ring-1 ring-zinc-200 transition-[transform,box-shadow] duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-active:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
+        {book.coverUrl ? (
+          <Image
+            src={book.coverUrl}
+            alt={t("coverAlt", { title: book.uzbekTitle })}
+            fill
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center p-3 text-center font-serif text-sm text-stone-400">
+            {book.uzbekTitle}
+          </div>
+        )}
         <div className="absolute top-2.5 left-2.5">
-          <span className={`inline-block rounded-md border px-2 py-0.5 text-[10px] font-medium tracking-wide shadow-xs backdrop-blur-xs ${roleStyle}`}>
+          <span className={`inline-block rounded-md border px-2 py-0.5 text-[10px] font-medium tracking-wide shadow-sm backdrop-blur-sm ${roleStyle}`}>
             {roleLabel}
           </span>
         </div>

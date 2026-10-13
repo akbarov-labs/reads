@@ -34,9 +34,11 @@ export async function GET() {
   const sections: string[] = [
     `# ${SITE_NAME}`,
     "",
-    `> Portfolio pages for literary translators: who they are, which languages they work between, and every book they have translated, written or edited. Available in Uzbek (uz), Russian (ru) and English (en).`,
+    `> The catalogue of Kitoblarim: Uzbek books and translations, every edition with its ISBN, publisher and year, the translators, authors and publishers behind them, critics' reviews (taqrizlar, scored out of 10) and Kitoblarim readers' ratings (out of 5). Readers plan and finish a book in the Kitoblarim Telegram bot (https://t.me/kitob_javonim_bot). Available in Uzbek (uz), Russian (ru) and English (en).`,
     "",
     `Site: ${SITE_URL}`,
+    `Sitemap: ${SITE_URL}/sitemap.xml`,
+    `Pages: /{lang}/book/{id} (a book and its editions), /{lang}/author/{slug}, /{lang}/publisher/{slug}, /{lang}/translator/{slug}, /{lang}/taqriz/{id} (one review), /{lang}/books?q={query} (search).`,
     `Languages: ${routing.locales.join(", ")} — same content, one URL per language (e.g. ${absoluteUrl("uz")}, ${absoluteUrl("en")}).`,
     "",
     "## Translators",

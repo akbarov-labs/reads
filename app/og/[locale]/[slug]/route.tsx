@@ -1,10 +1,8 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
 import { getTranslatorBySlug } from "@/lib/api";
 import { routing } from "@/i18n/routing";
-import { SITE_NAME } from "@/lib/site";
+import { OG, OG_BOOK_FONT, OG_FONT, OG_SIZE, OgLockup, loadOgFonts } from "@/lib/og";
 
 /**
  * The social-preview card for a profile, drawn on demand.
@@ -20,45 +18,6 @@ import { SITE_NAME } from "@/lib/site";
  */
 export const runtime = "nodejs";
 
-const WIDTH = 1200;
-const HEIGHT = 630;
-
-const FONT_FILES = [
-  { name: "Inter", file: "inter-latin-400-normal.woff", weight: 400 },
-  { name: "Inter", file: "inter-latin-600-normal.woff", weight: 600 },
-  // Uzbek Latin (oʻ, gʻ) lives in latin-ext, Russian in cyrillic. Satori
-  // falls through this list per glyph, so a name in any of the three
-  // scripts renders instead of turning into boxes.
-  { name: "InterExt", file: "inter-latin-ext-400-normal.woff", weight: 400 },
-  { name: "InterExt", file: "inter-latin-ext-600-normal.woff", weight: 600 },
-  { name: "InterCyr", file: "inter-cyrillic-400-normal.woff", weight: 400 },
-  { name: "InterCyr", file: "inter-cyrillic-600-normal.woff", weight: 600 },
-] as const;
-
-const FONT_STACK = "Inter, InterExt, InterCyr";
-
-// Read once per process, not once per request: these files never change.
-let fontsPromise: Promise<
-  { name: string; data: ArrayBuffer; weight: 400 | 600; style: "normal" }[]
-> | null = null;
-
-function loadFonts() {
-  fontsPromise ??= Promise.all(
-    FONT_FILES.map(async ({ name, file, weight }) => ({
-      name,
-      // public/ ships with the standalone build, so this path resolves both
-      // in `next dev` and inside the production container.
-      data: (await readFile(
-        path.join(process.cwd(), "public", "fonts", file),
-      )) as unknown as ArrayBuffer,
-      weight: weight as 400 | 600,
-      style: "normal" as const,
-    })),
-  );
-
-  return fontsPromise;
-}
-
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ locale: string; slug: string }> },
@@ -69,13 +28,14 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
 
-  const [translator, fonts, t] = await Promise.all([
+  const [translator, fonts, t, tSite] = await Promise.all([
     getTranslatorBySlug(slug, locale),
-    loadFonts(),
+    loadOgFonts(),
     // The card is per-locale, so its one label should be too — a Russian
     // share preview reading "books & translations" undercuts the page it
     // is previewing.
     getTranslations({ locale, namespace: "stats" }),
+    getTranslations({ locale, namespace: "site" }),
   ]);
 
   if (!translator) {
@@ -96,27 +56,18 @@ export async function GET(
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#fafaf9",
-          color: "#18181b",
+          backgroundColor: OG.paper,
+          color: OG.ink,
           padding: "72px 80px",
-          fontFamily: FONT_STACK,
+          fontFamily: OG_FONT,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
+          <OgLockup section={tSite("brandSection")} />
           <div
             style={{
-              fontSize: 26,
-              fontWeight: 600,
-              letterSpacing: 6,
-              textTransform: "uppercase",
-              color: "#a1a1aa",
-            }}
-          >
-            {SITE_NAME}
-          </div>
-          <div
-            style={{
-              marginTop: 28,
+              marginTop: 56,
+              fontFamily: OG_BOOK_FONT,
               fontSize: 84,
               fontWeight: 600,
               lineHeight: 1.05,
@@ -126,7 +77,7 @@ export async function GET(
             {translator.name}
           </div>
           {translator.title ? (
-            <div style={{ marginTop: 18, fontSize: 36, color: "#52525b" }}>
+            <div style={{ marginTop: 18, fontSize: 36, color: OG.ink2 }}>
               {translator.title}
             </div>
           ) : null}
@@ -134,7 +85,7 @@ export async function GET(
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           {pairs ? (
-            <div style={{ fontSize: 28, color: "#71717a" }}>{pairs}</div>
+            <div style={{ fontSize: 28, color: OG.muted }}>{pairs}</div>
           ) : null}
           <div
             style={{
@@ -142,9 +93,9 @@ export async function GET(
               alignItems: "center",
               marginTop: 26,
               paddingTop: 26,
-              borderTop: "2px solid #e4e4e7",
+              borderTop: `2px solid ${OG.line}`,
               fontSize: 30,
-              color: "#3f3f46",
+              color: OG.ink2,
             }}
           >
             <span style={{ fontWeight: 600 }}>
@@ -152,7 +103,7 @@ export async function GET(
             </span>
             <span style={{ marginLeft: 12 }}>{t("booksTranslated")}</span>
             {translator.location ? (
-              <span style={{ marginLeft: 32, color: "#a1a1aa" }}>
+              <span style={{ marginLeft: 32, color: OG.muted }}>
                 {translator.location}
               </span>
             ) : null}
@@ -161,8 +112,7 @@ export async function GET(
       </div>
     ),
     {
-      width: WIDTH,
-      height: HEIGHT,
+      ...OG_SIZE,
       fonts,
       headers: {
         // Scrapers re-fetch this on every share. The content only changes
