@@ -24,8 +24,17 @@ Run checks inside the frontend container:
 ```sh
 docker compose exec -T web npx tsc --noEmit
 docker compose exec -T web npm run lint
+docker compose exec -T web npm test
 docker compose exec -T web npm run build
 ```
+
+`npm test` (Vitest, under a second, no network) guards what would hurt search
+or readers without anyone noticing: sitemap files, hreflang alternates and
+canonicals, the JSON-LD graphs, public asset URLs, bot links, the book page's
+meta description, and the three message files staying in step. Tests live in
+`tests/`; `vitest.config.ts` pins `SITE_URL` and `API_URL` so results never
+depend on the shell. CI runs lint and tests before building the image, so a
+failure blocks the deploy.
 
 The production build requests live API data while generating translator routes.
 Run it only when `reads-admin` is available at the configured API URL.
