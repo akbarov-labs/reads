@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+# Sets up one app on this server for deploy-app, production and staging
+# together, so moving a project off the old `sarvar` deploys is one command.
+#
+#   sudo add-app <app> <image> [<current dir>]
+#
+#   <app>          short name, e.g. my-blog. Staging becomes <app>-staging,
+#                  served at <app>.staging.sarvarlogs.uz.
+#   <image>        the GHCR repository CI pushes, e.g. ghcr.io/akbarov-labs/sarvarlogs-app
+#   <current dir>  where the app runs today, e.g. /home/sarvar/my-blog. Its
+#                  .env becomes production's. Only needed the first time.
+#
+# Expects /tmp/<app>-setup, sent by deploy/prepare-app from the Mac:
+#   docker-compose.prod.yml, docker-compose.staging.yml, ci.pub, ci-staging.pub
+#
+# Safe to run again: it never overwrites a file that already exists, and it
+# re-checks staging's DOMAIN every time. Installed root-owned at
+# /usr/local/sbin/add-app; see docs/server-hardening.md.
+
+set -euo pipefail
+umask 022
+
+STAGING_ZONE=staging.sarvarlogs.uz
+EDGE_CADDY=edge-caddy-1
+KEYS=/home/deployer/.ssh/authorized_keys
+
+die() { echo "add-app: $*" >&2; exit 1; }
+say() { printf '\n== %s\n' "$*"; }
+env_value() { sed -n "s/^$1=//p" "$2" | tail -n 1 | tr -d '[:space:]'; }
+
+[[ $EUID -eq 0 ]] || die "run it with sudo"
+
+app=${1:-}
+image=${2:-}
+current=${3:-}
+
+[[ $app =~ ^[a-z0-9-]{1,30}$ ]] || die "usage: sudo add-app <app> <image> [<current dir>]"
+[[ $app != *-staging ]] || die "give the production name; <app>-staging is added with it"
+[[ $image =~ ^ghcr\.io/[a-z0-9._/-]+$ ]] || die "image must look like ghcr.io/<owner>/<name>"
+
+setup=/tmp/$app-setup
+for f in docker-compose.prod.yml docker-compose.staging.yml ci.pub ci-staging.pub; do
+  [[ -f $setup/$f ]] || die "missing $setup/$f — run deploy/prepare-app $app on the Mac first"
+done
+[[ $(awk '{print $2}' "$setup/ci.pub") != $(awk '{print $2}' "$setup/ci-staging.pub") ]] \
+  || die "production and staging must have different keys"
+[[ -f $KEYS ]] || die "$KEYS missing — set up deployer first (docs/server-hardening.md)"
+
+staging_domain=$app.$STAGING_ZONE
+
+# Copies src to dest, root-owned, unless dest already exists.
+install_new() {
+  local mode=$1 src=$2 dest=$3
+  if [[ -e $dest ]]; then
+    echo "  keep    $dest"
+  else
+    install -m "$mode" -o root -g root "$src" "$dest"
+    echo "  create  $dest"
+  fi
+}
+
+say "folders and deploy-app configs"
+for name in "$app" "$app-staging"; do
+  compose=docker-compose.prod.yml
+  [[ $name == *-staging ]] && compose=docker-compose.staging.yml
+  install -d -m 755 -o root -g root "/opt/apps/$name"
+  conf=$(mktemp)
+  printf 'APP_DIR=/opt/apps/%s\nREPO=%s\nCOMPOSE_FILE=%s\nKEEP_IMAGES=3\n' \
+    "$name" "$image" "$compose" > "$conf"
+  install_new 644 "$conf" "/etc/deploy-app/$name.conf"
+  rm -f "$conf"
+done
+install_new 644 "$setup/docker-compose.prod.yml" "/opt/apps/$app/docker-compose.prod.yml"
+install_new 644 "$setup/docker-compose.staging.yml" "/opt/apps/$app-staging/docker-compose.staging.yml"
+
+say "production .env"
+prod_env=/opt/apps/$app/.env
+if [[ ! -e $prod_env ]]; then
+  [[ -n $current && -f $current/.env ]] \
+    || die "no $prod_env yet: pass the folder the app runs from today (with its .env) as the third argument"
+  install -m 600 -o root -g root "$current/.env" "$prod_env"
+  echo "  create  $prod_env (copy of $current/.env)"
+else
+  echo "  keep    $prod_env"
+fi
+prod_domain=$(env_value DOMAIN "$prod_env")
+[[ -n $prod_domain ]] || die "$prod_env has no DOMAIN="
+
+say "staging .env"
+staging_env=/opt/apps/$app-staging/.env
+if [[ ! -e $staging_env ]]; then
+  # Production's settings with production's address swapped for staging's
+  # wherever it appears as a whole host (=host, ://host, host/…, host:port),
+  # so another host that merely ends with it (dashboard.<domain>) is left
+  # alone. Doing this here, not by hand, is the point: a copy that still
+  # said DOMAIN=<production> once put staging's login prompt on the live site.
+  host_re=${prod_domain//./\\.}
+  tmp=$(mktemp)
+  sed -E "s#(://|=)${host_re}([/:]|\$)#\1${staging_domain}\2#g" "$prod_env" > "$tmp"
+  install -m 600 -o root -g root "$tmp" "$staging_env"
+  rm -f "$tmp"
+  echo "  create  $staging_env (copy of production's, with these changes):"
+  diff "$prod_env" "$staging_env" | sed -n 's/^> /    /p' || true
+else
+  echo "  keep    $staging_env"
+fi
+actual=$(env_value DOMAIN "$staging_env")
+[[ $actual == "$staging_domain" ]] \
+  || die "DOMAIN in $staging_env is '$actual', must be $staging_domain — fix it and run again"
+echo "  ok      DOMAIN=$staging_domain"
+
+say "staging password (username: staging)"
+staging_compose=/opt/apps/$app-staging/docker-compose.staging.yml
+if grep -q STAGING_AUTH_HASH "$staging_compose"; then
+  read -rs -p "  new password: " p1; echo
+  read -rs -p "  again:        " p2; echo
+  [[ -n $p1 && $p1 == "$p2" ]] || die "passwords were empty or did not match; run again"
+  hash=$(docker exec "$EDGE_CADDY" caddy hash-password --plaintext "$p1")
+  unset p1 p2
+  [[ $hash == \$2* ]] || die "unexpected output from caddy hash-password"
+  # Compose reads `$` as the start of a variable, so each one is doubled.
+  sed -i "s|STAGING_AUTH_HASH|${hash//\$/\$\$}|" "$staging_compose"
+  echo "  set"
+else
+  echo "  keep    (already set)"
+fi
+
+say "CI keys for deployer"
+add_key() {
+  local name=$1 pub=$2 body
+  body=$(awk '{print $2}' "$pub")
+  [[ $body == AAAA* ]] || die "$pub is not a public key"
+  if grep -qF "$body" "$KEYS"; then
+    echo "  keep    key for $name"
+    return
+  fi
+  printf 'restrict,command="sudo -n /usr/local/sbin/deploy-app %s \\"$SSH_ORIGINAL_COMMAND\\"" %s\n' \
+    "$name" "$(cat "$pub")" >> "$KEYS"
+  echo "  add     key for $name"
+}
+add_key "$app" "$setup/ci.pub"
+add_key "$app-staging" "$setup/ci-staging.pub"
+
+rm -rf "$setup"
+
+say "done"
+cat <<EOF
+  Production: /opt/apps/$app        ($prod_domain)
+  Staging:    /opt/apps/$app-staging ($staging_domain)
+
+  Before the first deploy, read the rest of $staging_env:
+  anything that sends mail, messages, payments or webhooks must not reach
+  real people from staging.  sudo nano $staging_env
+
+  Then on GitHub: environments 'staging' and 'production', each with its
+  own CONTABO_SSH_KEY (printed by prepare-app on the Mac).
+EOF
