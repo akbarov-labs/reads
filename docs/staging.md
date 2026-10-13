@@ -34,20 +34,24 @@ Same safety rules as [server-hardening.md](server-hardening.md): keep one
 ```bash
 HOST=169.58.243.86
 PORT=22
-STAGING_DOMAIN=reads.<your staging domain>
+STAGING_DOMAIN=reads.staging.sarvarlogs.uz
 ```
 
 ## 1. DNS
 
-At the registrar of your staging domain, add one record:
+Every staging site lives under `staging.sarvarlogs.uz`:
+`reads.staging.sarvarlogs.uz`, later `reads-admin.staging…`, `shop.staging…`.
+In the DNS panel for `sarvarlogs.uz` (ahost.uz), add one record:
 
 | Type | Name | Value |
 |---|---|---|
-| `A` | `*` | `169.58.243.86` |
+| `A` | `*.staging` | `169.58.243.86` |
 
-The wildcard points every subdomain (`reads.`, `reads-admin.`, `shop.`, …)
-at the server, so later projects need no DNS work. If staging moves to its
-own server one day, you change this one record.
+The wildcard points every name under `staging.sarvarlogs.uz` at the server,
+so later projects need no DNS work. The blog at `sarvarlogs.uz` itself is not
+touched. If staging moves to its own server one day, you change this one
+record. (If the panel refuses a wildcard, add `reads.staging` as a plain `A`
+record instead, and one more per project later.)
 
 Check from the laptop (can take a few minutes):
 
@@ -97,8 +101,8 @@ sudo nano /opt/apps/reads-staging/.env
 Change these, leave the rest:
 
 ```
-DOMAIN=reads.<your staging domain>
-SITE_URL=https://reads.<your staging domain>
+DOMAIN=reads.staging.sarvarlogs.uz
+SITE_URL=https://reads.staging.sarvarlogs.uz
 INQUIRIES_DISABLED=true
 REVALIDATE_SECRET=
 ```
@@ -135,7 +139,7 @@ Must answer `deploy-app: bad image tag`, like the production key did.
 `staging`**:
 
 - Environment secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_reads_staging`
-- Environment variable `SITE_URL` = `https://reads.<your staging domain>`
+- Environment variable `SITE_URL` = `https://reads.staging.sarvarlogs.uz`
 - Deployment branches and tags → **Selected branches** → `main`
 
 **Environments → `production`**:

@@ -36,21 +36,27 @@ terminalida avval shularni yozing:
 ```bash
 HOST=169.58.243.86
 PORT=22
-STAGING_DOMAIN=reads.<staging domeningiz>
+STAGING_DOMAIN=reads.staging.sarvarlogs.uz
 ```
 
 ## 1. DNS
 
-Staging domenini sotib olgan joyingizda (registrator) bitta yozuv qoʻshing:
+Barcha staging saytlar `staging.sarvarlogs.uz` ostida boʻladi:
+`reads.staging.sarvarlogs.uz`, keyinchalik `reads-admin.staging…`,
+`shop.staging…`. `sarvarlogs.uz` ning DNS paneliga (ahost.uz) bitta yozuv
+qoʻshing:
 
 | Turi | Nomi | Qiymati |
 |---|---|---|
-| `A` | `*` | `169.58.243.86` |
+| `A` | `*.staging` | `169.58.243.86` |
 
-`*` (wildcard) barcha subdomenlarni (`reads.`, `reads-admin.`, `shop.`, …)
+`*.staging` (wildcard) `staging.sarvarlogs.uz` ostidagi barcha nomlarni
 serverga yoʻnaltiradi. Shuning uchun keyingi loyihalar uchun DNS'da hech
-narsa qilish shart emas. Bir kun staging alohida serverga koʻchsa, faqat shu
-bitta yozuvni oʻzgartirasiz.
+narsa qilish shart emas. `sarvarlogs.uz` dagi blogingizga tegilmaydi. Bir
+kun staging alohida serverga koʻchsa, faqat shu bitta yozuvni
+oʻzgartirasiz. (Agar panel wildcard'ni qabul qilmasa, oʻrniga oddiy `A`
+yozuv sifatida `reads.staging` ni qoʻshing. Keyin har bir loyiha uchun
+yana bittadan qoʻshasiz.)
 
 Noutbukda tekshiring (bir necha daqiqa vaqt olishi mumkin):
 
@@ -102,8 +108,8 @@ sudo nano /opt/apps/reads-staging/.env
 Shu qatorlarni oʻzgartiring yoki qoʻshing, qolganiga tegmang:
 
 ```
-DOMAIN=reads.<staging domeningiz>
-SITE_URL=https://reads.<staging domeningiz>
+DOMAIN=reads.staging.sarvarlogs.uz
+SITE_URL=https://reads.staging.sarvarlogs.uz
 INQUIRIES_DISABLED=true
 REVALIDATE_SECRET=
 ```
@@ -148,7 +154,7 @@ Production kaliti kabi `deploy-app: bad image tag` deb javob berishi kerak.
 `staging`**:
 
 - Environment secret: `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_reads_staging`
-- Environment variable: `SITE_URL` = `https://reads.<staging domeningiz>`
+- Environment variable: `SITE_URL` = `https://reads.staging.sarvarlogs.uz`
 - Deployment branches and tags → **Selected branches** → `main`
 
 **Environments → `production`**:
