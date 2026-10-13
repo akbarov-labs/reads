@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# The Mac's half of adding an app to the server (the server's half is
+# `sudo add-app` there). Makes the app's two CI keys — production and
+# staging, never the same — and sends its compose files and public keys to
+# the server's /tmp/<app>-setup.
+#
+#   deploy/prepare-app <app> <project dir>
+#   e.g. deploy/prepare-app my-blog ~/dev/sites/my-blog
+#
+# HOST and PORT default to the Contabo server; set them to override.
+
+set -euo pipefail
+
+die() { echo "prepare-app: $*" >&2; exit 1; }
+
+app=${1:-}
+dir=${2:-}
+host=${HOST:-169.58.243.86}
+port=${PORT:-22}
+
+[[ $app =~ ^[a-z0-9-]{1,30}$ && -n $dir ]] || die "usage: deploy/prepare-app <app> <project dir>"
+for f in docker-compose.prod.yml docker-compose.staging.yml; do
+  [[ -f $dir/$f ]] || die "$dir/$f not found"
+done
+
+key=~/.ssh/ci_${app//-/_}
+staging_key=${key}_staging
+for k in "$key" "$staging_key"; do
+  if [[ -f $k ]]; then
+    echo "keep    $k"
+  else
+    ssh-keygen -q -t ed25519 -f "$k" -N "" -C "$(basename "$k")"
+    echo "create  $k"
+  fi
+done
+
+out=$(mktemp -d)
+cp "$dir/docker-compose.prod.yml" "$dir/docker-compose.staging.yml" "$out/"
+cp "$key.pub" "$out/ci.pub"
+cp "$staging_key.pub" "$out/ci-staging.pub"
+
+ssh -p "$port" "sarvar@$host" "mkdir -p /tmp/$app-setup"
+scp -q -P "$port" "$out"/* "sarvar@$host:/tmp/$app-setup/"
+rm -rf "$out"
+echo "sent    /tmp/$app-setup on the server"
+
+cat <<EOF
+
+Next, on the server:
+  sudo add-app $app <ghcr image> <folder it runs from today>
+
+Then on GitHub (Settings → Environments), each environment's CONTABO_SSH_KEY:
+  production:  pbcopy < $key
+  staging:     pbcopy < $staging_key
+Once both deploys are green, delete them here: rm $key $staging_key
+EOF
