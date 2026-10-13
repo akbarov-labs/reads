@@ -92,7 +92,11 @@ sudo cat /home/deployer/.ssh/authorized_keys
 The last command must show **two** lines: `… reads \"$SSH…` and
 `… reads-staging \"$SSH…`.
 
-Now edit staging's `.env` (a copy of production's):
+Now edit staging's `.env` (a copy of production's). **Do it now, before
+anything deploys staging:** the copy still says `DOMAIN=kitoblarim.uz`, and a
+staging container started with it puts staging's login prompt in front of
+the live site. (`deploy-app` refuses such a deploy since this happened once,
+but don't rely on it.)
 
 ```bash
 sudo nano /opt/apps/reads-staging/.env
