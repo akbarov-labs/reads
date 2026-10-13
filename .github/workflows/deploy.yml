@@ -5,14 +5,12 @@ on:
     branches: [main]
   workflow_dispatch: {}
 
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
-
-env:
-  # Baked into the client bundle at build time (see Dockerfile) — this is
-  # the public admin domain the visitor's own browser calls directly.
-  NEXT_PUBLIC_API_URL: https://dashboard.kitoblarim.uz/api
+# Build once, then promote: every push to main becomes one image, which goes
+# to staging automatically and to production only after staging succeeded
+# and someone approved it (Required reviewers on the `production`
+# environment). Production therefore always runs an image that already ran
+# on staging. Nothing environment-specific is inside the image — each
+# environment's .env on the server supplies it.
 
 jobs:
   # Cheap, fast gate before any time goes on a Docker build: a lint failure
@@ -76,65 +74,30 @@ jobs:
         with:
           context: .
           push: true
-          build-args: |
-            NEXT_PUBLIC_API_URL=${{ env.NEXT_PUBLIC_API_URL }}
           tags: |
             ghcr.io/${{ steps.meta.outputs.repo }}:latest
             ghcr.io/${{ steps.meta.outputs.repo }}:${{ steps.meta.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy:
+  deploy-staging:
     needs: build-and-push
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/deploy-to.yml
     permissions:
-      # So GITHUB_TOKEN can pull the image on the VPS below — jobs don't
-      # inherit permissions from other jobs in the same workflow.
       packages: read
-    environment:
-      name: production
-      url: https://tarjima.kitoblarim.uz
-    steps:
-      # CI logs in as `deployer`, whose key can run exactly one thing on the
-      # server: /usr/local/sbin/deploy-app reads <tag> (forced command, see
-      # deploy/server/deploy-app and docs/server-hardening.md). Whatever we
-      # send as the "command" below arrives as the tag; the server checks it.
-      #
-      # No checkout and no third-party action here: nothing but this
-      # script ever touches the SSH key. docker-compose.prod.yml is not
-      # copied either — it lives on the server, owned by root, because
-      # whoever controls it controls the machine.
-      #
-      # Server address, user and host key are Actions *variables* (not
-      # secrets — none of them is private), set once for the whole
-      # akbarov-labs org. An environment can override them, e.g. when
-      # staging moves to its own server. Only the key is a secret, and it is
-      # this repo's own, per environment.
-      - name: Deploy on the VPS
-        env:
-          CONTABO_USER: ${{ vars.CONTABO_USER }}
-          CONTABO_HOST: ${{ vars.CONTABO_HOST }}
-          CONTABO_PORT: ${{ vars.CONTABO_PORT }}
-          CONTABO_SSH_KEY: ${{ secrets.CONTABO_SSH_KEY }}
-          # The server's real host key, saved once — not ssh-keyscan on every
-          # run, which would trust whoever answers.
-          CONTABO_KNOWN_HOSTS: ${{ vars.CONTABO_KNOWN_HOSTS }}
-          GHCR_TOKEN: ${{ github.token }}
-          GH_ACTOR: ${{ github.actor }}
-          IMAGE_TAG: ${{ needs.build-and-push.outputs.tag }}
-        run: |
-          for v in CONTABO_USER CONTABO_HOST CONTABO_KNOWN_HOSTS CONTABO_SSH_KEY; do
-            if [ -z "${!v}" ]; then
-              echo "::error::$v is not set (see docs/server-hardening.md, step 6)"
-              exit 1
-            fi
-          done
-          install -d -m 700 ~/.ssh
-          install -m 600 /dev/null ~/.ssh/deploy_key
-          printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/deploy_key
-          printf '%s\n' "$CONTABO_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          # Registry login for the pull goes over stdin, never argv.
-          printf '%s\n%s\n' "$GH_ACTOR" "$GHCR_TOKEN" | ssh \
-            -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            -p "${CONTABO_PORT:-22}" "$CONTABO_USER@$CONTABO_HOST" "$IMAGE_TAG"
+    with:
+      environment: staging
+      image_tag: ${{ needs.build-and-push.outputs.tag }}
+    secrets: inherit
+
+  # Waits for approval in the Actions tab when `production` has Required
+  # reviewers set — the point of staging is to look before this runs.
+  deploy-production:
+    needs: [build-and-push, deploy-staging]
+    uses: ./.github/workflows/deploy-to.yml
+    permissions:
+      packages: read
+    with:
+      environment: production
+      image_tag: ${{ needs.build-and-push.outputs.tag }}
+    secrets: inherit

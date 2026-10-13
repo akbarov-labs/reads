@@ -68,9 +68,9 @@ root-owned.
 
 Create `.env` here (copy `.env.production.example` from the repo as a
 starting point). This file stays on the server permanently — deploys never
-touch it. It only needs `NODE_ENV` and the server-side `API_URL`; the
-browser-facing `NEXT_PUBLIC_API_URL` is baked into the image at build time
-instead (see the note in that file and in `deploy.yml`).
+touch it. Everything environment-specific lives here and is read at
+runtime — no address is baked into the image, which is what lets the same
+image run on staging first and then in production.
 
 **3. Deploy Reads-admin first if it isn't already running**
 
@@ -161,8 +161,10 @@ Visit `https://tarjima.kitoblarim.uz`.
 
 ## Everyday use
 
-Just push to `main`. That's the whole pipeline — lint, build, push to GHCR,
-pull on the server, restart.
+Push to `main`. The pipeline lints, tests and builds one image, deploys it
+to **staging**, then waits for your **Approve** in the Actions tab before
+deploying that same image to production. Setting staging up is in
+[`docs/staging.md`](docs/staging.md) ([oʻzbekcha](docs/staging.uz.md)).
 
 The one exception: a change to `docker-compose.prod.yml` has to be copied to
 the server by hand before it takes effect (see `docs/server-hardening.md`).
@@ -255,9 +257,9 @@ sudo IMAGE_TAG=<one-of-those-tags> docker compose -f docker-compose.prod.yml up 
 
 ## Notes
 
-- `NEXT_PUBLIC_API_URL` is compiled into the client bundle at *build* time,
-  not read from `.env` at container start. To change the public API domain,
-  edit the `env:` block at the top of `.github/workflows/deploy.yml` and
-  redeploy — editing the server's `.env` has no effect on it.
+- The image carries no environment-specific value: the inquiry form posts
+  to the site's own `/api/inquiries`, which forwards to `API_URL` from
+  `.env`. Never reintroduce a `NEXT_PUBLIC_*` setting — it would be frozen
+  into the build and break promoting one image from staging to production.
 - This container has no persistent volume — it's fully stateless, so a
   redeploy is just: build, pull, replace.
