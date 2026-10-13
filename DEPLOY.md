@@ -5,6 +5,11 @@ GitHub Container Registry, then SSHs into your Contabo server to pull it and
 restart — the same box already running kitoblarim, my-blog, and
 reads-admin.
 
+CI logs in as `deployer`, a user that can only run
+`/usr/local/sbin/deploy-app reads <sha>` and has no shell. Setting that up,
+and taking root off SSH, is in
+[`docs/server-hardening.md`](docs/server-hardening.md); do it before step 6.
+
 **Footprint:** one container (Next.js standalone output, ~100–150MB RAM),
 no database of its own — it calls Reads-admin's API. It joins two external
 Docker networks, created outside of this repo's compose file:
@@ -38,7 +43,7 @@ exist as external networks — it does not create them.
 (`~/edge` on the server) is running. Verify with:
 
 ```bash
-docker network inspect edge >/dev/null && echo "edge exists"
+sudo docker network inspect edge >/dev/null && echo "edge exists"
 ```
 
 `reads_net` is specific to this app and reads-admin; create it once if it
@@ -46,15 +51,20 @@ isn't there yet, then make sure `reads-admin-app`'s own compose file also
 joins it (see reads-admin's `DEPLOY.md`):
 
 ```bash
-docker network create reads_net
+sudo docker network create reads_net
 ```
 
 **2. Create the deploy directory and the real `.env`**
 
 ```bash
-mkdir -p /opt/apps/reads
+sudo mkdir -p /opt/apps/reads
 cd /opt/apps/reads
 ```
+
+Copy `docker-compose.prod.yml` from the repo here too: deploys no longer
+send it, so the server's copy is the one that runs (see "Changing
+`docker-compose.prod.yml`" in `docs/server-hardening.md`). Both files stay
+root-owned.
 
 Create `.env` here (copy `.env.production.example` from the repo as a
 starting point). This file stays on the server permanently — deploys never
@@ -97,7 +107,7 @@ personal access token scoped to `read:packages` (reuse the same one you
 made for reads-admin):
 
 ```bash
-echo '<the token>' | docker login ghcr.io -u <your-github-username> --password-stdin
+echo '<the token>' | sudo docker login ghcr.io -u <your-github-username> --password-stdin
 ```
 
 **6. Create the `production` environment and add its secrets**
@@ -114,20 +124,22 @@ Repo → Settings → Environments → New environment → name it exactly
 | Secret | Value |
 |---|---|
 | `CONTABO_HOST` | Server IP or hostname |
-| `CONTABO_USER` | SSH username |
+| `CONTABO_USER` | `deployer` |
 | `CONTABO_PORT` | SSH port (usually `22`) |
-| `CONTABO_SSH_KEY` | Private key (PEM) for a key whose public half is in that user's `~/.ssh/authorized_keys` |
-| `CONTABO_DEPLOY_PATH` | `/opt/apps/reads` (or wherever you created it in step 2) |
+| `CONTABO_SSH_KEY` | Private half of this repo's own CI key (`ci_reads`), whose public half sits in `/home/deployer/.ssh/authorized_keys` behind the forced command |
+| `CONTABO_KNOWN_HOSTS` | The server's host key line, from `ssh-keyscan` and checked against its fingerprint |
+
+The deploy path is not a secret any more: it lives in
+`/etc/deploy-app/reads.conf` on the server.
 
 `GITHUB_TOKEN` (used to push to GHCR in `build-and-push`, and to pull on the
 server in `deploy`) needs nothing from you — GitHub generates and injects it
 automatically on every run. The token from step 5 is only for your own manual
 `docker` commands on the server; it is not a repository secret.
 
-Don't reuse a personal key you need elsewhere — generate a dedicated
-deploy keypair (`ssh-keygen -t ed25519 -f ~/.ssh/deploy_key_reads -N ""`),
-add the `.pub` half to the server's `authorized_keys`, and put the contents
-of the private half into `CONTABO_SSH_KEY`.
+The exact commands for the key, the host key and these secrets are in
+steps 1 and 6 of `docs/server-hardening.md`. Never reuse a personal key, and
+never share one CI key between repos.
 
 Optional but recommended since this server also runs kitoblarim, my-blog,
 and reads-admin: on the `production` environment's settings page, turn on
@@ -141,8 +153,8 @@ Push to `main` (or run the workflow manually from the Actions tab). Watch
 it in the Actions tab. Once it's green:
 
 ```bash
-docker ps            # reads-app should be Up
-docker compose -f docker-compose.prod.yml logs -f app
+sudo docker ps           # reads-app should be Up
+sudo docker compose -f docker-compose.prod.yml logs -f app
 ```
 
 Visit `https://tarjima.kitoblarim.uz`.
@@ -152,12 +164,15 @@ Visit `https://tarjima.kitoblarim.uz`.
 Just push to `main`. That's the whole pipeline — lint, build, push to GHCR,
 pull on the server, restart.
 
+The one exception: a change to `docker-compose.prod.yml` has to be copied to
+the server by hand before it takes effect (see `docs/server-hardening.md`).
+
 ## Changing `.env` on the server
 
 After editing `.env`, you must **recreate** the container, not restart it:
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d --force-recreate
+sudo docker compose -f docker-compose.prod.yml up -d --force-recreate
 ```
 
 `docker compose restart` reuses the existing container, and a container's
@@ -219,11 +234,13 @@ Worth knowing about the routes this adds:
 
 ## Rollback
 
-Every image is also tagged with its commit SHA. To roll back:
+Every image is also tagged with its commit SHA, and the last three stay on
+the server. Easiest: re-run an older successful run of the workflow from the
+Actions tab. By hand:
 
 ```bash
 cd /opt/apps/reads
-IMAGE_TAG=<previous-commit-sha> docker compose -f docker-compose.prod.yml up -d
+sudo IMAGE_TAG=<previous-commit-sha> docker compose -f docker-compose.prod.yml up -d --force-recreate
 ```
 
 Note that `IMAGE_TAG` defaults to `latest`, which the server never pulls
@@ -232,8 +249,8 @@ during normal deploys (the workflow pulls by commit SHA). If a bare
 per step 5 above, or point it at an image already on the box:
 
 ```bash
-docker images ghcr.io/akbarov-labs/reads   # see what's local
-IMAGE_TAG=<one-of-those-tags> docker compose -f docker-compose.prod.yml up -d
+sudo docker images ghcr.io/akbarov-labs/reads   # see what's local
+sudo IMAGE_TAG=<one-of-those-tags> docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Notes
