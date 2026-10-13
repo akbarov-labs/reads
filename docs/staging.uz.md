@@ -99,7 +99,11 @@ Oxirgi buyruq **ikkita** qator koʻrsatishi kerak: `… reads \"$SSH…` va
 `… reads-staging \"$SSH…`.
 
 Endi staging'ning `.env` faylini tahrirlang (bu production `.env` ning
-nusxasi):
+nusxasi). ⚠️ **Buni hozir, staging deploy boʻlishidan oldin qiling.** Nusxada
+hali `DOMAIN=kitoblarim.uz` turibdi. Agar staging konteyneri shu bilan ishga
+tushsa, staging'ning paroli haqiqiy saytning oldiga qoʻyiladi va hech kim
+saytni ocha olmaydi. (Bu bir marta sodir boʻlgani uchun `deploy-app` endi
+bunday deploy'ni rad etadi, lekin bunga tayanmang.)
 
 ```bash
 sudo nano /opt/apps/reads-staging/.env
