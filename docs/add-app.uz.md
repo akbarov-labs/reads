@@ -87,7 +87,15 @@ yozilganlarni ham bajaring (masalan, ma'lumotlarni nusxalash).
 
 ## 4. GitHub
 
-Loyiha repo'sida → **Settings → Environments**:
+**Private repo boʻlsa:** GitHub'ning bepul tarifida u org variable'larini
+koʻra olmaydi. Xuddi shu toʻrttasini loyiha repo'sining oʻziga qoʻshing →
+**Settings → Secrets and variables → Actions → Variables → New repository
+variable**: `CONTABO_HOST` (`169.58.243.86`), `CONTABO_PORT` (`22`),
+`CONTABO_USER` (`deployer`), `CONTABO_KNOWN_HOSTS` (org'ning Variables
+sahifasidan nusxalang). Public repo uchun bu yerda hech narsa qilish
+shart emas.
+
+Keyin loyiha repo'sida → **Settings → Environments**:
 
 **`staging`** (New environment):
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>_staging`

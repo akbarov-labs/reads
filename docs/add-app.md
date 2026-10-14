@@ -85,7 +85,14 @@ its data).
 
 ## 4. GitHub
 
-In the project's repo → **Settings → Environments**:
+**Private repository?** On GitHub's free plan it can't see the org's
+variables. Add the same four in the project's repo → **Settings → Secrets
+and variables → Actions → Variables → New repository variable**:
+`CONTABO_HOST` (`169.58.243.86`), `CONTABO_PORT` (`22`), `CONTABO_USER`
+(`deployer`), `CONTABO_KNOWN_HOSTS` (copy it from the org's Variables page).
+A public repository needs nothing here.
+
+Then in the project's repo → **Settings → Environments**:
 
 **`staging`** (New environment):
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>_staging`
