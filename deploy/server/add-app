@@ -36,7 +36,11 @@ current=${3:-}
 
 [[ $app =~ ^[a-z0-9-]{1,30}$ ]] || die "usage: sudo add-app <app> <image> [<current dir>]"
 [[ $app != *-staging ]] || die "give the production name; <app>-staging is added with it"
-[[ $image =~ ^ghcr\.io/[a-z0-9._/-]+$ ]] || die "image must look like ghcr.io/<owner>/<name>"
+[[ $image =~ ^ghcr\.io/[a-z0-9._-]+/[a-z0-9._/-]+$ ]] || die "image must look like ghcr.io/<owner>/<name>, without :tag"
+# `docker ps` prints name:tag, and the tag is a commit SHA. Dropping the
+# wrong half leaves ghcr.io/<owner>/<sha>, which looks valid and only fails
+# at the first deploy's pull — it did once.
+[[ ${image##*/} =~ ^[0-9a-f]{7,40}$ ]] && die "'${image##*/}' is a commit SHA, not an image name: use the part before the ':' in docker ps"
 
 setup=/tmp/$app-setup
 for f in docker-compose.prod.yml docker-compose.staging.yml ci.pub ci-staging.pub; do
@@ -47,6 +51,15 @@ done
 [[ -f $KEYS ]] || die "$KEYS missing — set up deployer first (docs/server-hardening.md)"
 
 staging_domain=$app.$STAGING_ZONE
+
+# The one running container that already uses this image, if any, as a
+# sanity check the operator can see before anything is written.
+running=$(docker ps --format '{{.Names}} {{.Image}}' | awk -v img="$image" 'index($2, img ":") == 1 {print $1; exit}')
+if [[ -n $running ]]; then
+  echo "image   $image (running now as $running)"
+else
+  echo "image   $image — WARNING: no running container uses it; check the name against docker ps"
+fi
 
 # Copies src to dest, root-owned, unless dest already exists.
 install_new() {
