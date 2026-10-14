@@ -85,7 +85,14 @@ its data).
 
 ## 4. GitHub
 
-In the project's repo → **Settings → Environments**:
+**Private repository?** On GitHub's free plan it can't see the org's
+variables. Add the same four in the project's repo → **Settings → Secrets
+and variables → Actions → Variables → New repository variable**:
+`CONTABO_HOST` (`169.58.243.86`), `CONTABO_PORT` (`22`), `CONTABO_USER`
+(`deployer`), `CONTABO_KNOWN_HOSTS` (copy it from the org's Variables page).
+A public repository needs nothing here.
+
+Then in the project's repo → **Settings → Environments**:
 
 **`staging`** (New environment):
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>_staging`
@@ -95,7 +102,10 @@ In the project's repo → **Settings → Environments**:
 **`production`**:
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>` (replace the old one)
 - variable `SITE_URL` = its real address
-- **Required reviewers** → yourself
+- **Required reviewers** → yourself. Only public repositories have this on
+  GitHub's free plan. For a private one, the project's PR instead adds a
+  **Promote to production** workflow (as in my-blog): staging deploys on
+  every push, production when you press **Run workflow** there.
 - Deployment branches → Selected branches → `main`
 - delete the old `CONTABO_HOST`, `CONTABO_PORT`, `CONTABO_USER`,
   `CONTABO_DEPLOY_PATH` secrets (environment and repository level)
@@ -104,7 +114,8 @@ In the project's repo → **Settings → Environments**:
 
 Merge the PR. In Actions: staging deploys → open
 `https://<app>.staging.sarvarlogs.uz` → **Review deployments → Approve and
-deploy**. Then check the live site and, on the server:
+deploy** (public repository), or **Promote to production → Run workflow**
+(private repository). Then check the live site and, on the server:
 
 ```bash
 docker inspect <container> --format '{{ index .Config.Labels "com.docker.compose.project.working_dir" }}'

@@ -87,7 +87,15 @@ yozilganlarni ham bajaring (masalan, ma'lumotlarni nusxalash).
 
 ## 4. GitHub
 
-Loyiha repo'sida → **Settings → Environments**:
+**Private repo boʻlsa:** GitHub'ning bepul tarifida u org variable'larini
+koʻra olmaydi. Xuddi shu toʻrttasini loyiha repo'sining oʻziga qoʻshing →
+**Settings → Secrets and variables → Actions → Variables → New repository
+variable**: `CONTABO_HOST` (`169.58.243.86`), `CONTABO_PORT` (`22`),
+`CONTABO_USER` (`deployer`), `CONTABO_KNOWN_HOSTS` (org'ning Variables
+sahifasidan nusxalang). Public repo uchun bu yerda hech narsa qilish
+shart emas.
+
+Keyin loyiha repo'sida → **Settings → Environments**:
 
 **`staging`** (New environment):
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>_staging`
@@ -97,7 +105,11 @@ Loyiha repo'sida → **Settings → Environments**:
 **`production`**:
 - secret `CONTABO_SSH_KEY` = `pbcopy < ~/.ssh/ci_<app>` (eskisining oʻrniga)
 - variable `SITE_URL` = saytning haqiqiy manzili
-- **Required reviewers** → oʻzingizni qoʻshing
+- **Required reviewers** → oʻzingizni qoʻshing. GitHub'ning bepul tarifida
+  bu faqat **public** (ochiq) repo'larda bor. **Private** repo uchun
+  loyihaning PR'i oʻrniga **Promote to production** workflow'ini qoʻshadi
+  (my-blog'dagidek): staging har bir push'da deploy boʻladi, production
+  esa siz u yerda **Run workflow** ni bosganingizda.
 - Deployment branches → Selected branches → `main`
 - eski `CONTABO_HOST`, `CONTABO_PORT`, `CONTABO_USER`, `CONTABO_DEPLOY_PATH`
   secret'larini oʻchiring (environment'da ham, repository'da ham)
@@ -106,7 +118,8 @@ Loyiha repo'sida → **Settings → Environments**:
 
 PR'ni merge qiling. Actions'da avval staging deploy boʻladi →
 `https://<app>.staging.sarvarlogs.uz` ni oching → **Review deployments →
-Approve and deploy**. Keyin haqiqiy saytni tekshiring va serverda:
+Approve and deploy** (public repo), yoki **Promote to production → Run
+workflow** (private repo). Keyin haqiqiy saytni tekshiring va serverda:
 
 ```bash
 docker inspect <konteyner> --format '{{ index .Config.Labels "com.docker.compose.project.working_dir" }}'
