@@ -176,6 +176,8 @@
     "readersTitle": "Kitoblarim oʻquvchilari",
     "readersLead": "Kitoblarim botida bu kitobni oʻqib, baho berganlar.",
     "readersCount": "{count} ta baho",
+    "readingTime": "{pages} bet. Kuniga {minutes} daqiqa oʻqisangiz, taxminan {days} kunda tugatasiz.",
+    "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
     "readerAnonymous": "Kitoblarim oʻquvchisi",
     "readersRate": "Oʻqing va Telegramda baho bering",
     "breadcrumbBooks": "Kitoblar"
