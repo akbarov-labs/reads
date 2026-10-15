@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { authorPageGraph, bookPageGraph, publisherPageGraph, siteGraph } from "@/lib/jsonld";
 import type { Author, BookWithTranslator, Publisher } from "@/lib/types";
 
-const ORIGIN = "https://tarjima.kitoblarim.uz";
+const ORIGIN = "https://kitoblarim.uz";
 const INTERNAL = "http://reads-admin-app";
 const PUBLIC = "https://dashboard.kitoblarim.uz";
 

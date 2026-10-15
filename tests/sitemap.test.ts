@@ -11,7 +11,7 @@ const api = vi.hoisted(() => ({
 // Hoisted above the imports, so lib/sitemap sees the mock, never the network.
 vi.mock("@/lib/api", () => api);
 
-const ORIGIN = "https://tarjima.kitoblarim.uz";
+const ORIGIN = "https://kitoblarim.uz";
 
 function index(books: number, { authors = 1, publishers = 1 } = {}): SitemapIndex {
   return {

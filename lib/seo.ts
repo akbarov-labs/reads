@@ -114,6 +114,12 @@ export function hreflangFor(locale: Locale): string {
   return HREFLANG[locale];
 }
 
+/** "Title — Author", or the title alone when the book has no author yet. */
+export function bookTitle(book: BookWithTranslator): string {
+  const author = book.author?.trim();
+  return author ? `${book.uzbekTitle} — ${author}` : book.uzbekTitle;
+}
+
 /**
  * A book page's description: one plain sentence a search result or an
  * answer engine can quote — the title, who wrote and translated it, and who
