@@ -81,6 +81,26 @@ if [[ -n $domain && -n $site_url ]]; then
   [[ $site_host == "$domain" ]] || die "SITE_URL=$site_url is not on DOMAIN=$domain; fix SITE_URL in $APP_DIR/.env"
 fi
 
+# A staging copy must never act as production's live accounts. A bot token
+# is the sharp one: kitoblarim registers its webhook on every start, so a
+# staging .env still holding production's token would point the real bot at
+# staging — and drop its pending updates — the moment staging came up.
+# Same for Telegram user sessions and payment credentials. add-app blanks
+# these when it creates a staging .env; this catches one put back by hand.
+LIVE_ACCOUNT_KEYS='BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT'
+if [[ $app == *-staging ]]; then
+  prod_env=/opt/apps/${app%-staging}/.env
+  if [[ -f $prod_env ]]; then
+    while IFS= read -r key; do
+      value=$(sed -n "s/^$key=//p" .env | tail -n 1)
+      [[ -n $value ]] || continue
+      prod_value=$(sed -n "s/^$key=//p" "$prod_env" | tail -n 1)
+      [[ $value == "$prod_value" ]] \
+        && die "$key in $APP_DIR/.env is production's; staging needs its own (for a bot: a test bot from BotFather)"
+    done < <(sed -nE 's/^([A-Za-z_][A-Za-z0-9_]*)=.*/\1/p' .env | grep -E "$LIVE_ACCOUNT_KEYS" | sort -u)
+  fi
+fi
+
 echo "--- disk before"
 df -h /
 

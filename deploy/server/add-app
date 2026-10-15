@@ -110,6 +110,10 @@ if [[ ! -e $staging_env ]]; then
   host_re=${prod_domain//./\\.}
   tmp=$(mktemp)
   sed -E "s#(://|=)${host_re}([/:]|\$)#\1${staging_domain}\2#g" "$prod_env" > "$tmp"
+  # Live accounts are blanked, never copied: a production bot token in a
+  # staging .env would let staging take over the real bot (deploy-app
+  # refuses such a deploy too). Staging gets its own, e.g. a test bot.
+  sed -i -E 's/^([A-Za-z0-9_]*(BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT)[A-Za-z0-9_]*)=.*/\1=/' "$tmp"
   install -m 600 -o root -g root "$tmp" "$staging_env"
   rm -f "$tmp"
   echo "  create  $staging_env (copy of production's, with these changes):"
@@ -134,8 +138,13 @@ if grep -q STAGING_AUTH_HASH "$staging_compose"; then
   # Compose reads `$` as the start of a variable, so each one is doubled.
   sed -i "s|STAGING_AUTH_HASH|${hash//\$/\$\$}|" "$staging_compose"
   echo "  set"
-else
+elif grep -q 'caddy.basic_auth' "$staging_compose"; then
   echo "  keep    (already set)"
+else
+  # A bot's staging: Telegram's webhook and Mini App browser can't type a
+  # password, so its compose file has none and it admits testers by
+  # Telegram id instead (see the project's DEPLOY.md).
+  echo "  none    this staging has no login prompt; see the project's DEPLOY.md"
 fi
 
 say "CI keys for deployer"
@@ -160,6 +169,10 @@ say "done"
 cat <<EOF
   Production: /opt/apps/$app        ($prod_domain)
   Staging:    /opt/apps/$app-staging ($staging_domain)
+
+  Bot tokens, Telegram sessions and payment keys were left EMPTY in
+  staging's .env (lines above with nothing after '='). Put staging's own
+  there — a test bot from BotFather — never production's.
 
   Before the first deploy, read the rest of $staging_env:
   anything that sends mail, messages, payments or webhooks must not reach
