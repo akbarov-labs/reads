@@ -19,7 +19,21 @@ export function botUrl(): string {
  * ISBN is missing or malformed.
  */
 export function botPlanUrl(isbn?: string | null): string {
+  const digits = isbnDigits(isbn);
+  return digits ? `${BOT_URL}?start=plan_${digits}_${PARTNER}` : botUrl();
+}
+
+/**
+ * "Save it for later": the bot puts the book on the reader's "Oʻqiyman"
+ * shelf. Null without a usable ISBN, since there is then nothing to save.
+ */
+export function botWantUrl(isbn?: string | null): string | null {
+  const digits = isbnDigits(isbn);
+  return digits ? `${BOT_URL}?start=want_${digits}_${PARTNER}` : null;
+}
+
+/** An ISBN's digits (and check digit X), or null when it can't be one. */
+function isbnDigits(isbn?: string | null): string | null {
   const digits = String(isbn ?? "").replace(/[^0-9Xx]/g, "");
-  if (!/^[0-9Xx]{10,13}$/.test(digits)) return botUrl();
-  return `${BOT_URL}?start=plan_${digits.toUpperCase()}_${PARTNER}`;
+  return /^[0-9Xx]{10,13}$/.test(digits) ? digits.toUpperCase() : null;
 }

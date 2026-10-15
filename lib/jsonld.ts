@@ -39,6 +39,46 @@ function language(name: string | null | undefined) {
 }
 
 /**
+ * The catalogue's language names, as editions store them ("Rus tili",
+ * "Oʻzbekcha", "Oʻzbek tili, Rus tili"), to the BCP 47 codes search engines
+ * read. Keys are lower case, with any apostrophe as ' and no " tili".
+ */
+const LANGUAGE_CODES: Record<string, string> = {
+  uz: "uz", "o'zbek": "uz", "o'zbekcha": "uz", "o'zbek (lotin)": "uz-Latn", "o'zbek (kirill)": "uz-Cyrl", uzbek: "uz", "узбекский": "uz",
+  ru: "ru", rus: "ru", ruscha: "ru", russian: "ru", "русский": "ru",
+  en: "en", ingliz: "en", inglizcha: "en", english: "en", "английский": "en",
+  tr: "tr", turk: "tr", turkcha: "tr",
+  az: "az", ozarbayjon: "az",
+  kk: "kk", qozoq: "kk",
+  ky: "ky", "qirg'iz": "ky",
+  tk: "tk", turkman: "tk",
+  tg: "tg", tojik: "tg",
+  fa: "fa", fors: "fa",
+  ar: "ar", arab: "ar",
+  de: "de", nemis: "de",
+  fr: "fr", fransuz: "fr",
+  es: "es", ispan: "es",
+  it: "it", italyan: "it",
+  ja: "ja", yapon: "ja",
+  ko: "ko", koreys: "ko",
+  zh: "zh", xitoy: "zh",
+};
+
+/** BCP 47 codes for a catalogue language field, in order, once each. Names it doesn't know are left out, not guessed. */
+export function languageCodes(field: string | null | undefined): string[] {
+  const codes = (field ?? "")
+    .split(",")
+    .map((part) => LANGUAGE_CODES[part.trim().toLowerCase().replace(/[ʻʼ‘’`]/g, "'").replace(/\s+tili$/, "")])
+    .filter((code): code is string => Boolean(code));
+  return [...new Set(codes)];
+}
+
+/** One code as a string, several as a list, none as nothing. */
+function inLanguage(codes: string[]): string | string[] | undefined {
+  return codes.length > 1 ? codes : codes[0];
+}
+
+/**
  * One book, expressed from the translator's point of view. The role decides
  * which credit the person gets — translating a novel and writing one are
  * different claims, and an answer engine that conflates them will attribute
@@ -345,7 +385,9 @@ export function bookPageGraph({ book, locale, path, description, trail }: BookPa
     alternateName: book.originalTitle && book.originalTitle !== book.uzbekTitle ? book.originalTitle : undefined,
     description: book.description ?? undefined,
     image: publicAssetUrl(book.coverUrl),
-    inLanguage: BOOK_LANGUAGE,
+    // The languages its printings are in. A third of the catalogue is
+    // Russian and a sixth English, so "Uzbek" can't be assumed here.
+    inLanguage: inLanguage([...new Set(editions.flatMap((edition) => languageCodes(edition.language)))]),
     isbn: firstIsbn ?? undefined,
     author: authors.length ? authors : book.author ? { "@type": "Person", name: book.author } : undefined,
     translator: translators.size ? [...translators.values()] : undefined,
@@ -363,7 +405,7 @@ export function bookPageGraph({ book, locale, path, description, trail }: BookPa
         datePublished: edition.year ? String(edition.year) : undefined,
         numberOfPages: edition.pages ?? undefined,
         publisher: edition.publisher ? { "@type": "Organization", name: edition.publisher.name } : undefined,
-        inLanguage: edition.language ?? undefined,
+        inLanguage: inLanguage(languageCodes(edition.language)),
       }),
     ),
     aggregateRating:
