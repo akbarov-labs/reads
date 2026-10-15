@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bookDescription } from "@/lib/seo";
+import { bookDescription, bookTitle } from "@/lib/seo";
 import type { BookWithTranslator } from "@/lib/types";
 import en from "@/messages/en.json";
 
@@ -61,5 +61,16 @@ describe("bookDescription", () => {
   ])("has no empty or null text with %j", (overrides) => {
     const text = bookDescription({ ...book, ...overrides }, t);
     expect(text).not.toMatch(/null|undefined|\(\)|: \.|— \.|\s{2}/);
+  });
+});
+
+describe("bookTitle", () => {
+  it("names the author after the title", () => {
+    expect(bookTitle(book)).toBe("Chol va dengiz — Ernest Hemingway");
+  });
+
+  it("is the title alone when there is no author, with no dangling dash", () => {
+    expect(bookTitle({ ...book, author: "" })).toBe("Chol va dengiz");
+    expect(bookTitle({ ...book, author: "  " })).toBe("Chol va dengiz");
   });
 });

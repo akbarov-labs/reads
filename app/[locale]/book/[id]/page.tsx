@@ -15,7 +15,7 @@ import { botPlanUrl } from "@/lib/bot";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription } from "@/lib/seo";
+import { bookDescription, bookTitle } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -36,11 +36,12 @@ export async function generateMetadata({
   ]);
   if (!book) return { robots: { index: false, follow: false } };
 
+  const title = bookTitle(book);
   const description = bookDescription(book, t);
   const cover = publicAssetUrl(book.coverUrl);
 
   return {
-    title: `${book.uzbekTitle} — ${book.author}`,
+    title,
     description,
     // Its own address, and its own in each language. Without this the page
     // inherits the layout's, which points at the home page and tells search
@@ -48,7 +49,7 @@ export async function generateMetadata({
     alternates: localeAlternates(locale as Locale, `/book/${id}`),
     openGraph: {
       type: "book",
-      title: `${book.uzbekTitle} — ${book.author}`,
+      title,
       description,
       url: localeAlternates(locale as Locale, `/book/${id}`).canonical,
       ...(cover ? { images: [{ url: cover, alt: book.uzbekTitle }] } : {}),
