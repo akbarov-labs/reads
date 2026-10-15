@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authorPageGraph, bookPageGraph, publisherPageGraph, siteGraph } from "@/lib/jsonld";
+import { authorPageGraph, bookPageGraph, languageCodes, publisherPageGraph, siteGraph } from "@/lib/jsonld";
 import type { Author, BookWithTranslator, Publisher } from "@/lib/types";
 
 const ORIGIN = "https://kitoblarim.uz";
@@ -174,7 +174,6 @@ describe("bookPageGraph", () => {
       "@id": `${ORIGIN}/uz/book/43#book`,
       url: `${ORIGIN}/uz/book/43`,
       name: "Nomaʼlum kitob",
-      inLanguage: "uz-UZ",
     });
   });
 
@@ -200,8 +199,34 @@ describe("bookPageGraph", () => {
     ]);
   });
 
-  it("describes the book in Uzbek, whatever the page language", () => {
-    expect(book.inLanguage).toBe("uz-UZ");
+  it("describes the book in its printings' language, whatever the page language", () => {
+    expect(book.inLanguage).toBe("uz");
+  });
+
+  it("says a Russian printing is in Russian, and a bilingual one in both", () => {
+    const russian = json(
+      bookPageGraph({
+        book: { ...fullBook, editions: [{ id: "r", translators: [], coverUrl: "", language: "Rus tili" }] },
+        locale: "uz",
+        path: "/book/44",
+        description: "",
+        trail: TRAIL,
+      }),
+    );
+    const node = (russian["@graph"] as Node[]).find((n) => n["@type"] === "Book")!;
+    expect(node.inLanguage).toBe("ru");
+    expect((node.workExample as Node[])[0].inLanguage).toBe("ru");
+
+    const both = json(
+      bookPageGraph({
+        book: { ...fullBook, editions: [{ id: "b", translators: [], coverUrl: "", language: "Oʻzbek tili, Rus tili" }] },
+        locale: "uz",
+        path: "/book/45",
+        description: "",
+        trail: TRAIL,
+      }),
+    );
+    expect((both["@graph"] as Node[]).find((n) => n["@type"] === "Book")!.inLanguage).toEqual(["uz", "ru"]);
   });
 
   it("uses the public cover URL, never the internal Docker host", () => {
@@ -397,3 +422,23 @@ describe("publisherPageGraph", () => {
     ]);
   });
 });
+
+describe("languageCodes", () => {
+  it.each([
+    ["Rus tili", ["ru"]],
+    ["O'zbek tili", ["uz"]],
+    ["Oʻzbekcha", ["uz"]],
+    ["Ingliz tili", ["en"]],
+    ["Oʻzbek tili, Yapon tili", ["uz", "ja"]],
+    ["Rus tili, Rus tili", ["ru"]],
+    ["uz", ["uz"]],
+  ])("reads %j as %j", (field, codes) => {
+    expect(languageCodes(field)).toEqual(codes);
+  });
+
+  it("leaves out what it doesn't know rather than guess", () => {
+    expect(languageCodes("Klingon tili")).toEqual([]);
+    expect(languageCodes(null)).toEqual([]);
+  });
+});
+
