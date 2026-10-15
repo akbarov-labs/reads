@@ -199,7 +199,7 @@ environment, gets its own key, so one leak can only redeploy one app.
 
 Merge the PR that switches `deploy.yml` to `deployer` **right after**: until it
 lands, a deploy from the old workflow fails (harmlessly, nothing runs).
-Watch the run in the Actions tab, then check https://tarjima.kitoblarim.uz and:
+Watch the run in the Actions tab, then check https://kitoblarim.uz and:
 
 ```bash
 docker inspect reads-app --format '{{ index .Config.Labels "com.docker.compose.project.working_dir" }}'

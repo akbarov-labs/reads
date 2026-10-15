@@ -69,6 +69,18 @@ if [[ -n $domain ]]; then
   done < <(docker ps --format '{{.Names}}{{"\t"}}{{.Label "com.docker.compose.project"}}{{"\t"}}{{.Label "caddy"}}')
 fi
 
+# Refuse a SITE_URL on another address than DOMAIN. Every canonical link,
+# hreflang alternate and sitemap entry is built from SITE_URL, so a stale
+# one tells search engines the whole site lives elsewhere while every page
+# still looks fine. (Reads once pointed them all at an address that no
+# longer had a certificate.)
+site_url=$(sed -n 's/^SITE_URL=//p' .env 2>/dev/null | tail -n 1 | tr -d '[:space:]')
+if [[ -n $domain && -n $site_url ]]; then
+  site_host=${site_url#*://}
+  site_host=${site_host%%/*}
+  [[ $site_host == "$domain" ]] || die "SITE_URL=$site_url is not on DOMAIN=$domain; fix SITE_URL in $APP_DIR/.env"
+fi
+
 echo "--- disk before"
 df -h /
 

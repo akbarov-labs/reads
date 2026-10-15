@@ -86,14 +86,19 @@ There is no Caddyfile to edit. The `edge` Caddy (caddy-docker-proxy) reads
 routing straight off this container's Docker labels
 (`caddy: ${DOMAIN}` / `caddy.reverse_proxy: {{upstreams 3000}}` in
 `docker-compose.prod.yml`), so the only step here is setting `DOMAIN` in the
-server's `.env` (e.g. `DOMAIN=tarjima.kitoblarim.uz`). Caddy fetches the
+server's `.env` (`DOMAIN=kitoblarim.uz`). Caddy fetches the
 Let's Encrypt certificate for it automatically the first time it's
 requested — nothing to reload by hand.
 
-`kitoblarim.uz` itself belongs to the Kitoblarim bot's landing page now, which
-redirects old Reads links here. Reads must be on `tarjima.kitoblarim.uz`
-*before* that switch; the order is in `docs/domain-switch.md` of the
-kitoblarim repo.
+Reads lives on `kitoblarim.uz` (decided 2026-10-15; the planned move to
+`tarjima.kitoblarim.uz` was dropped). `SITE_URL` must be on the same address
+as `DOMAIN`: `deploy-app` refuses a deploy where it isn't.
+
+For a while every canonical link and the sitemap pointed at
+`tarjima.kitoblarim.uz`, so search engines know that address. The second
+site in `docker-compose.prod.yml`'s labels (`caddy_1`) answers it with a
+permanent redirect to the same path on `kitoblarim.uz`. Keep it until
+Search Console stops listing `tarjima` URLs.
 
 **5. Log the server in to GHCR (one time, for manual operations)**
 
@@ -114,7 +119,7 @@ echo '<the token>' | sudo docker login ghcr.io -u <your-github-username> --passw
 
 The `deploy` job in `deploy.yml` targets a GitHub **environment** named
 `production` (this also gives you a deployment record + a clickable link to
-`https://tarjima.kitoblarim.uz` in the Actions run, and lets you require a
+`https://kitoblarim.uz` in the Actions run, and lets you require a
 manual approval before every deploy if you want one).
 
 Repo → Settings → Environments → New environment → name it exactly
@@ -157,7 +162,7 @@ sudo docker ps           # reads-app should be Up
 sudo docker compose -f docker-compose.prod.yml logs -f app
 ```
 
-Visit `https://tarjima.kitoblarim.uz`.
+Visit `https://kitoblarim.uz`.
 
 ## Everyday use
 
@@ -193,8 +198,8 @@ changing one needs a container recreate (see "Changing `.env` on the
 server" above) but not a rebuild:
 
 ```
-DOMAIN=tarjima.kitoblarim.uz
-SITE_URL=https://tarjima.kitoblarim.uz
+DOMAIN=kitoblarim.uz
+SITE_URL=https://kitoblarim.uz
 SITE_NAME=Kitoblarim
 REVALIDATE_SECRET=<openssl rand -hex 32>
 ```
@@ -216,11 +221,11 @@ Check it end to end from the server:
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' \
   -X POST -H "Authorization: Bearer $REVALIDATE_SECRET" \
-  https://tarjima.kitoblarim.uz/api/revalidate     # expect 200
+  https://kitoblarim.uz/api/revalidate     # expect 200
 ```
 
 **After the first deploy**, submit the sitemap once in Google Search Console
-and Bing Webmaster Tools (`https://tarjima.kitoblarim.uz/sitemap.xml`). It
+and Bing Webmaster Tools (`https://kitoblarim.uz/sitemap.xml`). It
 regenerates itself from then on; nothing needs resubmitting when a
 translator or book is added.
 

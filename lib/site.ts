@@ -11,7 +11,7 @@ import { routing } from "@/i18n/routing";
  * client bundle at build time.
  */
 export const SITE_URL = (
-  process.env.SITE_URL ?? "https://tarjima.kitoblarim.uz"
+  process.env.SITE_URL ?? "https://kitoblarim.uz"
 ).replace(/\/$/, "");
 
 // The catalogue is part of Kitoblarim, under the same name as the bot.

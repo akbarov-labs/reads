@@ -270,7 +270,7 @@ oʻtkazadigan PR). Merge qilinmaguncha eski workflow bilan boshlangan deploy
 xato bilan toʻxtaydi. Bu zararsiz, hech narsa ishga tushmaydi.
 
 Actions yorligʻida ishni kuzating. Yashil boʻlgach,
-https://tarjima.kitoblarim.uz ni oching va serverda tekshiring:
+https://kitoblarim.uz ni oching va serverda tekshiring:
 
 ```bash
 docker inspect reads-app --format '{{ index .Config.Labels "com.docker.compose.project.working_dir" }}'

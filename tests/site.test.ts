@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { absoluteUrl, localeAlternates } from "@/lib/site";
 
-const ORIGIN = "https://tarjima.kitoblarim.uz";
+const ORIGIN = "https://kitoblarim.uz";
 
 describe("absoluteUrl", () => {
   it("prefixes the locale and keeps the path", () => {

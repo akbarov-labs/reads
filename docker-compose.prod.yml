@@ -28,8 +28,13 @@ services:
       - edge
       - reads_net
     labels:
-      caddy: ${DOMAIN:?set DOMAIN in .env, e.g. tarjima.kitoblarim.uz}
+      caddy: ${DOMAIN:?set DOMAIN in .env, e.g. kitoblarim.uz}
       caddy.reverse_proxy: "{{upstreams 3000}}"
+      # The address Reads was briefly announced on (canonical links and the
+      # sitemap pointed there). Search engines learned it, so send each of
+      # its URLs to the same path here instead of a certificate error.
+      caddy_1: tarjima.kitoblarim.uz
+      caddy_1.redir: "https://kitoblarim.uz{uri} permanent"
 
 networks:
   edge:

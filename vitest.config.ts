@@ -12,7 +12,7 @@ export default defineConfig({
     // whatever the shell exports. API_URL is the production Docker address,
     // the case publicAssetUrl exists to rewrite.
     env: {
-      SITE_URL: "https://tarjima.kitoblarim.uz",
+      SITE_URL: "https://kitoblarim.uz",
       SITE_NAME: "Kitoblarim",
       API_URL: "http://reads-admin-app/api",
       PUBLIC_ASSET_URL: "https://dashboard.kitoblarim.uz",
