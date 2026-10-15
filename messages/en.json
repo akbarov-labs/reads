@@ -176,6 +176,8 @@
     "readersTitle": "Kitoblarim readers",
     "readersLead": "People who read this book in the Kitoblarim bot and rated it.",
     "readersCount": "{count, plural, one {# rating} other {# ratings}}",
+    "readingTime": "{pages} pages. At {minutes} minutes a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
+    "readersRating": "Kitoblarim readers rate it {rating}/5 ({count, plural, one {# rating} other {# ratings}}).",
     "readerAnonymous": "A Kitoblarim reader",
     "readersRate": "Read it and rate it in Telegram",
     "breadcrumbBooks": "Books"

@@ -15,7 +15,7 @@ import { botPlanUrl } from "@/lib/bot";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookTitle } from "@/lib/seo";
+import { bookDescription, bookPages, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -93,6 +93,7 @@ export default async function BookDetailPage({
   const editions = book.editions ?? [];
   // The bot finds the book by ISBN; any printing with one will do.
   const botHref = botPlanUrl(editions.find((edition) => edition.isbn)?.isbn);
+  const pages = bookPages(book);
 
   return (
     <>
@@ -303,6 +304,12 @@ export default async function BookDetailPage({
                   </div>
                 </dl>
               </div>
+
+              {/* How long the book takes, the same line the search result
+                  shows, right above the place to plan it. */}
+              {pages ? (
+                <p className="mt-6 text-sm text-zinc-600">{readingTime(pages, tDetail)}</p>
+              ) : null}
 
               {/* The catalogue's hand-off: the same Kitoblarim, in Telegram,
                   where the reader plans this book and reads it to the end. */}

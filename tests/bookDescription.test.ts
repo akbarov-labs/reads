@@ -1,9 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { bookDescription, bookTitle } from "@/lib/seo";
+import { createTranslator } from "next-intl";
+import { bookDescription, bookPages, bookTitle, readingDays } from "@/lib/seo";
 import type { BookWithTranslator } from "@/lib/types";
 import en from "@/messages/en.json";
+import ru from "@/messages/ru.json";
+import uz from "@/messages/uz.json";
 
-const t = (key: string) => (en.bookDetail as Record<string, string>)[key];
+type Translate = Parameters<typeof bookDescription>[1];
+
+/** The page's own translator for bookDetail, ICU plurals and all. */
+function translator(locale: string, messages: typeof en): Translate {
+  return createTranslator({ locale, messages, namespace: "bookDetail" }) as unknown as Translate;
+}
+
+const t = translator("en", en);
 
 const book: BookWithTranslator = {
   id: "1",
@@ -72,5 +82,65 @@ describe("bookTitle", () => {
   it("is the title alone when there is no author, with no dangling dash", () => {
     expect(bookTitle({ ...book, author: "" })).toBe("Chol va dengiz");
     expect(bookTitle({ ...book, author: "  " })).toBe("Chol va dengiz");
+  });
+});
+
+describe("reading time and readers' rating", () => {
+  const read: BookWithTranslator = {
+    ...book,
+    editions: [
+      { id: "a", translators: [], coverUrl: "", year: null, pages: null },
+      { id: "b", translators: [], coverUrl: "", year: 2015, pages: 304 },
+    ],
+    readerRating: { average: 4.666, count: 12 },
+  };
+
+  it("says how long the book takes and what readers gave it, before the credits", () => {
+    expect(bookDescription(read, t)).toBe(
+      "Chol va dengiz (The Old Man and the Sea) — Ernest Hemingway. 304 pages. At 20 minutes a day, you'll finish it in about 16 days. Kitoblarim readers rate it 4.7/5 (12 ratings). Translator: Ibrohim Gʻafurov. Publisher: Sharq, 2015.",
+    );
+  });
+
+  it("reads naturally in Uzbek", () => {
+    const text = bookDescription(read, translator("uz", uz as typeof en));
+    expect(text).toContain("304 bet. Kuniga 20 daqiqa oʻqisangiz, taxminan 16 kunda tugatasiz.");
+    expect(text).toContain("Kitoblarim oʻquvchilari bahosi: 4.7/5 (12 ta baho).");
+  });
+
+  it.each([
+    [420, "21 день"],
+    [440, "22 дня"],
+    [500, "25 дней"],
+  ])("puts %i pages' days in the right Russian form", (pages, days) => {
+    const text = bookDescription({ ...read, editions: [{ id: "a", translators: [], coverUrl: "", pages }] }, translator("ru", ru as typeof en));
+    expect(text).toContain(`примерно за ${days}.`);
+  });
+
+  it("leaves out the rating when nobody has rated the book", () => {
+    expect(bookDescription({ ...read, readerRating: { average: 0, count: 0 } }, t)).not.toContain("rate it");
+    expect(bookDescription({ ...read, readerRating: null }, t)).not.toContain("rate it");
+  });
+
+  it("leaves out the reading time when no printing has a page count", () => {
+    expect(bookDescription({ ...read, editions: [{ id: "a", translators: [], coverUrl: "", pages: 0 }] }, t)).not.toMatch(/pages|minutes/);
+  });
+});
+
+describe("bookPages", () => {
+  it("takes the first printing with a page count", () => {
+    expect(bookPages({ ...book, editions: [{ id: "a", translators: [], coverUrl: "", pages: null }, { id: "b", translators: [], coverUrl: "", pages: 210 }] })).toBe(210);
+  });
+
+  it("is null without one", () => {
+    expect(bookPages({ ...book, editions: undefined })).toBeNull();
+  });
+});
+
+describe("readingDays", () => {
+  it("is a page a minute, 20 minutes a day, rounded up, never zero", () => {
+    expect(readingDays(1)).toBe(1);
+    expect(readingDays(20)).toBe(1);
+    expect(readingDays(21)).toBe(2);
+    expect(readingDays(304)).toBe(16);
   });
 });

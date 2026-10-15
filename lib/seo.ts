@@ -120,17 +120,45 @@ export function bookTitle(book: BookWithTranslator): string {
   return author ? `${book.uzbekTitle} — ${author}` : book.uzbekTitle;
 }
 
+type Translate = (key: string, values?: Record<string, string | number>) => string;
+
 /**
- * A book page's description: one plain sentence a search result or an
- * answer engine can quote — the title, who wrote and translated it, and who
- * published it when, in the page's language. Clauses with no data are
- * dropped, never filled with "null".
+ * Minutes a day the reading-time line assumes. At about a page a minute,
+ * the Kitoblarim bot's own rule, that is also the pages a day.
  */
-export function bookDescription(book: BookWithTranslator, t: (key: string) => string): string {
+export const MINUTES_A_DAY = 20;
+
+/** The page count of the first printing that has one, or null. */
+export function bookPages(book: BookWithTranslator): number | null {
+  return (book.editions ?? []).find((edition) => edition.pages && edition.pages > 0)?.pages ?? null;
+}
+
+/** Days to read `pages` at MINUTES_A_DAY pages a day, at least one. */
+export function readingDays(pages: number): number {
+  return Math.max(1, Math.ceil(pages / MINUTES_A_DAY));
+}
+
+/** "304 pages. At 20 minutes a day, you'll finish it in about 16 days." */
+export function readingTime(pages: number, t: Translate): string {
+  return t("readingTime", { pages, minutes: MINUTES_A_DAY, days: readingDays(pages) });
+}
+
+/**
+ * A book page's description, which is what a search result shows under the
+ * title: who wrote it, how long it takes to read, what Kitoblarim readers
+ * thought of it, then who translated and published it, in the page's
+ * language. Each clause is something the page itself shows. Clauses with no
+ * data are dropped, never filled with "null".
+ */
+export function bookDescription(book: BookWithTranslator, t: Translate): string {
   const year = (book.editions ?? []).find((edition) => edition.year)?.year ?? book.year;
   const title = `${book.uzbekTitle}${book.originalTitle && book.originalTitle !== book.uzbekTitle ? ` (${book.originalTitle})` : ""}`;
+  const pages = bookPages(book);
+  const rating = book.readerRating?.count ? book.readerRating : null;
   return [
     book.author ? `${title} — ${book.author}.` : `${title}.`,
+    pages ? readingTime(pages, t) : null,
+    rating ? t("readersRating", { rating: rating.average.toFixed(1), count: rating.count }) : null,
     book.translatorName ? `${t("translator")}: ${book.translatorName}.` : null,
     book.publisher ? `${t("publisher")}: ${book.publisher}${year ? `, ${year}` : ""}.` : null,
   ]
