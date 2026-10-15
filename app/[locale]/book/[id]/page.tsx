@@ -7,15 +7,16 @@ import { getBookById, publicAssetUrl } from "@/lib/api";
 import type { BookWithTranslator, Edition } from "@/lib/types";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
-import { botPlanUrl } from "@/lib/bot";
+import { botPlanUrl, botWantUrl } from "@/lib/bot";
+import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookTitle } from "@/lib/seo";
+import { bookDescription, bookPages, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -92,7 +93,10 @@ export default async function BookDetailPage({
   const relatedBooks = book.relatedBooks ?? [];
   const editions = book.editions ?? [];
   // The bot finds the book by ISBN; any printing with one will do.
-  const botHref = botPlanUrl(editions.find((edition) => edition.isbn)?.isbn);
+  const isbn = editions.find((edition) => edition.isbn)?.isbn;
+  const botHref = botPlanUrl(isbn);
+  const wantHref = botWantUrl(isbn);
+  const pages = bookPages(book);
 
   return (
     <>
@@ -304,6 +308,12 @@ export default async function BookDetailPage({
                 </dl>
               </div>
 
+              {/* How long the book takes, the same line the search result
+                  shows, right above the place to plan it. */}
+              {pages ? (
+                <p className="mt-6 text-sm text-zinc-600">{readingTime(pages, tDetail)}</p>
+              ) : null}
+
               {/* The catalogue's hand-off: the same Kitoblarim, in Telegram,
                   where the reader plans this book and reads it to the end. */}
               <a
@@ -316,6 +326,41 @@ export default async function BookDetailPage({
                 <span>{tDetail("planInBot")}</span>
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
               </a>
+
+              {/* Many readers arrive looking for a copy. Say plainly that
+                  there is none here, and where to look instead. */}
+              <section className="mt-8 border-t border-stone-200 pt-6" aria-labelledby="where-to-get">
+                <h2 id="where-to-get" className="font-serif text-lg text-zinc-900">
+                  {tDetail("whereTitle")}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{tDetail("whereLead")}</p>
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {storeLinks(book.uzbekTitle).map((store) => (
+                    <li key={store.name}>
+                      <a
+                        href={store.url}
+                        target="_blank"
+                        rel="nofollow noopener"
+                        className="inline-flex items-center gap-1 rounded-full border border-stone-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-forest-400 hover:text-forest-800"
+                      >
+                        {store.name}
+                        <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                {wantHref ? (
+                  <a
+                    href={wantHref}
+                    target="_blank"
+                    rel="noopener"
+                    className="mt-4 inline-flex items-center gap-2 rounded-xl py-2 pl-2 pr-3.5 text-sm font-medium text-forest-700 transition-colors duration-200 hover:bg-forest-100"
+                  >
+                    <Bookmark aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    <span>{tDetail("whereSave")}</span>
+                  </a>
+                ) : null}
+              </section>
             </div>
           </div>
 
