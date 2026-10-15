@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { botPlanUrl, botUrl } from "@/lib/bot";
+import { botPlanUrl, botUrl, botWantUrl } from "@/lib/bot";
 
 const FALLBACK = "https://t.me/kitob_javonim_bot?start=src_reads";
 
@@ -27,3 +27,14 @@ describe("botPlanUrl", () => {
     expect(url.searchParams.get("start")).toMatch(/^[A-Za-z0-9_]+$/);
   });
 });
+
+describe("botWantUrl", () => {
+  it("saves a book by its ISBN, named as the reads partner", () => {
+    expect(botWantUrl("978-9943-01-234-5")).toBe("https://t.me/kitob_javonim_bot?start=want_9789943012345_reads");
+  });
+
+  it.each([undefined, null, "", "12345"])("is null without a usable ISBN (%j), so the page shows no button", (isbn) => {
+    expect(botWantUrl(isbn)).toBeNull();
+  });
+});
+
