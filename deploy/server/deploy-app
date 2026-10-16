@@ -34,13 +34,30 @@ tag=${2:-}
 conf=/etc/deploy-app/$app.conf
 [[ -f $conf ]] || die "unknown app: $app"
 
-# Root-owned config: APP_DIR, REPO, and optionally COMPOSE_FILE, KEEP_IMAGES.
+# Root-owned config: APP_DIR, REPO, and optionally COMPOSE_FILE, KEEP_IMAGES,
+# IMAGES and UP_FLAGS.
+#   IMAGES    for a project that ships several images under one prefix
+#             (REPO/api, REPO/web, …): their names, space-separated. Unset,
+#             REPO itself is the one image.
+#   UP_FLAGS  for `docker compose up -d`. A project whose database or cache
+#             runs in this stack may want no --force-recreate, so a deploy
+#             leaves those containers alone.
 # shellcheck source=/dev/null
 source "$conf"
 : "${APP_DIR:?APP_DIR missing in $conf}"
 : "${REPO:?REPO missing in $conf}"
 COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.prod.yml}
 KEEP_IMAGES=${KEEP_IMAGES:-3}
+UP_FLAGS=${UP_FLAGS:---force-recreate --remove-orphans}
+images=()
+if [[ -n ${IMAGES:-} ]]; then
+  for name in $IMAGES; do
+    [[ $name =~ ^[a-z0-9._-]+$ ]] || die "bad image name '$name' in IMAGES"
+    images+=("$REPO/$name")
+  done
+else
+  images=("$REPO")
+fi
 
 IFS= read -r registry_user || die "no registry user on stdin"
 IFS= read -r registry_token || die "no registry token on stdin"
@@ -85,9 +102,10 @@ fi
 # is the sharp one: kitoblarim registers its webhook on every start, so a
 # staging .env still holding production's token would point the real bot at
 # staging — and drop its pending updates — the moment staging came up.
-# Same for Telegram user sessions and payment credentials. add-app blanks
+# Same for Telegram user sessions, payment and SMS gateway credentials and
+# the DNS API token. add-app blanks
 # these when it creates a staging .env; this catches one put back by hand.
-LIVE_ACCOUNT_KEYS='BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT'
+LIVE_ACCOUNT_KEYS='BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT|ESKIZ_EMAIL|ESKIZ_PASSWORD|CLOUDFLARE_API_TOKEN'
 if [[ $app == *-staging ]]; then
   prod_env=/opt/apps/${app%-staging}/.env
   if [[ -f $prod_env ]]; then
@@ -107,10 +125,12 @@ df -h /
 # Free space before pulling, but only this app's images: other projects on
 # this server keep theirs. Keeps the newest $KEEP_IMAGES as rollback targets;
 # the one the running container uses refuses removal, which is fine.
-docker image ls "$REPO" --format '{{.Repository}}:{{.Tag}}' \
-  | grep -v ':<none>$' \
-  | tail -n +$((KEEP_IMAGES + 1)) \
-  | xargs -r docker rmi 2>/dev/null || true
+for image in "${images[@]}"; do
+  docker image ls "$image" --format '{{.Repository}}:{{.Tag}}' \
+    | grep -v ':<none>$' \
+    | tail -n +$((KEEP_IMAGES + 1)) \
+    | xargs -r docker rmi 2>/dev/null || true
+done
 
 # Log in with a throwaway config so the short-lived token never lands in
 # /root/.docker/config.json — that would also overwrite the long-lived
@@ -120,14 +140,17 @@ trap 'rm -rf "$docker_cfg"' EXIT
 printf '%s' "$registry_token" \
   | docker --config "$docker_cfg" login ghcr.io -u "$registry_user" --password-stdin >/dev/null
 unset registry_token
-docker --config "$docker_cfg" pull "$REPO:$tag"
+for image in "${images[@]}"; do
+  docker --config "$docker_cfg" pull "$image:$tag"
+done
 rm -rf "$docker_cfg"
 
-# The image is local now, so compose does not need registry access.
+# The images are local now, so compose does not need registry access.
 # IMAGE is set explicitly so .env can never point compose at another image
 # than the one just pulled.
+# shellcheck disable=SC2086 # UP_FLAGS is a list of flags
 IMAGE="$REPO" IMAGE_TAG="$tag" \
-  docker compose -f "$COMPOSE_FILE" up -d --force-recreate --remove-orphans
+  docker compose -f "$COMPOSE_FILE" up -d $UP_FLAGS
 
 # Dangling layers only — safe on a shared server.
 docker image prune -f >/dev/null || true

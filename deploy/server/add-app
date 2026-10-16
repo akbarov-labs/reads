@@ -2,7 +2,13 @@
 # Sets up one app on this server for deploy-app, production and staging
 # together, so moving a project off the old `sarvar` deploys is one command.
 #
-#   sudo add-app <app> <image> [<current dir>]
+#   sudo add-app [--images "<names>"] [--up-flags "<flags>"] <app> <image> [<current dir>]
+#
+#   --images       a project that ships several images under <image>
+#                  (<image>/api, <image>/web, …): their names, e.g. "api web".
+#   --up-flags     flags for `docker compose up -d` in place of the default
+#                  "--force-recreate --remove-orphans", e.g. "--remove-orphans"
+#                  to leave a database container alone on every deploy.
 #
 #   <app>          short name, e.g. my-blog. Staging becomes <app>-staging,
 #                  served at <app>.staging.sarvarlogs.uz.
@@ -30,11 +36,25 @@ env_value() { sed -n "s/^$1=//p" "$2" | tail -n 1 | tr -d '[:space:]'; }
 
 [[ $EUID -eq 0 ]] || die "run it with sudo"
 
+images_opt=""
+up_flags_opt=""
+while [[ ${1:-} == --* ]]; do
+  case $1 in
+    --images) images_opt=${2:-}; shift 2 ;;
+    --up-flags) up_flags_opt=${2:-}; shift 2 ;;
+    *) die "unknown option $1" ;;
+  esac
+done
+for name in $images_opt; do
+  [[ $name =~ ^[a-z0-9._-]+$ ]] || die "bad image name '$name' in --images"
+done
+[[ -z $up_flags_opt || $up_flags_opt =~ ^(--[a-z-]+[[:space:]]*)+$ ]] || die "--up-flags takes compose flags only, e.g. \"--remove-orphans\""
+
 app=${1:-}
 image=${2:-}
 current=${3:-}
 
-[[ $app =~ ^[a-z0-9-]{1,30}$ ]] || die "usage: sudo add-app <app> <image> [<current dir>]"
+[[ $app =~ ^[a-z0-9-]{1,30}$ ]] || die "usage: sudo add-app [--images \"<names>\"] [--up-flags \"<flags>\"] <app> <image> [<current dir>]"
 [[ $app != *-staging ]] || die "give the production name; <app>-staging is added with it"
 [[ $image =~ ^ghcr\.io/[a-z0-9._-]+/[a-z0-9._/-]+$ ]] || die "image must look like ghcr.io/<owner>/<name>, without :tag"
 # `docker ps` prints name:tag, and the tag is a commit SHA. Dropping the
@@ -54,7 +74,7 @@ staging_domain=$app.$STAGING_ZONE
 
 # The one running container that already uses this image, if any, as a
 # sanity check the operator can see before anything is written.
-running=$(docker ps --format '{{.Names}} {{.Image}}' | awk -v img="$image" 'index($2, img ":") == 1 {print $1; exit}')
+running=$(docker ps --format '{{.Names}} {{.Image}}' | awk -v img="$image" -v sep="${images_opt:+/}" 'index($2, img (sep == "" ? ":" : sep)) == 1 {print $1; exit}')
 if [[ -n $running ]]; then
   echo "image   $image (running now as $running)"
 else
@@ -80,6 +100,8 @@ for name in "$app" "$app-staging"; do
   conf=$(mktemp)
   printf 'APP_DIR=/opt/apps/%s\nREPO=%s\nCOMPOSE_FILE=%s\nKEEP_IMAGES=3\n' \
     "$name" "$image" "$compose" > "$conf"
+  [[ -n $images_opt ]] && printf 'IMAGES="%s"\n' "$images_opt" >> "$conf"
+  [[ -n $up_flags_opt ]] && printf 'UP_FLAGS="%s"\n' "$up_flags_opt" >> "$conf"
   install_new 644 "$conf" "/etc/deploy-app/$name.conf"
   rm -f "$conf"
 done
@@ -113,7 +135,7 @@ if [[ ! -e $staging_env ]]; then
   # Live accounts are blanked, never copied: a production bot token in a
   # staging .env would let staging take over the real bot (deploy-app
   # refuses such a deploy too). Staging gets its own, e.g. a test bot.
-  sed -i -E 's/^([A-Za-z0-9_]*(BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT)[A-Za-z0-9_]*)=.*/\1=/' "$tmp"
+  sed -i -E 's/^([A-Za-z0-9_]*(BOT_TOKEN|MTPROTO_SESSION|PROVIDER_TOKEN|PAYMENT|ESKIZ_EMAIL|ESKIZ_PASSWORD|CLOUDFLARE_API_TOKEN)[A-Za-z0-9_]*)=.*/\1=/' "$tmp"
   install -m 600 -o root -g root "$tmp" "$staging_env"
   rm -f "$tmp"
   echo "  create  $staging_env (copy of production's, with these changes):"
