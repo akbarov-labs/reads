@@ -17,7 +17,8 @@
 #                  .env becomes production's. Only needed the first time.
 #
 # Expects /tmp/<app>-setup, sent by deploy/prepare-app from the Mac:
-#   docker-compose.prod.yml, docker-compose.staging.yml, ci.pub, ci-staging.pub
+#   docker-compose.prod.yml, docker-compose.staging.yml, ci.pub, ci-staging.pub,
+#   and the project's deploy/hooks/pre-up and post-up if it has them.
 #
 # Safe to run again: it never overwrites a file that already exists, and it
 # re-checks staging's DOMAIN every time. Installed root-owned at
@@ -107,6 +108,14 @@ for name in "$app" "$app-staging"; do
 done
 install_new 644 "$setup/docker-compose.prod.yml" "/opt/apps/$app/docker-compose.prod.yml"
 install_new 644 "$setup/docker-compose.staging.yml" "/opt/apps/$app-staging/docker-compose.staging.yml"
+# Optional deploy hooks from the project's deploy/hooks/, for both stacks.
+for hook in pre-up post-up; do
+  [[ -f $setup/hook-$hook ]] || continue
+  for name in "$app" "$app-staging"; do
+    install -d -m 755 -o root -g root "/opt/apps/$name/hooks"
+    install_new 755 "$setup/hook-$hook" "/opt/apps/$name/hooks/$hook"
+  done
+done
 
 say "production .env"
 prod_env=/opt/apps/$app/.env

@@ -35,7 +35,7 @@ conf=/etc/deploy-app/$app.conf
 [[ -f $conf ]] || die "unknown app: $app"
 
 # Root-owned config: APP_DIR, REPO, and optionally COMPOSE_FILE, KEEP_IMAGES,
-# IMAGES and UP_FLAGS.
+# IMAGES and UP_FLAGS. Optional hooks: APP_DIR/hooks/pre-up, post-up.
 #   IMAGES    for a project that ships several images under one prefix
 #             (REPO/api, REPO/web, …): their names, space-separated. Unset,
 #             REPO itself is the one image.
@@ -152,9 +152,25 @@ rm -rf "$docker_cfg"
 # The images are local now, so compose does not need registry access.
 # IMAGE is set explicitly so .env can never point compose at another image
 # than the one just pulled.
+# Optional per-app steps around the restart: hooks/pre-up and hooks/post-up
+# next to the compose file (the shop dumps its database before a deploy and
+# waits for its api's health after). They run as root, so they must be
+# root's and writable by nobody else — like everything else in APP_DIR.
+run_hook() {
+  local hook=hooks/$1
+  [[ -e $hook ]] || return 0
+  [[ $(stat -c '%U' "$hook") == root && ! $(stat -c '%A' "$hook") =~ ^.....w|^........w ]] \
+    || die "$APP_DIR/$hook must be owned by root and writable by nobody else"
+  echo "--- $1"
+  COMPOSE_FILE="$COMPOSE_FILE" IMAGE="$REPO" IMAGE_TAG="$tag" bash "$hook" \
+    || die "$1 hook failed"
+}
+
+run_hook pre-up
 # shellcheck disable=SC2086 # UP_FLAGS is a list of flags
 IMAGE="$REPO" IMAGE_TAG="$tag" \
   docker compose -f "$COMPOSE_FILE" up -d $UP_FLAGS
+run_hook post-up
 
 # Dangling layers only — safe on a shared server.
 docker image prune -f >/dev/null || true

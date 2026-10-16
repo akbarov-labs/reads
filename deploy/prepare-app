@@ -38,6 +38,10 @@ out=$(mktemp -d)
 cp "$dir/docker-compose.prod.yml" "$dir/docker-compose.staging.yml" "$out/"
 cp "$key.pub" "$out/ci.pub"
 cp "$staging_key.pub" "$out/ci-staging.pub"
+# Optional deploy hooks (run by deploy-app around the restart).
+for hook in pre-up post-up; do
+  [[ -f $dir/deploy/hooks/$hook ]] && cp "$dir/deploy/hooks/$hook" "$out/hook-$hook"
+done
 
 ssh -p "$port" "sarvar@$host" "mkdir -p /tmp/$app-setup"
 scp -q -P "$port" "$out"/* "sarvar@$host:/tmp/$app-setup/"
