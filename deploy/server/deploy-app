@@ -75,7 +75,11 @@ cd "$APP_DIR"
 # Caddy merges every container that claims a domain into one site, so a
 # staging .env copied from production and not yet edited would put
 # staging's login prompt in front of the live site. (It did, once.)
-project=$(basename "$APP_DIR")
+# The compose project, as compose itself names it: the folder's name unless
+# the file sets `name:` (the shop's does, so it stays one project wherever
+# its folder lives).
+project=$(IMAGE="$REPO" IMAGE_TAG="$tag" docker compose -f "$COMPOSE_FILE" config 2>/dev/null | sed -n 's/^name: //p' | head -n 1)
+project=${project:-$(basename "$APP_DIR")}
 domain=$(sed -n 's/^DOMAIN=//p' .env 2>/dev/null | tail -n 1 | tr -d '[:space:]')
 if [[ -n $domain ]]; then
   while IFS=$'\t' read -r name other_project addresses; do
