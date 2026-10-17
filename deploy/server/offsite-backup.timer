@@ -1,0 +1,12 @@
+# After every app's own nightly backup: the shop's at 22:00 UTC (03:00
+# Tashkent), kitoblarim's at 03:00 UTC, reads-admin's at 03:30, my-blog's at 03:45.
+[Unit]
+Description=Nightly off-site copy of app backups
+
+[Timer]
+OnCalendar=*-*-* 04:30:00 UTC
+RandomizedDelaySec=10m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

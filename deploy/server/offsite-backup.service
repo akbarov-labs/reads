@@ -1,0 +1,17 @@
+# Installed at /etc/systemd/system/; started every night by offsite-backup.timer.
+# Logs: sudo journalctl -u offsite-backup
+[Unit]
+Description=Copy app backups off this server (encrypted, docs/offsite-backups.md)
+Wants=network-online.target
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/offsite-backup run
+Nice=10
+IOSchedulingClass=idle
+PrivateTmp=true
+ProtectHome=read-only
+ProtectSystem=full
+NoNewPrivileges=true
+Environment=RCLONE_CACHE_DIR=/tmp/rclone-cache

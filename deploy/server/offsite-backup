@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# Copies every app's backups off this server, encrypted, once a night.
+#
+# Each app makes its own backups into a Docker volume (pg_dump, SQLite
+# VACUUM INTO, …). Those sit on the same disk as the database, so they
+# survive a bad migration but not the loss of the server. This script copies
+# them, the apps' uploaded files and the server's own settings to an rclone
+# `crypt` remote (Backblaze B2 underneath), so the bucket only ever sees
+# encrypted bytes. Runbook: docs/offsite-backups.md.
+#
+#   offsite-backup run            what the nightly timer runs
+#   offsite-backup check          settings, remote and sources; uploads nothing
+#   offsite-backup list [path]    what is off-site, e.g. `list dumps/olgo/db`
+#   offsite-backup fetch <path> [dir]
+#                                 download and decrypt one file or folder,
+#                                 into /root/offsite-restore by default
+#
+# Root-owned settings in /etc/offsite-backup (the folder is 700):
+#   rclone.conf          remotes `b2` and `offsite` (crypt over b2:<bucket>)
+#   offsite-backup.conf  HEALTHCHECK_URL, MAX_AGE_HOURS, CONFIG_PATHS
+#   sources              what to copy, one line each:
+#                          <dumps|files> <app> <vol:volume[/sub/dir]|/host/path>
+#
+#   dumps  finished backup files. Only new ones are uploaded, an existing one
+#          is never touched again, and the newest must be younger than
+#          MAX_AGE_HOURS — so an app whose own backup job died is noticed
+#          here too. Kept 30 days by the bucket's lifecycle rule.
+#   files  a folder mirrored as it is (uploads). Nothing is ever deleted
+#          off-site; a file that changes keeps its old version 30 days.
+#
+# Off-site layout, inside `offsite:`: dumps/<app>/…, files/<app>/…, and
+# dumps/server/configs-<time>.tar.gz. Nothing in this script deletes
+# anything off-site: retention is the bucket's job (lifecycle rules plus
+# Object Lock), so even root on a broken-into server cannot wipe the history.
+
+set -euo pipefail
+umask 077
+
+ETC=/etc/offsite-backup
+CONF=$ETC/offsite-backup.conf
+SOURCES=$ETC/sources
+export RCLONE_CONFIG=$ETC/rclone.conf
+REMOTE=offsite:
+
+log() { echo "[offsite] $*"; }
+die() { echo "[offsite] ERROR $*" >&2; exit 1; }
+
+HEALTHCHECK_URL=""
+MAX_AGE_HOURS=26
+CONFIG_PATHS="/opt/apps /etc/deploy-app"
+
+load_settings() {
+  [[ $EUID -eq 0 ]] || die "run it with sudo"
+  [[ -d $ETC ]] || die "$ETC missing (docs/offsite-backups.md, step 3)"
+  for f in "$ETC" "$RCLONE_CONFIG" "$CONF" "$SOURCES"; do
+    [[ -e $f ]] || die "$f missing (docs/offsite-backups.md)"
+    # They hold the bucket keys and the crypt passwords.
+    [[ $(stat -c '%U %a' "$f") =~ ^root\ [0-7]00$ ]] \
+      || die "$f must be root's and closed to everyone else (chmod 600, the folder 700)"
+  done
+  # shellcheck source=/dev/null
+  source "$CONF"
+  [[ $MAX_AGE_HOURS =~ ^[0-9]+$ ]] || die "MAX_AGE_HOURS must be a number of hours"
+}
+
+# The bucket must only ever receive encrypted data: refuse a plain remote.
+check_remote() {
+  local type
+  type=$(rclone listremotes --long | awk '$1 == "offsite:" { print $2 }')
+  [[ -n $type ]] || die "no remote called 'offsite' in $RCLONE_CONFIG"
+  [[ $type == crypt ]] || die "remote 'offsite' is '$type', not 'crypt': backups would leave unencrypted"
+  rclone lsf --max-depth 1 "$REMOTE" >/dev/null || die "cannot reach the bucket (keys? network?)"
+}
+
+# "vol:name/sub/dir" -> the volume's folder on this disk; a plain path as is.
+source_path() {
+  local spec=$1 volume sub mountpoint
+  if [[ $spec == vol:* ]]; then
+    spec=${spec#vol:}
+    volume=${spec%%/*}
+    sub=${spec#"$volume"}
+    mountpoint=$(docker volume inspect -f '{{.Mountpoint}}' "$volume" 2>/dev/null) \
+      || { echo "volume $volume does not exist (docker volume ls)" >&2; return 1; }
+    spec=$mountpoint$sub
+  fi
+  [[ -d $spec ]] || { echo "$spec is not a folder" >&2; return 1; }
+  echo "$spec"
+}
+
+# Lines of the sources file, comments and blanks dropped, checked once.
+read_sources() {
+  local kind app spec extra seen=" "
+  while read -r kind app spec extra; do
+    [[ -z $kind || $kind == \#* ]] && continue
+    [[ $kind == dumps || $kind == files ]] || die "sources: kind must be dumps or files, got '$kind'"
+    [[ $app =~ ^[a-z0-9-]{1,40}$ && $app != server ]] || die "sources: bad app name '$app'"
+    [[ -n $spec && -z $extra ]] || die "sources: expected '<kind> <app> <path>', got '$kind $app $spec $extra'"
+    [[ $seen != *" $kind/$app "* ]] || die "sources: $kind $app is listed twice"
+    seen+="$kind/$app "
+    echo "$kind $app $spec"
+  done < "$SOURCES"
+}
+
+# Files the apps are still writing, and their state markers, stay behind.
+FILTERS=(--exclude '*.partial' --exclude '*.tmp' --exclude '.*' --min-age 2m)
+RCLONE_FLAGS=(--retries 3 --low-level-retries 10 --stats 0 -v)
+
+copy_dumps() {
+  local app=$1 dir=$2 newest age
+  newest=$(find "$dir" -type f ! -name '*.partial' ! -name '*.tmp' ! -name '.*' -printf '%T@\n' | sort -n | tail -n 1)
+  [[ -n $newest ]] || { log "FAIL $app: no backup files in $dir"; return 1; }
+  age=$(( ($(date +%s) - ${newest%.*}) / 3600 ))
+  # Copy what there is either way; then report a stale app as a failure.
+  rclone copy --ignore-existing "${FILTERS[@]}" "${RCLONE_FLAGS[@]}" "$dir" "${REMOTE}dumps/$app" || return 1
+  if (( age >= MAX_AGE_HOURS )); then
+    log "FAIL $app: newest backup is ${age}h old — is its backup service running?"
+    return 1
+  fi
+  log "ok   $app dumps (newest ${age}h old)"
+}
+
+copy_files() {
+  local app=$1 dir=$2
+  rclone copy "${FILTERS[@]}" "${RCLONE_FLAGS[@]}" "$dir" "${REMOTE}files/$app" || return 1
+  log "ok   $app files"
+}
+
+# The server's own settings (.env files, compose files, deploy configs): what
+# it takes to rebuild this box. Encrypted like everything else; the crypt
+# passwords themselves are not in it — they live in your password manager.
+copy_configs() {
+  local paths=() p stamp tmp rc=0
+  for p in $CONFIG_PATHS; do
+    [[ $p == /* ]] || { log "FAIL server: CONFIG_PATHS entry '$p' is not an absolute path"; return 1; }
+    if [[ -e $p ]]; then paths+=("${p#/}"); else log "WARN config path $p does not exist, skipped"; fi
+  done
+  (( ${#paths[@]} )) || { log "FAIL server: none of CONFIG_PATHS exist"; return 1; }
+  stamp=$(date -u +%Y%m%dT%H%M%SZ)
+  tmp=$(mktemp -d)
+  # Exit 1 is GNU tar's "a file changed while it was read": still a good copy.
+  tar -C / -czf "$tmp/configs-$stamp.tar.gz" --exclude "${ETC#/}" "${paths[@]}" || rc=$?
+  if (( rc > 1 )); then rm -rf "$tmp"; log "FAIL server: tar exited $rc"; return 1; fi
+  rclone copy "${RCLONE_FLAGS[@]}" "$tmp" "${REMOTE}dumps/server" || { rm -rf "$tmp"; return 1; }
+  rm -rf "$tmp"
+  log "ok   server configs (/${paths[*]})"
+}
+
+ping_healthcheck() {
+  [[ -n $HEALTHCHECK_URL ]] || return 0
+  curl -fsS -m 10 --retry 3 -o /dev/null --data-binary @- "$HEALTHCHECK_URL$1" \
+    || log "WARN could not reach $HEALTHCHECK_URL"
+}
+
+cmd_run() {
+  load_settings
+  exec 9>/run/lock/offsite-backup.lock
+  flock -n 9 || die "already running"
+  ping_healthcheck /start < /dev/null
+
+  local failed=0 sources kind app spec dir
+  # Global, not local: the EXIT trap runs after this function has returned.
+  out=$(mktemp)
+  trap 'rm -f "$out"' EXIT
+  {
+    log "started $(date -u +%FT%TZ)"
+    if ! sources=$(read_sources) || ! (check_remote); then
+      failed=1
+    else
+      while read -r kind app spec; do
+        [[ -n $kind ]] || continue
+    [[ -n $kind ]] || continue
+        if ! dir=$(source_path "$spec" 2>&1); then
+          log "FAIL $app $kind: $dir"
+          failed=1
+          continue
+        fi
+        "copy_$kind" "$app" "$dir" || failed=1
+      done <<< "$sources"
+      copy_configs || failed=1
+    fi
+    log "finished $(date -u +%FT%TZ): $([[ $failed == 0 ]] && echo OK || echo FAILED)"
+  } > "$out" 2>&1
+  cat "$out"
+  # The tail of the log goes with the ping, so the alert email says what broke.
+  if [[ $failed == 0 ]]; then
+    tail -c 9000 "$out" | ping_healthcheck ""
+  else
+    tail -c 9000 "$out" | ping_healthcheck /fail
+    exit 1
+  fi
+}
+
+cmd_check() {
+  load_settings
+  check_remote
+  log "remote 'offsite' is crypt and reachable"
+  local kind app spec dir sources bad=0
+  sources=$(read_sources)
+  while read -r kind app spec; do
+    [[ -n $kind ]] || continue
+    if dir=$(source_path "$spec" 2>&1); then
+      log "ok   $kind $app  $dir ($(du -sh "$dir" | cut -f1))"
+    else
+      log "FAIL $kind $app  $dir"
+      bad=1
+    fi
+  done <<< "$sources"
+  for p in $CONFIG_PATHS; do
+    if [[ -e $p ]]; then log "ok   config $p"; else log "WARN config $p does not exist"; fi
+  done
+  if [[ -n $HEALTHCHECK_URL ]]; then
+    log "healthcheck: $HEALTHCHECK_URL"
+  else
+    log "WARN HEALTHCHECK_URL is empty: nobody hears about a failed night"
+  fi
+  return $bad
+}
+
+cmd_list() {
+  load_settings
+  rclone lsl "$REMOTE${1:-}" | sort -k 4
+}
+
+cmd_fetch() {
+  local path=${1:?usage: offsite-backup fetch <path> [dir]} dest=${2:-/root/offsite-restore}
+  load_settings
+  mkdir -p "$dest"
+  rclone copy "${RCLONE_FLAGS[@]}" "$REMOTE$path" "$dest"
+  log "in $dest:"
+  ls -la "$dest"
+}
+
+case ${1:-} in
+  run) cmd_run ;;
+  check) cmd_check ;;
+  list) shift; cmd_list "$@" ;;
+  fetch) shift; cmd_fetch "$@" ;;
+  *) sed -n '2,20p' "$0" >&2; exit 2 ;;
+esac

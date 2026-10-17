@@ -1,0 +1,13 @@
+# What `offsite-backup` copies off the server. Installed at
+# /etc/offsite-backup/sources (root, 600). One line each:
+#   <dumps|files> <app> <vol:docker-volume[/sub/folder]|/host/folder>
+# dumps: finished backup files, the newest must be under MAX_AGE_HOURS old.
+# files: a folder mirrored as it is (uploads).
+# Check volume names with: sudo docker volume ls
+dumps  olgo         vol:tma-commerce_backups/db
+files  olgo         vol:tma-commerce_uploads
+dumps  kitoblarim   vol:kitoblarim_db_backups
+files  kitoblarim   vol:kitoblarim_uploads_data
+dumps  reads-admin  vol:reads-admin_db_backups
+files  reads-admin  vol:reads-admin_app_storage/app/public
+dumps  my-blog      vol:my-blog_db_backups
