@@ -139,6 +139,10 @@ Serverda, bir necha kun deploy'lar yashil boʻlgandan keyin:
 `rm -rf /home/sarvar/<papka>` (xohlasangiz, avval `.env` nusxasini saqlab
 qoʻying).
 
+Ilovada ma'lumot boʻlsa (baza, yuklangan fayllar), uning volume'larini
+har kechagi serverdan tashqari nusxaga qoʻshing:
+[offsite-backups.uz.md](offsite-backups.uz.md), "Kundalik ish".
+
 **Hamma** loyihalar koʻchgandan keyin `sarvar` dagi ikkita eski kalitni
 oʻchiring. Buning tartibi [server-hardening.uz.md](server-hardening.uz.md)
 ning oxirida yozilgan.

@@ -132,5 +132,8 @@ rm ~/.ssh/ci_<app> ~/.ssh/ci_<app>_staging
 (Mac.) On the server, after a few days of green deploys:
 `rm -rf /home/sarvar/<folder>` (keep a copy of its `.env` if you like).
 
+If the app keeps data (a database, uploads), add its volumes to the nightly
+off-site copy: [offsite-backups.md](offsite-backups.md), "Living with it".
+
 When **every** project is moved, remove the two old keys from `sarvar` —
 see the end of [server-hardening.md](server-hardening.md).
