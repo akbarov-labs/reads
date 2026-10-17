@@ -226,12 +226,12 @@ server sozlamalari:
 
 ```bash
 rclone copy drill:dumps/kitoblarim --max-age 2d .
-gzip -dc "$(ls -t library-*.sql.gz | head -1)" | tail -3
+gzip -dc "$(ls -t library-*.sql.gz | head -1)" | grep -c "PostgreSQL database dump complete"
 rclone copy drill:dumps/server --max-age 2d .
 tar -tzf "$(ls -t configs-*.tar.gz | head -1)" | grep '\.env$'
 ```
 
-Birinchisi `PostgreSQL database dump complete` ni koʻrsatadi. Ikkinchisi
+Birinchisi `1` ni chiqaradi: dump'da pg_dump'ning oxirgi belgisi bor, demak u toʻliq. Ikkinchisi
 har bir ilovaning `.env` faylini roʻyxat qiladi.
 
 Tozalash. Papkada haqiqiy ma'lumotlar bor, drill kaliti esa endi kerak emas:

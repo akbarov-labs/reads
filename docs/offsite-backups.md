@@ -214,12 +214,12 @@ other apps and the server settings:
 
 ```bash
 rclone copy drill:dumps/kitoblarim --max-age 2d .
-gzip -dc "$(ls -t library-*.sql.gz | head -1)" | tail -3
+gzip -dc "$(ls -t library-*.sql.gz | head -1)" | grep -c "PostgreSQL database dump complete"
 rclone copy drill:dumps/server --max-age 2d .
 tar -tzf "$(ls -t configs-*.tar.gz | head -1)" | grep '\.env$'
 ```
 
-The first shows `PostgreSQL database dump complete`. The second lists every
+The first prints `1`: the dump has pg_dump's end marker, so it is complete. The second lists every
 app's `.env`.
 
 Clean up. The folder holds real data, and the drill key isn't needed any
