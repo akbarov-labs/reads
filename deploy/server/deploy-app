@@ -68,6 +68,14 @@ IFS= read -r registry_token || die "no registry token on stdin"
 exec 9>"/run/lock/deploy-app-$app.lock"
 flock 9
 
+# Deploys of different apps do run at the same time, but removing images
+# is server-wide: a `docker image prune` or `rmi` from one deploy while
+# another is pulling makes that pull die with "lease does not exist" (it
+# did, when five repos merged within a minute). So pulls share this lock and
+# removals take it alone. Taken and released around each step, never held
+# across the restart.
+exec 8>/run/lock/deploy-app-images.lock
+
 logger -t deploy-app "app=$app tag=$tag by=$registry_user"
 cd "$APP_DIR"
 
@@ -126,6 +134,7 @@ fi
 echo "--- disk before"
 df -h /
 
+flock -x 8
 # Free space before pulling, but only this app's images: other projects on
 # this server keep theirs. Keeps the newest $KEEP_IMAGES as rollback targets;
 # the one the running container uses refuses removal, which is fine.
@@ -135,6 +144,7 @@ for image in "${images[@]}"; do
     | tail -n +$((KEEP_IMAGES + 1)) \
     | xargs -r docker rmi 2>/dev/null || true
 done
+flock -u 8
 
 # Log in with a throwaway config so the short-lived token never lands in
 # /root/.docker/config.json — that would also overwrite the long-lived
@@ -144,9 +154,11 @@ trap 'rm -rf "$docker_cfg"' EXIT
 printf '%s' "$registry_token" \
   | docker --config "$docker_cfg" login ghcr.io -u "$registry_user" --password-stdin >/dev/null
 unset registry_token
+flock -s 8
 for image in "${images[@]}"; do
   docker --config "$docker_cfg" pull "$image:$tag"
 done
+flock -u 8
 rm -rf "$docker_cfg"
 
 # The images are local now, so compose does not need registry access.
@@ -173,7 +185,9 @@ IMAGE="$REPO" IMAGE_TAG="$tag" \
 run_hook post-up
 
 # Dangling layers only — safe on a shared server.
+flock -x 8
 docker image prune -f >/dev/null || true
+flock -u 8
 
 echo "--- running"
 IMAGE="$REPO" IMAGE_TAG="$tag" docker compose -f "$COMPOSE_FILE" ps
