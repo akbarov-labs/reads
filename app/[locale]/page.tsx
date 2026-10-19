@@ -58,7 +58,7 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, quote, collections, t, tTaqrizchilar, tSite, tCollections] =
+  const [translators, books, authors, publishers, taqrizchilar, quote, collections, t, tTaqrizchilar, tSite, tCollections, tQuotes] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
@@ -71,6 +71,7 @@ export default async function Home({
     getTranslations("taqrizchilar"),
     getTranslations("site"),
     getTranslations("collections"),
+    getTranslations("quotes"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);

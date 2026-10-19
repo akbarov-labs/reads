@@ -340,6 +340,8 @@ export interface BookCollectionItem {
   book: BookWithTranslator;
   /** The one translation the list means, when it means one. */
   edition?: { id: string; publisher?: string | null; year?: number | null; translators: string[] } | null;
+}
+
 /** A line from a book, as an editor entered it. */
 export interface Quote {
   id: string;
