@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
+import { ShareLinks } from "@/components/ShareLinks";
+import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
 import { botPlanUrl, botWantUrl } from "@/lib/bot";
@@ -327,6 +329,10 @@ export default async function BookDetailPage({
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
               </a>
 
+              {/* Books here travel by Telegram: a chat asking "what should I
+                  read?" is answered with a link. */}
+              <ShareLinks path={`/book/${id}`} text={bookTitle(book)} className="mt-1" />
+
               {/* Many readers arrive looking for a copy. Say plainly that
                   there is none here, and where to look instead. */}
               <section className="mt-8 border-t border-stone-200 pt-6" aria-labelledby="where-to-get">
@@ -426,6 +432,7 @@ export default async function BookDetailPage({
                     taqriz={taqriz}
                     context="book"
                     readMoreLabel={tTaqriz("readMore")}
+                    shareText={taqrizShareText({ name: taqriz.taqrizchi?.name, title: book.uzbekTitle }, tTaqriz)}
                   />
                 ))}
               </div>

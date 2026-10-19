@@ -241,7 +241,13 @@
       "cover": "Cover & print quality",
       "overall": "Overall impression"
     },
-    "editionRead": "Edition read"
+    "editionRead": "Edition read",
+    "shareText": "{name} on “{title}”"
+  },
+  "share": {
+    "telegram": "Share on Telegram",
+    "copy": "Copy link",
+    "copied": "Link copied"
   },
   "pagination": {
     "nav": "Pages",

@@ -241,7 +241,13 @@
       "cover": "Muqova va nashr sifati",
       "overall": "Umumiy taassurot"
     },
-    "editionRead": "Oʻqilgan nashr"
+    "editionRead": "Oʻqilgan nashr",
+    "shareText": "{name} — «{title}» haqida taqriz"
+  },
+  "share": {
+    "telegram": "Telegramda ulashish",
+    "copy": "Havolani nusxalash",
+    "copied": "Havola nusxalandi"
   },
   "pagination": {
     "nav": "Sahifalar",
