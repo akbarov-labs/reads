@@ -441,7 +441,6 @@ export async function getSitemapIndex(): Promise<SitemapIndex | null> {
   return apiFetch<SitemapIndex>("/sitemap", [BOOKS_TAG]);
 }
 
-
 /**
  * Editors' published collections, in their order, each with its book count
  * and a few covers. Empty — not an error — from an admin that has none, or
@@ -474,6 +473,9 @@ export async function getCollection(slug: string, locale: string): Promise<BookC
     ...result.data,
     items: (result.data.items ?? []).map((item) => ({ ...item, book: normalizeBook(item.book) })),
   };
+}
+
+/**
  * The home page's quote of the day, or null when editors have added none.
  * Hung off the books tag, which every save in the admin drops; the ISR
  * window turns it over at midnight.

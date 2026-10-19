@@ -266,6 +266,7 @@
     "seeAll": "Все подборки",
     "translatedBy": "Перевод: {names}",
     "back": "Все подборки"
+  },
   "quotes": {
     "quotesTitle": "Цитаты",
     "quotePage": "с. {page}",
