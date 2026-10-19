@@ -244,6 +244,12 @@
     "copy": "Havolani nusxalash",
     "copied": "Havola nusxalandi"
   },
+  "quotes": {
+    "quotesTitle": "Iqtiboslar",
+    "quotePage": "{page}-bet",
+    "quoteTranslatedBy": "Tarjima: {names}",
+    "quoteOfTheDay": "Kun iqtibosi"
+  },
   "pagination": {
     "nav": "Sahifalar",
     "previous": "Oldingi",

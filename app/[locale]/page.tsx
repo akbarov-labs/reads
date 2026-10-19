@@ -9,6 +9,7 @@ import {
   getAuthors,
   getPublishers,
   getTaqrizchilar,
+  getQuoteOfTheDay,
 } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -21,6 +22,7 @@ import { TranslatorCard } from "@/components/TranslatorCard";
 import { BookCard } from "@/components/BookCard";
 import { AuthorCard } from "@/components/AuthorCard";
 import { PublisherCard } from "@/components/PublisherCard";
+import { QuoteBlock } from "@/components/QuoteBlock";
 
 export async function generateMetadata({
   params,
@@ -52,16 +54,18 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, t, tTaqrizchilar, tSite] =
+  const [translators, books, authors, publishers, taqrizchilar, quote, t, tTaqrizchilar, tSite, tQuotes] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
     getAuthors(locale, { perPage: 6 }),
     getPublishers(locale, { perPage: 4 }),
     getTaqrizchilar(locale),
+    getQuoteOfTheDay(locale),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
     getTranslations("site"),
+    getTranslations("quotes"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
@@ -120,6 +124,26 @@ export default async function Home({
             </dl>
           </Container>
         </section>
+
+        {/* ─── QUOTE OF THE DAY ─────────────────────────────────── */}
+        {quote?.book && (
+          <section className="py-14 sm:py-16 bg-white border-b border-stone-200" aria-labelledby="quote-of-the-day">
+            <Container>
+              <div className="max-w-3xl">
+                <h2 id="quote-of-the-day" className="text-xs font-medium uppercase tracking-widest2 text-zinc-400 mb-5">
+                  {tQuotes("quoteOfTheDay")}
+                </h2>
+                <QuoteBlock
+                  quote={quote}
+                  bookId={quote.book.id}
+                  author={quote.book.author}
+                  book={quote.book.uzbekTitle}
+                  large
+                />
+              </div>
+            </Container>
+          </section>
+        )}
 
         {/* ─── BOOKS ───────────────────────────────────────────── */}
         <section className="py-16 sm:py-20 bg-white border-b border-stone-200">
