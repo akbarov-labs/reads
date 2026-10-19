@@ -7,6 +7,7 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { Pagination } from "@/components/Pagination";
+import { BookSearchForm } from "@/components/BookSearchForm";
 
 /**
  * These listing pages read `page` out of searchParams, which is a dynamic
@@ -78,24 +79,7 @@ export default async function BooksPage({
             </h1>
             <p className="mt-2 text-zinc-500 text-sm">{t("pageDescription")}</p>
 
-            {/* A plain GET form: works without JavaScript, and the query
-                lands in the URL, so a search can be shared and paged. */}
-            <form action="" method="get" className="mt-6 flex gap-2 max-w-xl">
-              {category && <input type="hidden" name="category" value={category} />}
-              <input
-                type="search"
-                name="q"
-                defaultValue={q ?? ""}
-                placeholder={t("searchPlaceholder")}
-                className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-forest-500 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="rounded-lg bg-forest-700 px-4 py-2 text-sm font-medium text-white hover:bg-forest-800"
-              >
-                {t("search")}
-              </button>
-            </form>
+            <BookSearchForm defaultValue={q ?? ""} hidden={{ category }} className="mt-6 max-w-xl" />
 
             {categories.length > 0 && (
               <nav className="mt-5 flex flex-wrap gap-2" aria-label={t("categories")}>

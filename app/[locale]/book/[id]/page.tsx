@@ -9,15 +9,17 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
+import { ShareLinks } from "@/components/ShareLinks";
+import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
 import { ReaderCounts } from "@/components/ReaderCounts";
-import { botPlanUrl, botWantUrl } from "@/lib/bot";
+import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
 import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookPages, bookTitle, readingTime } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -43,7 +45,7 @@ export async function generateMetadata({
   const cover = publicAssetUrl(book.coverUrl);
 
   return {
-    title,
+    title: bookSeoTitle(book, t),
     description,
     // Its own address, and its own in each language. Without this the page
     // inherits the layout's, which points at the home page and tells search
@@ -265,12 +267,15 @@ export default async function BookDetailPage({
                 )}
               </div>
 
-              {/* Publication Specs */}
+              {/* Publication Specs: only the facts we have. A row of dashes
+                  tells the reader nothing and makes the page look unfinished. */}
+              {(book.publisher || book.year || book.sourceLanguage) && (
               <div className="mt-8 rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
                 <h2 className="font-serif text-lg font-medium text-zinc-900 mb-4">
                   {tDetail("details")}
                 </h2>
                 <dl className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+                  {book.publisher && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("publisher")}
@@ -284,30 +289,36 @@ export default async function BookDetailPage({
                           {book.publisher}
                         </Link>
                       ) : (
-                        book.publisher || "—"
+                        book.publisher
                       )}
                     </dd>
                   </div>
+                  )}
 
+                  {book.year && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("year")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.year ?? "—"}
+                      {book.year}
                     </dd>
                   </div>
+                  )}
 
+                  {book.sourceLanguage && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("sourceLanguage")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.sourceLanguage || "—"}
+                      {book.sourceLanguage}
                     </dd>
                   </div>
+                  )}
                 </dl>
               </div>
+              )}
 
               {/* How long the book takes, the same line the search result
                   shows, right above the place to plan it. */}
@@ -328,6 +339,10 @@ export default async function BookDetailPage({
                 <span>{tDetail("planInBot")}</span>
                 <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5" />
               </a>
+
+              {/* Books here travel by Telegram: a chat asking "what should I
+                  read?" is answered with a link. */}
+              <ShareLinks path={`/book/${id}`} text={bookTitle(book)} className="mt-1" />
 
               {/* Many readers arrive looking for a copy. Say plainly that
                   there is none here, and where to look instead. */}
@@ -428,6 +443,7 @@ export default async function BookDetailPage({
                     taqriz={taqriz}
                     context="book"
                     readMoreLabel={tTaqriz("readMore")}
+                    shareText={taqrizShareText({ name: taqriz.taqrizchi?.name, title: book.uzbekTitle }, tTaqriz)}
                   />
                 ))}
               </div>
@@ -435,12 +451,13 @@ export default async function BookDetailPage({
           </section>
 
           {/* Kitoblarim bot readers: anonymous stars and the reviews they
-              chose to publish. Hidden when there are neither. */}
+              chose to publish, and the way to write one in the bot. */}
           <ReaderReviews
             rating={book.readerRating}
             reviews={book.readerReviews ?? []}
             locale={locale}
             botHref={botHref}
+            reviewHref={botReviewUrl(isbn)}
             t={tDetail}
           />
 

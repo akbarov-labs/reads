@@ -181,6 +181,11 @@
     "readersCount": "{count, plural, one {# rating} other {# ratings}}",
     "readingTime": "{pages} pages. At {minutes} minutes a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
     "readersRating": "Kitoblarim readers rate it {rating}/5 ({count, plural, one {# rating} other {# ratings}}).",
+    "titleTranslation": "translation",
+    "titleEditions": "{count, plural, one {# edition} other {# editions}}",
+    "titleRating": "{rating}/5",
+    "titleTaqrizlar": "reviews",
+    "titleWhereToFind": "where to find it",
     "readerAnonymous": "A Kitoblarim reader",
     "readersRate": "Read it and rate it in Telegram",
     "readersInBot": "In the Kitoblarim bot:",
@@ -189,6 +194,8 @@
     "readersRead": "{count} have read it",
     "readersStarsLabel": "How the ratings split",
     "readersStarsRow": "{stars, plural, one {# star} other {# stars}}: {count, plural, one {# rating} other {# ratings}} ({percent}%)",
+    "readersEmpty": "No Kitoblarim reader has rated this book yet. If you've read it, be the first to say what you think.",
+    "readersWrite": "Write a review",
     "breadcrumbBooks": "Books"
   },
   "authorDetail": {
@@ -242,7 +249,13 @@
       "cover": "Cover & print quality",
       "overall": "Overall impression"
     },
-    "editionRead": "Edition read"
+    "editionRead": "Edition read",
+    "shareText": "{name} on “{title}”"
+  },
+  "share": {
+    "telegram": "Share on Telegram",
+    "copy": "Copy link",
+    "copied": "Link copied"
   },
   "pagination": {
     "nav": "Pages",

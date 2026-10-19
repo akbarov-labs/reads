@@ -181,6 +181,11 @@
     "readersCount": "{count} ta baho",
     "readingTime": "{pages} bet. Kuniga {minutes} daqiqa oʻqisangiz, taxminan {days} kunda tugatasiz.",
     "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
+    "titleTranslation": "tarjima",
+    "titleEditions": "{count} ta nashr",
+    "titleRating": "{rating}/5",
+    "titleTaqrizlar": "taqrizlar",
+    "titleWhereToFind": "qayerdan topish mumkin",
     "readerAnonymous": "Kitoblarim oʻquvchisi",
     "readersRate": "Oʻqing va Telegramda baho bering",
     "readersInBot": "Kitoblarim botida:",
@@ -189,6 +194,8 @@
     "readersRead": "{count} kishi oʻqib boʻlgan",
     "readersStarsLabel": "Baholar taqsimoti",
     "readersStarsRow": "{stars} yulduz: {count} ta baho ({percent}%)",
+    "readersEmpty": "Bu kitobni Kitoblarim oʻquvchilari hali baholamagan. Oʻqigan boʻlsangiz, birinchi boʻlib fikringizni yozing.",
+    "readersWrite": "Taqriz yozish",
     "breadcrumbBooks": "Kitoblar"
   },
   "authorDetail": {
@@ -242,7 +249,13 @@
       "cover": "Muqova va nashr sifati",
       "overall": "Umumiy taassurot"
     },
-    "editionRead": "Oʻqilgan nashr"
+    "editionRead": "Oʻqilgan nashr",
+    "shareText": "{name} — «{title}» haqida taqriz"
+  },
+  "share": {
+    "telegram": "Telegramda ulashish",
+    "copy": "Havolani nusxalash",
+    "copied": "Havola nusxalandi"
   },
   "pagination": {
     "nav": "Sahifalar",
