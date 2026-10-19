@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { Link, permanentRedirect } from "@/i18n/navigation";
 import { getBooks, getAuthorBySlug } from "@/lib/api";
 import { SiteHeader } from "@/components/SiteHeader";
 import { JsonLd } from "@/components/JsonLd";
@@ -76,6 +76,10 @@ export default async function AuthorDetailPage({
   ]);
 
   if (!author) notFound();
+  // An author merged into another in the admin keeps its old link, which
+  // the API answers with the kept author: send the reader (and search
+  // engines) to that author's own address.
+  if (author.slug !== slug) permanentRedirect({ href: `/author/${author.slug}`, locale });
 
   const authorBooks = books.items;
 
