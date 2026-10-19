@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { botPlanUrl, botUrl, botWantUrl } from "@/lib/bot";
+import { botPlanUrl, botReviewUrl, botUrl, botWantUrl } from "@/lib/bot";
 
 const FALLBACK = "https://t.me/kitob_javonim_bot?start=src_reads";
 
@@ -38,3 +38,15 @@ describe("botWantUrl", () => {
   });
 });
 
+
+describe("botReviewUrl", () => {
+  it("opens the review for a book by its ISBN, named as the reads partner", () => {
+    expect(botReviewUrl("978-9943-01-234-5")).toBe("https://t.me/kitob_javonim_bot?start=review_9789943012345_reads");
+  });
+
+  it("is null without a usable ISBN, and fits Telegram's 64-character payload", () => {
+    expect(botReviewUrl(null)).toBeNull();
+    expect(botReviewUrl("123")).toBeNull();
+    expect(new URL(botReviewUrl("9789943012345")!).searchParams.get("start")!.length).toBeLessThanOrEqual(64);
+  });
+});

@@ -123,6 +123,31 @@ export function bookTitle(book: BookWithTranslator): string {
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
 /**
+ * The book page's <title>: "1984 — Jorj Oruell: tarjima, 3 ta nashr,
+ * 4.6/5, taqrizlar". After the name it says what the page has that a
+ * search for the book is after, and only what it really has (no "reviews"
+ * on a book without any). A page with none of it still offers where to
+ * find the book. The Open Graph title stays the plain bookTitle().
+ */
+export function bookSeoTitle(book: BookWithTranslator, t: Translate): string {
+  const editions = book.editions?.length ?? 0;
+  const translated =
+    book.role === "translator" ||
+    Boolean(book.translatorName) ||
+    (book.editions ?? []).some((edition) => edition.translators?.length);
+  const rating = book.readerRating?.count ? book.readerRating : null;
+
+  const has = [
+    translated ? t("titleTranslation") : null,
+    editions > 1 ? t("titleEditions", { count: editions }) : null,
+    rating ? t("titleRating", { rating: rating.average.toFixed(1) }) : null,
+    book.taqrizlar?.length ? t("titleTaqrizlar") : null,
+  ].filter(Boolean);
+
+  return `${bookTitle(book)}: ${(has.length ? has : [t("titleWhereToFind")]).join(", ")}`;
+}
+
+/**
  * Minutes a day the reading-time line assumes. At about a page a minute,
  * the Kitoblarim bot's own rule, that is also the pages a day.
  */

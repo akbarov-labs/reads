@@ -130,6 +130,7 @@ export interface BookWithTranslator extends Book {
   averageScore?: number | null;
   /** Book page only: Kitoblarim bot readers' stars, anonymous; null when nobody rated. */
   readerRating?: ReaderRating | null;
+  readers?: ReaderCounts | null;
   /** Book page only: reviews bot readers chose to publish, approved, newest first. */
   readerReviews?: ReaderReview[];
   /** Published lines from the book, newest first. */
@@ -249,6 +250,15 @@ export type AspectKey = (typeof ASPECT_KEYS)[number];
 export interface ReaderRating {
   average: number;
   count: number;
+  /** How many gave one star, two, ... five; null until the bot sends a split. */
+  stars?: number[] | null;
+}
+
+/** How many Kitoblarim bot readers want to read a book, are reading it, have read it. */
+export interface ReaderCounts {
+  want: number;
+  reading: number;
+  read: number;
 }
 
 /** A review a Kitoblarim bot reader wrote and chose to publish here. */

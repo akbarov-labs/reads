@@ -23,6 +23,8 @@ import { BookCard } from "@/components/BookCard";
 import { AuthorCard } from "@/components/AuthorCard";
 import { PublisherCard } from "@/components/PublisherCard";
 import { QuoteBlock } from "@/components/QuoteBlock";
+import { BookSearchForm } from "@/components/BookSearchForm";
+import { getPathname } from "@/i18n/navigation";
 
 export async function generateMetadata({
   params,
@@ -104,6 +106,12 @@ export default async function Home({
               <p className="mt-6 text-base sm:text-lg text-zinc-500 leading-relaxed max-w-xl">
                 {t("heroSubline")}
               </p>
+              {/* Most readers come for one book: let them look it up first. */}
+              <BookSearchForm
+                action={getPathname({ href: "/books", locale })}
+                large
+                className="mt-8 max-w-xl"
+              />
             </div>
 
             {/* Stats row */}
