@@ -32,6 +32,17 @@ export function botWantUrl(isbn?: string | null): string | null {
   return digits ? `${BOT_URL}?start=want_${digits}_${PARTNER}` : null;
 }
 
+/**
+ * "Write a review": the bot puts the book on the reader's shelf and opens
+ * its page in the app at the review, which reaches this site once an editor
+ * approves it (the bot's docs/partners.md, link 5). Null without a usable
+ * ISBN, since the bot then has no book to open.
+ */
+export function botReviewUrl(isbn?: string | null): string | null {
+  const digits = isbnDigits(isbn);
+  return digits ? `${BOT_URL}?start=review_${digits}_${PARTNER}` : null;
+}
+
 /** An ISBN's digits (and check digit X), or null when it can't be one. */
 function isbnDigits(isbn?: string | null): string | null {
   const digits = String(isbn ?? "").replace(/[^0-9Xx]/g, "");

@@ -183,6 +183,8 @@
     "readersRating": "Оценка читателей Kitoblarim: {rating}/5 ({count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}).",
     "readerAnonymous": "Читатель Kitoblarim",
     "readersRate": "Прочитайте и оцените в Telegram",
+    "readersEmpty": "Читатели Kitoblarim ещё не оценили эту книгу. Если вы её читали, напишите первый отзыв.",
+    "readersWrite": "Написать отзыв",
     "breadcrumbBooks": "Книги"
   },
   "authorDetail": {
