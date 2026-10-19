@@ -181,6 +181,11 @@
     "readersCount": "{count} ta baho",
     "readingTime": "{pages} bet. Kuniga {minutes} daqiqa oʻqisangiz, taxminan {days} kunda tugatasiz.",
     "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
+    "titleTranslation": "tarjima",
+    "titleEditions": "{count} ta nashr",
+    "titleRating": "{rating}/5",
+    "titleTaqrizlar": "taqrizlar",
+    "titleWhereToFind": "qayerdan topish mumkin",
     "readerAnonymous": "Kitoblarim oʻquvchisi",
     "readersRate": "Oʻqing va Telegramda baho bering",
     "breadcrumbBooks": "Kitoblar"

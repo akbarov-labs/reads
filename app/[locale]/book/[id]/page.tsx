@@ -16,7 +16,7 @@ import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookPages, bookTitle, readingTime } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -42,7 +42,7 @@ export async function generateMetadata({
   const cover = publicAssetUrl(book.coverUrl);
 
   return {
-    title,
+    title: bookSeoTitle(book, t),
     description,
     // Its own address, and its own in each language. Without this the page
     // inherits the layout's, which points at the home page and tells search
