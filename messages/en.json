@@ -183,6 +183,12 @@
     "readersRating": "Kitoblarim readers rate it {rating}/5 ({count, plural, one {# rating} other {# ratings}}).",
     "readerAnonymous": "A Kitoblarim reader",
     "readersRate": "Read it and rate it in Telegram",
+    "readersInBot": "In the Kitoblarim bot:",
+    "readersWant": "{count} want to read",
+    "readersReading": "{count} reading",
+    "readersRead": "{count} have read it",
+    "readersStarsLabel": "How the ratings split",
+    "readersStarsRow": "{stars, plural, one {# star} other {# stars}}: {count, plural, one {# rating} other {# ratings}} ({percent}%)",
     "breadcrumbBooks": "Books"
   },
   "authorDetail": {

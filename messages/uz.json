@@ -183,6 +183,12 @@
     "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
     "readerAnonymous": "Kitoblarim oʻquvchisi",
     "readersRate": "Oʻqing va Telegramda baho bering",
+    "readersInBot": "Kitoblarim botida:",
+    "readersWant": "{count} kishi oʻqimoqchi",
+    "readersReading": "{count} kishi oʻqiyapti",
+    "readersRead": "{count} kishi oʻqib boʻlgan",
+    "readersStarsLabel": "Baholar taqsimoti",
+    "readersStarsRow": "{stars} yulduz: {count} ta baho ({percent}%)",
     "breadcrumbBooks": "Kitoblar"
   },
   "authorDetail": {

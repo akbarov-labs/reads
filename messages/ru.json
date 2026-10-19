@@ -183,6 +183,12 @@
     "readersRating": "Оценка читателей Kitoblarim: {rating}/5 ({count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}).",
     "readerAnonymous": "Читатель Kitoblarim",
     "readersRate": "Прочитайте и оцените в Telegram",
+    "readersInBot": "В боте Kitoblarim:",
+    "readersWant": "хотят прочитать — {count}",
+    "readersReading": "читают — {count}",
+    "readersRead": "прочитали — {count}",
+    "readersStarsLabel": "Распределение оценок",
+    "readersStarsRow": "{stars, plural, one {# звезда} few {# звезды} many {# звёзд} other {# звезды}}: {count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}} ({percent}%)",
     "breadcrumbBooks": "Книги"
   },
   "authorDetail": {

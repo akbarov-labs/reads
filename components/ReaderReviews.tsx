@@ -39,6 +39,8 @@ export function ReaderReviews({
         )}
       </div>
 
+      {rating?.stars && <StarSplit stars={rating.stars} t={t} />}
+
       {reviews.length > 0 && (
         <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {reviews.map((review) => (
@@ -86,5 +88,44 @@ function Stars({ rating }: { rating: number }) {
         />
       ))}
     </span>
+  );
+}
+
+/**
+ * How the ratings split, five stars first, as bars of the share each holds.
+ * The bars are drawn for the eye; each row's sentence is there for a screen
+ * reader ("5 yulduz: 137 ta baho (85%)").
+ */
+function StarSplit({
+  stars,
+  t,
+}: {
+  stars: number[];
+  t: (key: string, values?: Record<string, number>) => string;
+}) {
+  const total = stars.reduce((sum, count) => sum + count, 0);
+  if (total === 0) return null;
+
+  return (
+    <dl className="mt-6 max-w-md space-y-1.5" aria-label={t("readersStarsLabel")}>
+      {[5, 4, 3, 2, 1].map((star) => {
+        const count = stars[star - 1] ?? 0;
+        const percent = Math.round((count / total) * 100);
+        return (
+          <div key={star} className="flex items-center gap-3 text-xs text-zinc-500">
+            <dt className="w-7 shrink-0 tabular-nums">
+              <span aria-hidden="true">{star}★</span>
+              <span className="sr-only">{t("readersStarsRow", { stars: star, count, percent })}</span>
+            </dt>
+            <dd className="flex flex-1 items-center gap-3" aria-hidden="true">
+              <span className="h-2 flex-1 overflow-hidden rounded-full bg-stone-200">
+                <span className="block h-full rounded-full bg-star" style={{ width: `${percent}%` }} />
+              </span>
+              <span className="w-9 shrink-0 text-right tabular-nums">{percent}%</span>
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
   );
 }

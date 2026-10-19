@@ -5,6 +5,9 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL("./", import.meta.url)) },
   },
+  // Components render in tests too: compile their JSX the way Next does,
+  // without needing React in scope.
+  esbuild: { jsx: "automatic" },
   test: {
     include: ["tests/**/*.test.ts"],
     environment: "node",
