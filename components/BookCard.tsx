@@ -6,12 +6,15 @@ import type { Book } from "@/lib/types";
 export async function BookCard({ book }: { book: Book }) {
   const t = await getTranslations("bookCard");
 
+  // No badge when nobody is credited: an Uzbek original is not a translation.
   const roleLabel =
     book.role === "author"
       ? t("roleAuthor")
       : book.role === "editor"
       ? t("roleEditor")
-      : t("roleTranslator");
+      : book.role === "translator"
+      ? t("roleTranslator")
+      : null;
 
   const roleStyle =
     book.role === "author"
@@ -38,11 +41,13 @@ export async function BookCard({ book }: { book: Book }) {
             {book.uzbekTitle}
           </div>
         )}
-        <div className="absolute top-2.5 left-2.5">
-          <span className={`inline-block rounded-md border px-2 py-0.5 text-[10px] font-medium tracking-wide shadow-sm backdrop-blur-sm ${roleStyle}`}>
-            {roleLabel}
-          </span>
-        </div>
+        {roleLabel && (
+          <div className="absolute top-2.5 left-2.5">
+            <span className={`inline-block rounded-md border px-2 py-0.5 text-[10px] font-medium tracking-wide shadow-sm backdrop-blur-sm ${roleStyle}`}>
+              {roleLabel}
+            </span>
+          </div>
+        )}
       </div>
       <div className="mt-4">
         <h3 className="font-serif text-lg leading-snug text-zinc-900">
@@ -55,7 +60,7 @@ export async function BookCard({ book }: { book: Book }) {
           {book.author}
         </p>
         <p className="mt-1 text-xs text-zinc-400">
-          {book.publisher} · {book.year}
+          {[book.publisher, book.year].filter(Boolean).join(" · ")}
         </p>
       </div>
     </article>
