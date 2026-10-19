@@ -13,6 +13,7 @@ import { ShareLinks } from "@/components/ShareLinks";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
+import { ReaderCounts } from "@/components/ReaderCounts";
 import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
 import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
@@ -324,6 +325,7 @@ export default async function BookDetailPage({
               {pages ? (
                 <p className="mt-6 text-sm text-zinc-600">{readingTime(pages, tDetail)}</p>
               ) : null}
+              <ReaderCounts counts={book.readers} t={tDetail} className={pages ? "mt-1" : "mt-6"} />
 
               {/* The catalogue's hand-off: the same Kitoblarim, in Telegram,
                   where the reader plans this book and reads it to the end. */}
