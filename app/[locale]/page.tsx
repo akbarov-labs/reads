@@ -9,6 +9,7 @@ import {
   getAuthors,
   getPublishers,
   getTaqrizchilar,
+  getCollections,
 } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -21,6 +22,7 @@ import { TranslatorCard } from "@/components/TranslatorCard";
 import { BookCard } from "@/components/BookCard";
 import { AuthorCard } from "@/components/AuthorCard";
 import { PublisherCard } from "@/components/PublisherCard";
+import { CollectionCard } from "@/components/CollectionCard";
 
 export async function generateMetadata({
   params,
@@ -52,16 +54,18 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, t, tTaqrizchilar, tSite] =
+  const [translators, books, authors, publishers, taqrizchilar, collections, t, tTaqrizchilar, tSite, tCollections] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
     getAuthors(locale, { perPage: 6 }),
     getPublishers(locale, { perPage: 4 }),
     getTaqrizchilar(locale),
+    getCollections(locale),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
     getTranslations("site"),
+    getTranslations("collections"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
@@ -141,6 +145,25 @@ export default async function Home({
             )}
           </Container>
         </section>
+
+        {/* ─── COLLECTIONS ─── editors' lists; absent until there are any. */}
+        {collections.length > 0 && (
+          <section className="py-16 sm:py-20 border-b border-stone-200">
+            <Container>
+              <SectionHeader
+                title={tCollections("homeTitle")}
+                count={collections.length}
+                seeMoreHref="/collections"
+                seeMoreLabel={tCollections("seeAll")}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {collections.slice(0, 3).map((collection) => (
+                  <CollectionCard key={collection.slug} collection={collection} />
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
 
         {/* ─── AUTHORS ─────────────────────────────────────────── */}
         <section className="py-16 sm:py-20">

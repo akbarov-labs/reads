@@ -1,4 +1,6 @@
 import type {
+  BookCollection,
+  BookCollectionItem,
   Translator,
   Book,
   BookWithTranslator,
@@ -424,6 +426,8 @@ export interface SitemapIndex {
   books: { id: string; updatedAt: string | null }[];
   authors: { slug: string; updatedAt: string | null }[];
   publishers: { slug: string; updatedAt: string | null }[];
+  /** Published collections; absent from an admin that has none yet. */
+  collections?: { slug: string; updatedAt: string | null }[];
 }
 
 /**
@@ -435,3 +439,37 @@ export async function getSitemapIndex(): Promise<SitemapIndex | null> {
   return apiFetch<SitemapIndex>("/sitemap", [BOOKS_TAG]);
 }
 
+
+/**
+ * Editors' published collections, in their order, each with its book count
+ * and a few covers. Empty — not an error — from an admin that has none, or
+ * none yet (an older deploy answers 404).
+ */
+export async function getCollections(locale: string): Promise<BookCollection[]> {
+  const result = await apiFetch<ApiCollection<BookCollection>>(
+    `/collections?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG]
+  );
+  return (result?.data ?? []).map((collection) => ({
+    ...collection,
+    coverUrls: (collection.coverUrls ?? []).map((url) => resolveAssetUrl(url)).filter(Boolean),
+  }));
+}
+
+/** A collection as the API sends it: each item's book in the catalogue's wire shape. */
+type ApiBookCollection = Omit<BookCollection, "items"> & {
+  items?: (Omit<BookCollectionItem, "book"> & { book: ApiCatalogBook })[];
+};
+
+/** One published collection with its books in order, or null. */
+export async function getCollection(slug: string, locale: string): Promise<BookCollection | null> {
+  const result = await apiFetch<ApiResource<ApiBookCollection>>(
+    `/collections/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG]
+  );
+  if (!result?.data) return null;
+  return {
+    ...result.data,
+    items: (result.data.items ?? []).map((item) => ({ ...item, book: normalizeBook(item.book) })),
+  };
+}

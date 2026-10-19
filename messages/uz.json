@@ -244,6 +244,16 @@
     "copy": "Havolani nusxalash",
     "copied": "Havola nusxalandi"
   },
+  "collections": {
+    "pageTitle": "Toʻplamlar",
+    "pageDescription": "Muharrirlar tanlovi: tarjimalar atrofida yigʻilgan kitoblar roʻyxatlari.",
+    "bookCount": "{count} ta kitob",
+    "empty": "Hozircha toʻplam yoʻq.",
+    "homeTitle": "Toʻplamlar",
+    "seeAll": "Barcha toʻplamlar",
+    "translatedBy": "Tarjima: {names}",
+    "back": "Barcha toʻplamlar"
+  },
   "pagination": {
     "nav": "Sahifalar",
     "previous": "Oldingi",

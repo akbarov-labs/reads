@@ -244,6 +244,16 @@
     "copy": "Copy link",
     "copied": "Link copied"
   },
+  "collections": {
+    "pageTitle": "Collections",
+    "pageDescription": "Editors' picks: lists of books gathered around their translations.",
+    "bookCount": "{count, plural, one {# book} other {# books}}",
+    "empty": "No collections yet.",
+    "homeTitle": "Collections",
+    "seeAll": "All collections",
+    "translatedBy": "Translated by {names}",
+    "back": "All collections"
+  },
   "pagination": {
     "nav": "Pages",
     "previous": "Previous",

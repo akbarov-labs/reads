@@ -58,6 +58,7 @@ export async function sitemapNames(): Promise<string[]> {
     "pages",
     ...(index.authors.length ? ["authors"] : []),
     ...(index.publishers.length ? ["publishers"] : []),
+    ...(index.collections?.length ? ["collections"] : []),
     ...Array.from({ length: bookFiles }, (_, i) => `books-${i + 1}`),
   ];
 }
@@ -70,6 +71,14 @@ export async function sitemapEntries(name: string): Promise<Entry[] | null> {
   if (!index) return null;
   if (name === "authors") return index.authors.map((a) => ({ path: `/author/${a.slug}`, lastModified: a.updatedAt }));
   if (name === "publishers") return index.publishers.map((p) => ({ path: `/publisher/${p.slug}`, lastModified: p.updatedAt }));
+  if (name === "collections" && index.collections?.length) {
+    // The list page goes with them: it has nothing to show until there are some.
+    const newest = index.collections.map((c) => c.updatedAt).filter(Boolean).sort().at(-1) ?? null;
+    return [
+      { path: "/collections", lastModified: newest },
+      ...index.collections.map((c) => ({ path: `/collection/${c.slug}`, lastModified: c.updatedAt })),
+    ];
+  }
 
   const match = /^books-(\d+)$/.exec(name);
   if (!match) return null;
