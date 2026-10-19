@@ -4,6 +4,7 @@ import { ArrowRight, CirclePlay } from "lucide-react";
 import type { Taqriz } from "@/lib/types";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { safeExternalUrl } from "@/lib/safeUrl";
+import { ShareLinks } from "@/components/ShareLinks";
 
 /**
  * One review, in a list. Used on a book page (where the reviewer is the
@@ -14,10 +15,13 @@ export function TaqrizCard({
   taqriz,
   context,
   readMoreLabel,
+  shareText,
 }: {
   taqriz: Taqriz;
   context: "book" | "profile";
   readMoreLabel: string;
+  /** What a Telegram share of this taqriz says above its link. */
+  shareText: string;
 }) {
   const showBook = context === "profile" && taqriz.book;
   const video = safeExternalUrl(taqriz.youtubeUrl);
@@ -96,7 +100,7 @@ export function TaqrizCard({
         {taqriz.body}
       </p>
 
-      <div className="mt-4 flex items-center gap-4">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         <Link
           href={`/taqriz/${taqriz.id}`}
           className="text-xs font-medium text-forest-700 hover:text-forest-900 transition-colors"
@@ -115,6 +119,7 @@ export function TaqrizCard({
             Video
           </a>
         )}
+        <ShareLinks path={`/taqriz/${taqriz.id}`} text={shareText} size="sm" />
       </div>
     </article>
   );

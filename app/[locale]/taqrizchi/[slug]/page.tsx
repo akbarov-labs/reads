@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { SocialLinks } from "@/components/SocialLinks";
 import { TaqrizCard } from "@/components/TaqrizCard";
+import { taqrizShareText } from "@/lib/share";
 import { ArrowLeft, MapPin } from "lucide-react";
 
 type PageParams = { locale: string; slug: string };
@@ -131,6 +132,7 @@ export default async function TaqrizchiProfilePage({
                     taqriz={taqriz}
                     context="profile"
                     readMoreLabel={tTaqriz("readMore")}
+                    shareText={taqrizShareText({ name: taqrizchi.name, title: taqriz.book?.uzbekTitle }, tTaqriz)}
                   />
                 ))}
               </div>

@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ScoreBadge, AspectBreakdown } from "@/components/ScoreBadge";
 import { safeExternalUrl } from "@/lib/safeUrl";
+import { taqrizShareText } from "@/lib/share";
+import { ShareLinks } from "@/components/ShareLinks";
 import { ArrowLeft, CirclePlay } from "lucide-react";
 
 type PageParams = { locale: string; id: string };
@@ -189,6 +191,12 @@ export default async function TaqrizPage({
                 {t("watchVideo")}
               </a>
             )}
+
+            <ShareLinks
+              path={`/taqriz/${id}`}
+              text={taqrizShareText({ name: taqriz.taqrizchi?.name, title: taqriz.book?.uzbekTitle }, t)}
+              className="mt-6"
+            />
 
             {/* Per-aspect scores, if any were given */}
             <section className="mt-10 rounded-2xl border border-stone-200 bg-white p-6">
