@@ -188,6 +188,8 @@
     "titleWhereToFind": "where to find it",
     "readerAnonymous": "A Kitoblarim reader",
     "readersRate": "Read it and rate it in Telegram",
+    "readersEmpty": "No Kitoblarim reader has rated this book yet. If you've read it, be the first to say what you think.",
+    "readersWrite": "Write a review",
     "breadcrumbBooks": "Books"
   },
   "authorDetail": {

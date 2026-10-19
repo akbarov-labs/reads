@@ -13,7 +13,7 @@ import { ShareLinks } from "@/components/ShareLinks";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
-import { botPlanUrl, botWantUrl } from "@/lib/bot";
+import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
 import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
@@ -449,12 +449,13 @@ export default async function BookDetailPage({
           </section>
 
           {/* Kitoblarim bot readers: anonymous stars and the reviews they
-              chose to publish. Hidden when there are neither. */}
+              chose to publish, and the way to write one in the bot. */}
           <ReaderReviews
             rating={book.readerRating}
             reviews={book.readerReviews ?? []}
             locale={locale}
             botHref={botHref}
+            reviewHref={botReviewUrl(isbn)}
             t={tDetail}
           />
 

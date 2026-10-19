@@ -188,6 +188,8 @@
     "titleWhereToFind": "qayerdan topish mumkin",
     "readerAnonymous": "Kitoblarim oʻquvchisi",
     "readersRate": "Oʻqing va Telegramda baho bering",
+    "readersEmpty": "Bu kitobni Kitoblarim oʻquvchilari hali baholamagan. Oʻqigan boʻlsangiz, birinchi boʻlib fikringizni yozing.",
+    "readersWrite": "Taqriz yozish",
     "breadcrumbBooks": "Kitoblar"
   },
   "authorDetail": {
