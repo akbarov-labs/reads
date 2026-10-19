@@ -181,6 +181,11 @@
     "readersCount": "{count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}",
     "readingTime": "{pages} стр. Если читать по {minutes} минут в день, вы закончите её примерно за {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}.",
     "readersRating": "Оценка читателей Kitoblarim: {rating}/5 ({count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}).",
+    "titleTranslation": "перевод",
+    "titleEditions": "{count, plural, one {# издание} few {# издания} many {# изданий} other {# издания}}",
+    "titleRating": "{rating}/5",
+    "titleTaqrizlar": "рецензии",
+    "titleWhereToFind": "где найти",
     "readerAnonymous": "Читатель Kitoblarim",
     "readersRate": "Прочитайте и оцените в Telegram",
     "breadcrumbBooks": "Книги"

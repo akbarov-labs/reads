@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTranslator } from "next-intl";
-import { bookDescription, bookPages, bookTitle, readingDays } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingDays } from "@/lib/seo";
 import type { BookWithTranslator } from "@/lib/types";
 import en from "@/messages/en.json";
 import ru from "@/messages/ru.json";
@@ -82,6 +82,30 @@ describe("bookTitle", () => {
   it("is the title alone when there is no author, with no dangling dash", () => {
     expect(bookTitle({ ...book, author: "" })).toBe("Chol va dengiz");
     expect(bookTitle({ ...book, author: "  " })).toBe("Chol va dengiz");
+  });
+});
+
+describe("bookSeoTitle", () => {
+  it("says what the page has after the name", () => {
+    expect(
+      bookSeoTitle(
+        { ...book, readerRating: { average: 4.62, count: 162 }, taqrizlar: [{} as never] } as BookWithTranslator,
+        t,
+      ),
+    ).toBe("Chol va dengiz — Ernest Hemingway: translation, 2 editions, 4.6/5, reviews");
+  });
+
+  it("only claims what is there", () => {
+    const original = { ...book, translatorName: null, editions: [book.editions![0]] };
+    expect(bookSeoTitle(original, t)).toBe("Chol va dengiz — Ernest Hemingway: where to find it");
+    expect(bookSeoTitle({ ...original, readerRating: { average: 0, count: 0 } } as BookWithTranslator, t)).not.toContain("/5");
+  });
+
+  it("reads naturally in Uzbek and Russian", () => {
+    expect(bookSeoTitle(book, translator("uz", uz as typeof en))).toBe("Chol va dengiz — Ernest Hemingway: tarjima, 2 ta nashr");
+    expect(bookSeoTitle({ ...book, editions: [...book.editions!, ...book.editions!, ...book.editions!] }, translator("ru", ru as typeof en))).toBe(
+      "Chol va dengiz — Ernest Hemingway: перевод, 6 изданий",
+    );
   });
 });
 
