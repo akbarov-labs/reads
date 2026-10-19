@@ -264,12 +264,15 @@ export default async function BookDetailPage({
                 )}
               </div>
 
-              {/* Publication Specs */}
+              {/* Publication Specs: only the facts we have. A row of dashes
+                  tells the reader nothing and makes the page look unfinished. */}
+              {(book.publisher || book.year || book.sourceLanguage) && (
               <div className="mt-8 rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
                 <h2 className="font-serif text-lg font-medium text-zinc-900 mb-4">
                   {tDetail("details")}
                 </h2>
                 <dl className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+                  {book.publisher && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("publisher")}
@@ -283,30 +286,36 @@ export default async function BookDetailPage({
                           {book.publisher}
                         </Link>
                       ) : (
-                        book.publisher || "—"
+                        book.publisher
                       )}
                     </dd>
                   </div>
+                  )}
 
+                  {book.year && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("year")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.year ?? "—"}
+                      {book.year}
                     </dd>
                   </div>
+                  )}
 
+                  {book.sourceLanguage && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("sourceLanguage")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.sourceLanguage || "—"}
+                      {book.sourceLanguage}
                     </dd>
                   </div>
+                  )}
                 </dl>
               </div>
+              )}
 
               {/* How long the book takes, the same line the search result
                   shows, right above the place to plan it. */}
