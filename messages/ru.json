@@ -257,6 +257,15 @@
     "copy": "Скопировать ссылку",
     "copied": "Ссылка скопирована"
   },
+  "collections": {
+    "pageTitle": "Подборки",
+    "pageDescription": "Выбор редакции: списки книг, собранные вокруг их переводов.",
+    "bookCount": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
+    "empty": "Подборок пока нет.",
+    "homeTitle": "Подборки",
+    "seeAll": "Все подборки",
+    "translatedBy": "Перевод: {names}",
+    "back": "Все подборки"
   "quotes": {
     "quotesTitle": "Цитаты",
     "quotePage": "с. {page}",
