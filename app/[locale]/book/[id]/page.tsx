@@ -13,12 +13,14 @@ import { ShareLinks } from "@/components/ShareLinks";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
-import { botPlanUrl, botWantUrl } from "@/lib/bot";
+import { QuoteBlock } from "@/components/QuoteBlock";
+import { ReaderCounts } from "@/components/ReaderCounts";
+import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
 import { storeLinks } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookPages, bookTitle, readingTime } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 
 type PageParams = { locale: string; id: string };
@@ -44,7 +46,7 @@ export async function generateMetadata({
   const cover = publicAssetUrl(book.coverUrl);
 
   return {
-    title,
+    title: bookSeoTitle(book, t),
     description,
     // Its own address, and its own in each language. Without this the page
     // inherits the layout's, which points at the home page and tells search
@@ -69,11 +71,12 @@ export default async function BookDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [book, tDetail, tCard, tTaqriz] = await Promise.all([
+  const [book, tDetail, tCard, tTaqriz, tQuotes] = await Promise.all([
     getBookById(id, locale),
     getTranslations("bookDetail"),
     getTranslations("bookCard"),
     getTranslations("taqriz"),
+    getTranslations("quotes"),
   ]);
 
   if (!book) notFound();
@@ -266,12 +269,15 @@ export default async function BookDetailPage({
                 )}
               </div>
 
-              {/* Publication Specs */}
+              {/* Publication Specs: only the facts we have. A row of dashes
+                  tells the reader nothing and makes the page look unfinished. */}
+              {(book.publisher || book.year || book.sourceLanguage) && (
               <div className="mt-8 rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
                 <h2 className="font-serif text-lg font-medium text-zinc-900 mb-4">
                   {tDetail("details")}
                 </h2>
                 <dl className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+                  {book.publisher && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("publisher")}
@@ -285,36 +291,43 @@ export default async function BookDetailPage({
                           {book.publisher}
                         </Link>
                       ) : (
-                        book.publisher || "—"
+                        book.publisher
                       )}
                     </dd>
                   </div>
+                  )}
 
+                  {book.year && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("year")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.year ?? "—"}
+                      {book.year}
                     </dd>
                   </div>
+                  )}
 
+                  {book.sourceLanguage && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("sourceLanguage")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.sourceLanguage || "—"}
+                      {book.sourceLanguage}
                     </dd>
                   </div>
+                  )}
                 </dl>
               </div>
+              )}
 
               {/* How long the book takes, the same line the search result
                   shows, right above the place to plan it. */}
               {pages ? (
                 <p className="mt-6 text-sm text-zinc-600">{readingTime(pages, tDetail)}</p>
               ) : null}
+              <ReaderCounts counts={book.readers} t={tDetail} className={pages ? "mt-1" : "mt-6"} />
 
               {/* The catalogue's hand-off: the same Kitoblarim, in Telegram,
                   where the reader plans this book and reads it to the end. */}
@@ -439,13 +452,26 @@ export default async function BookDetailPage({
             )}
           </section>
 
+          {/* Lines from the book, as editors chose them. Hidden when there are none. */}
+          {book.quotes && book.quotes.length > 0 && (
+            <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12 sm:pt-16">
+              <h2 className="font-serif text-2xl text-zinc-900">{tQuotes("quotesTitle")}</h2>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {book.quotes.map((quote) => (
+                  <QuoteBlock key={quote.id} quote={quote} bookId={id} author={book.author} />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Kitoblarim bot readers: anonymous stars and the reviews they
-              chose to publish. Hidden when there are neither. */}
+              chose to publish, and the way to write one in the bot. */}
           <ReaderReviews
             rating={book.readerRating}
             reviews={book.readerReviews ?? []}
             locale={locale}
             botHref={botHref}
+            reviewHref={botReviewUrl(isbn)}
             t={tDetail}
           />
 

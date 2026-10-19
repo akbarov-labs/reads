@@ -13,6 +13,7 @@ import type {
   Paginated,
   ReaderRating,
   ReaderReview,
+  Quote,
 } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -118,6 +119,7 @@ type ApiCatalogBook = Book & {
   averageScore?: number | null;
   readerRating?: ReaderRating | null;
   readerReviews?: ReaderReview[];
+  quotes?: Quote[];
   description?: string | null;
   editions?: Edition[];
   relatedBooks?: ApiCatalogBook[];
@@ -472,4 +474,16 @@ export async function getCollection(slug: string, locale: string): Promise<BookC
     ...result.data,
     items: (result.data.items ?? []).map((item) => ({ ...item, book: normalizeBook(item.book) })),
   };
+ * The home page's quote of the day, or null when editors have added none.
+ * Hung off the books tag, which every save in the admin drops; the ISR
+ * window turns it over at midnight.
+ */
+export async function getQuoteOfTheDay(locale: string): Promise<Quote | null> {
+  const result = await apiFetch<{ data: Quote | null }>(
+    `/quotes/today?locale=${encodeURIComponent(locale)}`,
+    [BOOKS_TAG]
+  );
+  const quote = result?.data ?? null;
+  if (!quote?.book) return quote;
+  return { ...quote, book: { ...quote.book, coverUrl: resolveAssetUrl(quote.book.coverUrl) || null } };
 }
