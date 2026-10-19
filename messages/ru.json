@@ -257,6 +257,12 @@
     "copy": "Скопировать ссылку",
     "copied": "Ссылка скопирована"
   },
+  "quotes": {
+    "quotesTitle": "Цитаты",
+    "quotePage": "с. {page}",
+    "quoteTranslatedBy": "Перевод: {names}",
+    "quoteOfTheDay": "Цитата дня"
+  },
   "pagination": {
     "nav": "Страницы",
     "previous": "Назад",

@@ -13,6 +13,7 @@ import { ShareLinks } from "@/components/ShareLinks";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
+import { QuoteBlock } from "@/components/QuoteBlock";
 import { ReaderCounts } from "@/components/ReaderCounts";
 import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
 import { storeLinks } from "@/lib/stores";
@@ -70,11 +71,12 @@ export default async function BookDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [book, tDetail, tCard, tTaqriz] = await Promise.all([
+  const [book, tDetail, tCard, tTaqriz, tQuotes] = await Promise.all([
     getBookById(id, locale),
     getTranslations("bookDetail"),
     getTranslations("bookCard"),
     getTranslations("taqriz"),
+    getTranslations("quotes"),
   ]);
 
   if (!book) notFound();
@@ -449,6 +451,18 @@ export default async function BookDetailPage({
               </div>
             )}
           </section>
+
+          {/* Lines from the book, as editors chose them. Hidden when there are none. */}
+          {book.quotes && book.quotes.length > 0 && (
+            <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12 sm:pt-16">
+              <h2 className="font-serif text-2xl text-zinc-900">{tQuotes("quotesTitle")}</h2>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {book.quotes.map((quote) => (
+                  <QuoteBlock key={quote.id} quote={quote} bookId={id} author={book.author} />
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Kitoblarim bot readers: anonymous stars and the reviews they
               chose to publish, and the way to write one in the bot. */}

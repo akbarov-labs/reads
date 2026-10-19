@@ -133,6 +133,8 @@ export interface BookWithTranslator extends Book {
   readers?: ReaderCounts | null;
   /** Book page only: reviews bot readers chose to publish, approved, newest first. */
   readerReviews?: ReaderReview[];
+  /** Published lines from the book, newest first. */
+  quotes?: Quote[];
   /** Book page only: the work's own description. */
   description?: string | null;
   /** Book page only: every published edition. */
@@ -318,4 +320,20 @@ export interface Taqrizchi {
   totalTaqrizlar: number;
   taqrizlar: Taqriz[];
   updatedAt?: string | null;
+}
+
+/** A line from a book, as an editor entered it. */
+export interface Quote {
+  id: string;
+  body: string;
+  page?: number | null;
+  /** Who translated the line, when it is from a translation; [] otherwise. */
+  translators?: string[];
+  /** Present away from the book's own page (the quote of the day). */
+  book?: {
+    id: string;
+    uzbekTitle: string;
+    author: string | null;
+    coverUrl?: string | null;
+  } | null;
 }

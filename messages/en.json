@@ -257,6 +257,12 @@
     "copy": "Copy link",
     "copied": "Link copied"
   },
+  "quotes": {
+    "quotesTitle": "Quotes",
+    "quotePage": "p. {page}",
+    "quoteTranslatedBy": "Translated by {names}",
+    "quoteOfTheDay": "Quote of the day"
+  },
   "pagination": {
     "nav": "Pages",
     "previous": "Previous",
