@@ -129,6 +129,29 @@ describe("sitemapEntries", () => {
     expect(await sitemapEntries("publishers")).toEqual([{ path: "/publisher/publisher-1", lastModified: "2026-09-01" }]);
   });
 
+  it("lists collections with their list page, once there are some", async () => {
+    api.getSitemapIndex.mockResolvedValue({
+      ...index(1),
+      collections: [
+        { slug: "yil-tarjimalari", updatedAt: "2026-10-18T09:00:00Z" },
+        { slug: "dostoyevskiy", updatedAt: "2026-10-01T09:00:00Z" },
+      ],
+    });
+    expect(await sitemapNames()).toEqual(["pages", "authors", "publishers", "collections", "books-1"]);
+    expect(await sitemapEntries("collections")).toEqual([
+      { path: "/collections", lastModified: "2026-10-18T09:00:00Z" },
+      { path: "/collection/yil-tarjimalari", lastModified: "2026-10-18T09:00:00Z" },
+      { path: "/collection/dostoyevskiy", lastModified: "2026-10-01T09:00:00Z" },
+    ]);
+
+    // None yet, or an admin that does not send them: no file at all.
+    api.getSitemapIndex.mockResolvedValue({ ...index(1), collections: [] });
+    expect(await sitemapNames()).not.toContain("collections");
+    expect(await sitemapEntries("collections")).toBeNull();
+    api.getSitemapIndex.mockResolvedValue(index(1));
+    expect(await sitemapEntries("collections")).toBeNull();
+  });
+
   it.each(["books-0", "books-4", "books-x", "books-", "books", "nope", "", "../pages"])("is null for %j", async (name) => {
     api.getSitemapIndex.mockResolvedValue(index(12_345));
     expect(await sitemapEntries(name)).toBeNull();

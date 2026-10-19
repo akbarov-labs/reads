@@ -322,6 +322,24 @@ export interface Taqrizchi {
   updatedAt?: string | null;
 }
 
+/** An editor's list of books around translation ("toʻplam"). */
+export interface BookCollection {
+  slug: string;
+  title: string;
+  description?: string | null;
+  /** In the list of collections. */
+  bookCount?: number;
+  coverUrls?: string[];
+  /** On the collection's own page, in the editor's order. */
+  items?: BookCollectionItem[];
+}
+
+export interface BookCollectionItem {
+  /** The editor's line on why the book is here. */
+  note?: string | null;
+  book: BookWithTranslator;
+  /** The one translation the list means, when it means one. */
+  edition?: { id: string; publisher?: string | null; year?: number | null; translators: string[] } | null;
 /** A line from a book, as an editor entered it. */
 export interface Quote {
   id: string;
