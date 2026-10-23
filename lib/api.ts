@@ -133,7 +133,14 @@ async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
   // sitting in the cache until something forces a hard reload. Letting it
   // throw keeps the bad render out of the cache and surfaces the real cause
   // in the logs instead of silently showing an empty site.
+  //
+  // The secret this site already shares with Reads-admin for revalidation
+  // pings also identifies it to the API's rate limiter. Without it the site
+  // gets a stranger's 120 requests a minute, which a Googlebot crawl of
+  // uncached pages uses up, and every page past that renders as a 500.
+  const secret = process.env.REVALIDATE_SECRET;
   const response = await fetch(`${API_URL}${path}`, {
+    headers: secret ? { Authorization: `Bearer ${secret}` } : undefined,
     next: { revalidate: REVALIDATE_SECONDS, tags },
   });
 

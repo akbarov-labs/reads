@@ -107,6 +107,22 @@ describe("response normalizers", () => {
     await expect(getBookById("42", "uz")).rejects.toThrow(/500/);
   });
 
+  it("identifies itself to the API's rate limiter with the shared secret", async () => {
+    vi.stubEnv("REVALIDATE_SECRET", "shared");
+    respond({}, 404);
+    await getBookById("42", "uz");
+    expect(fetchMock.mock.calls[0][1].headers).toEqual({ Authorization: "Bearer shared" });
+    vi.unstubAllEnvs();
+  });
+
+  it("sends no Authorization header when no secret is set", async () => {
+    vi.stubEnv("REVALIDATE_SECRET", "");
+    respond({}, 404);
+    await getBookById("42", "uz");
+    expect(fetchMock.mock.calls[0][1].headers).toBeUndefined();
+    vi.unstubAllEnvs();
+  });
+
   it("pages the catalogue, skipping empty filters", async () => {
     respond({
       data: [{ id: "1", uzbekTitle: "A", author: "B", publisher: "C", coverUrl: "/c.jpg", translator: null }],
