@@ -16,7 +16,7 @@ import { ReaderReviews } from "@/components/ReaderReviews";
 import { QuoteBlock } from "@/components/QuoteBlock";
 import { ReaderCounts } from "@/components/ReaderCounts";
 import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
-import { storeLinks } from "@/lib/stores";
+import { storeLinks, storeRedirectPath } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
@@ -355,9 +355,12 @@ export default async function BookDetailPage({
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">{tDetail("whereLead")}</p>
                 <ul className="mt-4 flex flex-wrap gap-2">
                   {storeLinks(book.uzbekTitle).map((store) => (
-                    <li key={store.name}>
+                    <li key={store.key}>
+                      {/* Through /go/store, which counts the click and
+                          redirects to the same search. A plain <a>, not
+                          next/link: a prefetch would not be a click. */}
                       <a
-                        href={store.url}
+                        href={storeRedirectPath(store.key, book.id, locale)}
                         target="_blank"
                         rel="nofollow noopener"
                         className="inline-flex items-center gap-1 rounded-full border border-stone-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-forest-400 hover:text-forest-800"

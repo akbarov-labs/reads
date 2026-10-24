@@ -34,12 +34,14 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         // Nothing under /api is content: it is the revalidation webhook.
         // Crawling it wastes crawl budget on a route that returns JSON.
-        disallow: ["/api/"],
+        // /go/ only redirects to stores, and a crawler following it would
+        // be counted as a reader if it got past the bot check.
+        disallow: ["/api/", "/go/"],
       },
       ...ANSWER_ENGINE_CRAWLERS.map((userAgent) => ({
         userAgent,
         allow: "/",
-        disallow: ["/api/"],
+        disallow: ["/api/", "/go/"],
       })),
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

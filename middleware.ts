@@ -13,7 +13,11 @@ export const config = {
   // an HTML error page where it expected an image, so every shared link
   // loses its preview card.
   //
+  // `go/` is the store-link redirect (app/go), a route handler for the same
+  // reason. With the slash, so a page that merely starts with "go" is not
+  // caught by it.
+  //
   // Paths containing a dot (robots.txt, sitemap.xml, llms.txt) are already
   // excluded by the `.*\..*` branch.
-  matcher: ["/((?!api|og|_next|_vercel|.*\\..*).*)"],
+  matcher: ["/((?!api|og|go/|_next|_vercel|.*\\..*).*)"],
 };
