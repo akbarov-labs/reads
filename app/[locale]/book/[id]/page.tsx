@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getBookById, publicAssetUrl } from "@/lib/api";
 import type { BookWithTranslator, Edition } from "@/lib/types";
+import { MetaLine } from "@/components/MetaLine";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
@@ -218,9 +219,10 @@ export default async function BookDetailPage({
                 </p>
               )}
 
-              {/* Author, Translator, Publisher Cards */}
+              {/* Author and Translator Cards, each only when there is a name to show. */}
+              {(book.author || book.translatorSlug) && (
               <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Author Card */}
+                {book.author && (
                 <Link
                   href={firstAuthor ? `/author/${firstAuthor.slug}` : "/authors"}
                   className="group flex items-center gap-3.5 rounded-xl border border-stone-200 p-4 bg-white hover:border-forest-300 hover:shadow-sm transition-all"
@@ -235,7 +237,7 @@ export default async function BookDetailPage({
                         className="object-cover"
                       />
                     ) : (
-                      <span>{(book.author || "?").charAt(0).toUpperCase()}</span>
+                      <span>{book.author.charAt(0).toUpperCase()}</span>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -247,6 +249,7 @@ export default async function BookDetailPage({
                     </p>
                   </div>
                 </Link>
+                )}
 
                 {/* Translator Card — absent for a book nobody has translated. */}
                 {book.translatorSlug && (
@@ -268,10 +271,11 @@ export default async function BookDetailPage({
                 </Link>
                 )}
               </div>
+              )}
 
               {/* Publication Specs: only the facts we have. A row of dashes
                   tells the reader nothing and makes the page look unfinished. */}
-              {(book.publisher || book.year || book.sourceLanguage) && (
+              {(book.publisher || book.year || book.sourceLanguage) ? (
               <div className="mt-8 rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
                 <h2 className="font-serif text-lg font-medium text-zinc-900 mb-4">
                   {tDetail("details")}
@@ -297,7 +301,7 @@ export default async function BookDetailPage({
                   </div>
                   )}
 
-                  {book.year && (
+                  {book.year ? (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("year")}
@@ -306,7 +310,7 @@ export default async function BookDetailPage({
                       {book.year}
                     </dd>
                   </div>
-                  )}
+                  ) : null}
 
                   {book.sourceLanguage && (
                   <div>
@@ -320,7 +324,7 @@ export default async function BookDetailPage({
                   )}
                 </dl>
               </div>
-              )}
+              ) : null}
 
               {/* How long the book takes, the same line the search result
                   shows, right above the place to plan it. */}
@@ -396,7 +400,8 @@ export default async function BookDetailPage({
                 {/* Source text */}
                 <div className="flex flex-col">
                   <span className="text-xs uppercase tracking-wider text-zinc-400 font-semibold mb-3">
-                    {tDetail("originalText")} ({book.excerpt.sourceLanguage})
+                    {tDetail("originalText")}
+                    {book.excerpt.sourceLanguage ? ` (${book.excerpt.sourceLanguage})` : null}
                   </span>
                   <div className="prose prose-stone font-serif text-base sm:text-lg leading-relaxed text-zinc-700 whitespace-pre-wrap">
                     {book.excerpt.sourceText}
@@ -533,16 +538,18 @@ function EditionCard({ edition, t }: { edition: Edition; t: Translate }) {
         )}
       </div>
       <div className="min-w-0 flex-1 text-sm">
-        <p className="font-serif text-base text-zinc-900">
-          {edition.publisher ? (
-            <Link href={`/publisher/${edition.publisher.slug}`} className="hover:text-forest-800">
-              {edition.publisher.name}
-            </Link>
-          ) : (
-            "—"
-          )}
-          {edition.year ? <span className="text-zinc-400"> · {edition.year}</span> : null}
-        </p>
+        {(edition.publisher || edition.year) ? (
+          <p className="font-serif text-base text-zinc-900">
+            {edition.publisher ? (
+              <Link href={`/publisher/${edition.publisher.slug}`} className="hover:text-forest-800">
+                {edition.publisher.name}
+              </Link>
+            ) : null}
+            {edition.year ? (
+              <span className="text-zinc-400">{edition.publisher ? " · " : ""}{edition.year}</span>
+            ) : null}
+          </p>
+        ) : null}
         {edition.title && <p className="mt-0.5 italic text-zinc-500 truncate">{edition.title}</p>}
         {translators.length > 0 && (
           <p className="mt-1 text-xs text-zinc-500">
@@ -556,7 +563,8 @@ function EditionCard({ edition, t }: { edition: Edition; t: Translate }) {
         )}
         <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
           {specs
-            .filter(([, value]) => value !== null && value !== undefined && value !== "")
+            // Zero is a page count nobody entered, not a book of no pages.
+            .filter(([, value]) => value !== null && value !== undefined && value !== "" && value !== 0)
             .map(([label, value]) => (
               <div key={label} className="flex gap-1 min-w-0">
                 <dt className="text-zinc-400">{label}:</dt>
@@ -605,7 +613,7 @@ function RelatedBook({ book }: { book: BookWithTranslator }) {
       <h3 className="mt-3 font-serif text-base text-zinc-900 group-hover:text-forest-800 transition-colors line-clamp-1">
         {book.uzbekTitle}
       </h3>
-      <p className="text-xs text-zinc-500 truncate">{[book.author, book.year].filter(Boolean).join(" · ")}</p>
+      <MetaLine parts={[book.author, book.year]} className="text-xs text-zinc-500 truncate" />
     </Link>
   );
 }

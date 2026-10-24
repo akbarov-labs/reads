@@ -76,7 +76,6 @@
   "stats": {
     "booksTranslated": "Books & translations",
     "yearsActive": "years active",
-    "languagePairs": "Language directions",
     "booksValue": "{count}+",
     "yearsValue": "{years, plural, one {# year} other {# years}}"
   },
@@ -94,6 +93,8 @@
     "sourcePaneTab": "{language} (Original)",
     "translationPaneTab": "Translation",
     "originalLabel": "{language} · Original",
+    "originalLabelPlain": "Original",
+    "sourcePaneTabPlain": "Original",
     "bookExcerptLabel": "Excerpt from the book",
     "translationLabel": "Translation",
     "analysisLabel": "Literary analysis"

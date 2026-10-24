@@ -109,7 +109,9 @@ export default async function TaqrizPage({
                   <h1 className="font-serif text-xl text-zinc-900 group-hover:text-forest-800 transition-colors">
                     {taqriz.book.uzbekTitle}
                   </h1>
-                  <p className="mt-0.5 text-sm text-zinc-500">{taqriz.book.author}</p>
+                  {taqriz.book.author && (
+                    <p className="mt-0.5 text-sm text-zinc-500">{taqriz.book.author}</p>
+                  )}
                   {taqriz.edition && (taqriz.edition.publisher || taqriz.edition.translators.length > 0) && (
                     <p className="mt-1 text-xs text-zinc-400">
                       {t("editionRead")}:{" "}
@@ -198,13 +200,15 @@ export default async function TaqrizPage({
               className="mt-6"
             />
 
-            {/* Per-aspect scores, if any were given */}
-            <section className="mt-10 rounded-2xl border border-stone-200 bg-white p-6">
-              <h2 className="font-serif text-lg text-zinc-900 mb-4">
-                {t("breakdown")}
-              </h2>
-              <AspectBreakdown scores={taqriz.scores} labels={aspectLabels} />
-            </section>
+            {/* Per-aspect scores, if any were given: no heading over an empty box. */}
+            {Object.values(taqriz.scores ?? {}).some((score) => typeof score === "number") && (
+              <section className="mt-10 rounded-2xl border border-stone-200 bg-white p-6">
+                <h2 className="font-serif text-lg text-zinc-900 mb-4">
+                  {t("breakdown")}
+                </h2>
+                <AspectBreakdown scores={taqriz.scores} labels={aspectLabels} />
+              </section>
+            )}
           </article>
         </Container>
       </main>

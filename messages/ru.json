@@ -76,7 +76,6 @@
   "stats": {
     "booksTranslated": "Книги и переводы",
     "yearsActive": "лет в профессии",
-    "languagePairs": "Языковые направления",
     "booksValue": "{count}+",
     "yearsValue": "{years, plural, one {# год} few {# года} many {# лет} other {# года}}"
   },
@@ -94,6 +93,8 @@
     "sourcePaneTab": "{language} (оригинал)",
     "translationPaneTab": "Перевод",
     "originalLabel": "{language} · Оригинал",
+    "originalLabelPlain": "Оригинал",
+    "sourcePaneTabPlain": "Оригинал",
     "bookExcerptLabel": "Отрывок из книги",
     "translationLabel": "Перевод",
     "analysisLabel": "Литературный анализ"

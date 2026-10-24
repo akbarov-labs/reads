@@ -76,7 +76,6 @@
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
     "yearsActive": "Ijodiy faoliyat",
-    "languagePairs": "Til yoʻnalishlari",
     "booksValue": "{count}+",
     "yearsValue": "{years} yil"
   },
@@ -94,6 +93,8 @@
     "sourcePaneTab": "{language} (Asl)",
     "translationPaneTab": "Tarjima",
     "originalLabel": "{language} · Asl nusxa",
+    "originalLabelPlain": "Asl nusxa",
+    "sourcePaneTabPlain": "Asl",
     "bookExcerptLabel": "Kitobdan parcha",
     "translationLabel": "Badiiy tarjima",
     "analysisLabel": "Adabiy tahlil va mohiyat"

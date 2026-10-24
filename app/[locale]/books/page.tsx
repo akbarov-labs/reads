@@ -6,6 +6,7 @@ import { getBooks, getCategories } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
+import { MetaLine } from "@/components/MetaLine";
 import { Pagination } from "@/components/Pagination";
 import { BookSearchForm } from "@/components/BookSearchForm";
 
@@ -170,9 +171,11 @@ export default async function BooksPage({
                             {book.originalTitle}
                           </p>
                         )}
-                        <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400 truncate">
-                          {book.author}
-                        </p>
+                        {book.author && (
+                          <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-400 truncate">
+                            {book.author}
+                          </p>
+                        )}
                         {book.translatorName && (
                           <p className="mt-0.5 text-[11px] text-zinc-400">
                             {t("translatedBy")}{" "}
@@ -181,9 +184,7 @@ export default async function BooksPage({
                             </span>
                           </p>
                         )}
-                        <p className="mt-0.5 text-[11px] text-zinc-400">
-                          {[book.publisher, book.year].filter(Boolean).join(" · ")}
-                        </p>
+                        <MetaLine parts={[book.publisher, book.year]} className="mt-0.5 text-[11px] text-zinc-400" />
                       </div>
                     </article>
                   </Link>
