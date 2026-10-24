@@ -14,6 +14,7 @@ import type {
   ReaderRating,
   ReaderReview,
   Quote,
+  Announcement,
 } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -63,6 +64,8 @@ export const TRANSLATORS_TAG = "translators";
 export const AUTHORS_TAG = "authors";
 export const BOOKS_TAG = "books";
 export const PUBLISHERS_TAG = "publishers";
+/** Publishers' new books and pre-orders: the home page's section and each publisher's own. */
+export const ANNOUNCEMENTS_TAG = "announcements";
 
 /** Cache tag for one profile, so a single save doesn't rebuild the site. */
 export function translatorTag(slug: string): string {
@@ -496,4 +499,32 @@ export async function getQuoteOfTheDay(locale: string): Promise<Quote | null> {
   const quote = result?.data ?? null;
   if (!quote?.book) return quote;
   return { ...quote, book: { ...quote.book, coverUrl: resolveAssetUrl(quote.book.coverUrl) || null } };
+}
+
+/**
+ * Publishers' new books and pre-orders on the site today, pre-orders
+ * closing soonest first. With `publisher`, that one publisher's only.
+ */
+export async function getAnnouncements(
+  locale: string,
+  { publisher, limit = 8 }: { publisher?: string; limit?: number } = {}
+): Promise<Announcement[]> {
+  const result = await apiFetch<{ data: Announcement[] }>(
+    `/announcements?${query({ locale, publisher, limit })}`,
+    [ANNOUNCEMENTS_TAG, PUBLISHERS_TAG]
+  );
+  return (result?.data ?? []).map(normalizeAnnouncement);
+}
+
+/** One live announcement, or null once it has expired or been taken down. */
+export async function getAnnouncement(id: string): Promise<Announcement | null> {
+  const result = await apiFetch<{ data: Announcement }>(
+    `/announcements/${encodeURIComponent(id)}`,
+    [ANNOUNCEMENTS_TAG]
+  );
+  return result ? normalizeAnnouncement(result.data) : null;
+}
+
+function normalizeAnnouncement(announcement: Announcement): Announcement {
+  return { ...announcement, coverUrl: resolveAssetUrl(announcement.coverUrl) || null };
 }

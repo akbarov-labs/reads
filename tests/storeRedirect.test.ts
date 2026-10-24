@@ -80,6 +80,7 @@ describe("GET /go/store/[store]/[bookId]", () => {
     expect(JSON.parse(init.body)).toEqual({
       kind: "store",
       book_id: 42,
+      announcement_id: null,
       target: "asaxiy",
       locale: "ru",
       ip: "203.0.113.9",

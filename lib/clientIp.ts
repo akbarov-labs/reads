@@ -5,7 +5,7 @@
  * box for everybody. The edge Caddy sets X-Forwarded-For to the real client
  * and drops what the client sent, so its last entry is the one to trust.
  */
-export function clientIp(request: Request): string | null {
+export function clientIp(request: { headers: { get(name: string): string | null } }): string | null {
   const forwarded = request.headers.get("x-forwarded-for");
   const last = forwarded?.split(",").at(-1)?.trim();
 

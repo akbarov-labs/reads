@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { useLocale, useTranslations } from "next-intl";
 import { getPathname, useRouter } from "@/i18n/navigation";
 import { SearchSuggestions } from "@/components/SearchSuggestions";
+import { sendNote } from "@/lib/note";
 import {
   DEBOUNCE_MS,
   moveActive,
@@ -97,9 +98,12 @@ export function SearchBox({
   const pick = useCallback(
     (path: string) => {
       setOpen(false);
+      // What the reader typed and settled on, for the site's statistics.
+      // "All results" opens the books listing, which counts itself.
+      if (!path.startsWith("/books?")) sendNote({ type: "search", query: value.trim(), picked: path, locale });
       router.push(path);
     },
-    [router],
+    [router, value, locale],
   );
 
   function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

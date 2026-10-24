@@ -357,3 +357,30 @@ export interface Quote {
     coverUrl?: string | null;
   } | null;
 }
+
+/**
+ * A publisher's new book or discounted pre-order, from a post on its
+ * Telegram channel and reviewed in Reads-admin. Only live ones reach the
+ * site: a pre-order until its last day (`preorderDeadline`, a Tashkent
+ * date), a new book for a couple of months.
+ */
+export interface Announcement {
+  id: string;
+  title: string;
+  author: string | null;
+  translator: string | null;
+  isPreorder: boolean;
+  /** Whole so'm. */
+  price: number | null;
+  preorderPrice: number | null;
+  /** YYYY-MM-DD, the last day pre-orders are taken. */
+  preorderDeadline: string | null;
+  coverUrl: string | null;
+  postedAt: string | null;
+  /** The Telegram post it came from. */
+  sourceUrl: string;
+  /** The publisher's Telegram username for orders, without the @; null orders through the post. */
+  orderContact: string | null;
+  publisher: { slug: string; name: string };
+  bookId: string | null;
+}
