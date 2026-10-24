@@ -63,7 +63,8 @@
     "sectionTitle": "Book authors",
     "count": "{count, plural, one {# author} other {# authors}}",
     "books": "{count, plural, one {# book} other {# books}}",
-    "empty": "No authors found."
+    "empty": "No authors found.",
+    "booksInUzbek": "{count, plural, one {# book} other {# books}} in Uzbek"
   },
   "publishers": {
     "pageTitle": "All Publishers",
@@ -219,7 +220,8 @@
     "breadcrumbAuthors": "Authors",
     "metaTitle": "{name} — works translated into Uzbek",
     "metaDescription": "Uzbek translations of {name}'s works: books, editions and translators.",
-    "translatorProfile": "Translator profile"
+    "translatorProfile": "Translator profile",
+    "bookTranslator": "Translator: <strong>{name}</strong>"
   },
   "publisherDetail": {
     "back": "Back to publishers",
@@ -229,7 +231,10 @@
     "booksInCatalog": "Books in catalog",
     "breadcrumbPublishers": "Publishers",
     "metaTitle": "{name} — books from this publisher",
-    "metaDescription": "Books published by {name}: translations, authors and translators."
+    "metaDescription": "Books published by {name}: translations, authors and translators.",
+    "bookTranslator": "Translator: {name}",
+    "translators": "Translators",
+    "authors": "Authors"
   },
   "taqrizchilar": {
     "pageTitle": "All reviewers",
@@ -261,7 +266,8 @@
       "overall": "Overall impression"
     },
     "editionRead": "Edition read",
-    "shareText": "{name} on “{title}”"
+    "shareText": "{name} on “{title}”",
+    "video": "Video"
   },
   "share": {
     "telegram": "Share on Telegram",

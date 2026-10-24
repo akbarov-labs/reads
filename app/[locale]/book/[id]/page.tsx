@@ -406,7 +406,7 @@ export default async function BookDetailPage({
                 {/* Translated text */}
                 <div className="flex flex-col border-t md:border-t-0 md:border-l border-stone-200 pt-6 md:pt-0 md:pl-8">
                   <span className="text-xs uppercase tracking-wider text-forest-800 font-semibold mb-3">
-                    {tDetail("translatedText")} (O&apos;zbek tili)
+                    {tDetail("translatedText")}
                   </span>
                   <div className="prose prose-stone font-serif text-base sm:text-lg leading-relaxed text-zinc-900 whitespace-pre-wrap font-medium">
                     {book.excerpt.translatedText}

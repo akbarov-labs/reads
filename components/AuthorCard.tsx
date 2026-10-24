@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Author } from "@/lib/types";
 
@@ -22,7 +23,8 @@ function initials(name: string): string {
     .join("");
 }
 
-export function AuthorCard({ author }: AuthorCardProps) {
+export async function AuthorCard({ author }: AuthorCardProps) {
+  const t = await getTranslations("authors");
   const colorClass = initialsColor(author.name);
 
   // Up to 3 book cover thumbnails; the API sends a few recent ones.
@@ -57,7 +59,7 @@ export function AuthorCard({ author }: AuthorCardProps) {
             {author.name}
           </h3>
           <p className="mt-0.5 text-xs text-zinc-400">
-            {author.bookCount} book{author.bookCount !== 1 ? "s" : ""} in Uzbek
+            {t("booksInUzbek", { count: author.bookCount })}
           </p>
           {author.originalName && author.originalName !== author.name && (
             <p className="mt-1 text-[11px] text-zinc-400">{author.originalName}</p>

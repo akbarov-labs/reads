@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, CirclePlay } from "lucide-react";
 import type { Taqriz } from "@/lib/types";
@@ -11,7 +12,7 @@ import { ShareLinks } from "@/components/ShareLinks";
  * useful half) and on a reviewer's profile (where the book is), so which
  * heading it leads with follows whichever the API attached.
  */
-export function TaqrizCard({
+export async function TaqrizCard({
   taqriz,
   context,
   readMoreLabel,
@@ -23,6 +24,7 @@ export function TaqrizCard({
   /** What a Telegram share of this taqriz says above its link. */
   shareText: string;
 }) {
+  const t = await getTranslations("taqriz");
   const showBook = context === "profile" && taqriz.book;
   const video = safeExternalUrl(taqriz.youtubeUrl);
 
@@ -116,7 +118,7 @@ export function TaqrizCard({
             className="inline-flex items-center gap-1 text-xs text-zinc-400 hover:text-forest-800 transition-colors"
           >
             <CirclePlay className="h-3.5 w-3.5" />
-            Video
+            {t("video")}
           </a>
         )}
         <ShareLinks path={`/taqriz/${taqriz.id}`} text={shareText} size="sm" />

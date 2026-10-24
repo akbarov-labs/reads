@@ -63,7 +63,8 @@
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
     "books": "{count} ta kitob",
-    "empty": "Mualliflar topilmadi."
+    "empty": "Mualliflar topilmadi.",
+    "booksInUzbek": "Oʻzbek tilida {count} ta kitob"
   },
   "publishers": {
     "pageTitle": "Barcha Nashriyotlar",
@@ -219,7 +220,8 @@
     "breadcrumbAuthors": "Mualliflar",
     "metaTitle": "{name} — Oʻzbek tiliga tarjima qilingan asarlari",
     "metaDescription": "{name} asarlarining oʻzbekcha tarjimalari, kitoblari va tarjimonlari haqida toʻliq maʼlumot.",
-    "translatorProfile": "Tarjimon profili"
+    "translatorProfile": "Tarjimon profili",
+    "bookTranslator": "Tarjimon: <strong>{name}</strong>"
   },
   "publisherDetail": {
     "back": "Nashriyotlarga qaytish",
@@ -229,7 +231,10 @@
     "booksInCatalog": "Katalogdagi kitoblar",
     "breadcrumbPublishers": "Nashriyotlar",
     "metaTitle": "{name} — Nashriyot kitoblari",
-    "metaDescription": "{name} nashriyoti tomonidan chop etilgan tarjima kitoblar, mualliflar va tarjimonlar."
+    "metaDescription": "{name} nashriyoti tomonidan chop etilgan tarjima kitoblar, mualliflar va tarjimonlar.",
+    "bookTranslator": "Tarjimon: {name}",
+    "translators": "Tarjimonlar",
+    "authors": "Mualliflar"
   },
   "taqrizchilar": {
     "pageTitle": "Barcha taqrizchilar",
@@ -261,7 +266,8 @@
       "overall": "Umumiy taassurot"
     },
     "editionRead": "Oʻqilgan nashr",
-    "shareText": "{name} — «{title}» haqida taqriz"
+    "shareText": "{name} — «{title}» haqida taqriz",
+    "video": "Video"
   },
   "share": {
     "telegram": "Telegramda ulashish",
