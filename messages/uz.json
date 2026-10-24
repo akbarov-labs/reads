@@ -160,6 +160,8 @@
   "bookDetail": {
     "back": "Kitoblarga qaytish",
     "details": "Kitob haqida",
+    "descriptionMore": "Koʻproq",
+    "descriptionLess": "Kamroq",
     "author": "Muallif",
     "translator": "Tarjimon",
     "publisher": "Nashriyot",

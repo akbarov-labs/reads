@@ -160,6 +160,8 @@
   "bookDetail": {
     "back": "Back to books",
     "details": "Book details",
+    "descriptionMore": "Show more",
+    "descriptionLess": "Show less",
     "author": "Author",
     "translator": "Translator",
     "publisher": "Publisher",

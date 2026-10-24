@@ -26,6 +26,7 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 import { BookViewBeacon } from "@/components/BookViewBeacon";
+import { BookDescription } from "@/components/BookDescription";
 
 type PageParams = { locale: string; id: string };
 
@@ -218,9 +219,11 @@ export default async function BookDetailPage({
               )}
 
               {book.description && (
-                <p className="mt-6 text-sm leading-relaxed text-zinc-700 whitespace-pre-line">
-                  {book.description}
-                </p>
+                <BookDescription
+                  text={book.description}
+                  moreLabel={tDetail("descriptionMore")}
+                  lessLabel={tDetail("descriptionLess")}
+                />
               )}
 
               {/* Author and Translator Cards, each only when there is a name to show. */}

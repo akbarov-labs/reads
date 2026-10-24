@@ -160,6 +160,8 @@
   "bookDetail": {
     "back": "Назад к книгам",
     "details": "О книге",
+    "descriptionMore": "Подробнее",
+    "descriptionLess": "Свернуть",
     "author": "Автор",
     "translator": "Переводчик",
     "publisher": "Издательство",
