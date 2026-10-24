@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BookOpen } from "lucide-react";
 import type { Publisher } from "@/lib/types";
@@ -15,7 +16,8 @@ function publisherColor(name: string): string {
   return colors[idx];
 }
 
-export function PublisherCard({ publisher }: PublisherCardProps) {
+export async function PublisherCard({ publisher }: PublisherCardProps) {
+  const t = await getTranslations("publishers");
   const gradientClass = publisherColor(publisher.name);
   const previewCovers = (publisher.coverUrls ?? []).slice(0, 4);
 
@@ -46,7 +48,7 @@ export function PublisherCard({ publisher }: PublisherCardProps) {
             {publisher.name}
           </h3>
           <p className="text-xs text-zinc-500 mt-0.5">
-            {publisher.bookCount} book{publisher.bookCount !== 1 ? "s" : ""}
+            {t("books", { count: publisher.bookCount })}
           </p>
         </div>
       </div>

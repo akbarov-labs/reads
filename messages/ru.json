@@ -63,7 +63,8 @@
     "sectionTitle": "Авторы книг",
     "count": "{count, plural, one {# автор} few {# автора} many {# авторов} other {# автора}}",
     "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
-    "empty": "Авторы не найдены."
+    "empty": "Авторы не найдены.",
+    "booksInUzbek": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}} на узбекском"
   },
   "publishers": {
     "pageTitle": "Все издательства",
@@ -222,7 +223,8 @@
     "breadcrumbAuthors": "Авторы",
     "metaTitle": "{name} — произведения в переводе на узбекский",
     "metaDescription": "Узбекские переводы произведений автора {name}: книги, издания и переводчики.",
-    "translatorProfile": "Профиль переводчика"
+    "translatorProfile": "Профиль переводчика",
+    "bookTranslator": "Переводчик: <strong>{name}</strong>"
   },
   "publisherDetail": {
     "back": "Назад к издательствам",
@@ -232,7 +234,10 @@
     "booksInCatalog": "Книги в каталоге",
     "breadcrumbPublishers": "Издательства",
     "metaTitle": "{name} — книги издательства",
-    "metaDescription": "Книги издательства {name}: переводы, авторы и переводчики."
+    "metaDescription": "Книги издательства {name}: переводы, авторы и переводчики.",
+    "bookTranslator": "Переводчик: {name}",
+    "translators": "Переводчики",
+    "authors": "Авторы"
   },
   "taqrizchilar": {
     "pageTitle": "Все рецензенты",
@@ -264,7 +269,8 @@
       "overall": "Общее впечатление"
     },
     "editionRead": "Прочитанное издание",
-    "shareText": "{name} о книге «{title}»"
+    "shareText": "{name} о книге «{title}»",
+    "video": "Видео"
   },
   "share": {
     "telegram": "Поделиться в Telegram",

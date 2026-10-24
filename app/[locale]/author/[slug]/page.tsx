@@ -243,10 +243,10 @@ export default async function AuthorDetailPage({
                     )}
                     {book.translatorName && (
                       <p className="mt-2 text-xs text-zinc-500">
-                        Tarjimon:{" "}
-                        <span className="text-zinc-800 font-medium">
-                          {book.translatorName}
-                        </span>
+                        {tAuthor.rich("bookTranslator", {
+                          name: book.translatorName,
+                          strong: (chunks) => <span className="text-zinc-800 font-medium">{chunks}</span>,
+                        })}
                       </p>
                     )}
                     <MetaLine parts={[book.publisher, book.year]} className="text-xs text-zinc-400 mt-0.5" />

@@ -218,7 +218,7 @@ export default async function PublisherDetailPage({
                         {book.author}
                       </p>
                     )}
-                    <MetaLine parts={[book.translatorName ? `Tarjimon: ${book.translatorName}` : null, book.year]} className="mt-1 text-xs text-zinc-400" />
+                    <MetaLine parts={[book.translatorName ? tPublisher("bookTranslator", { name: book.translatorName }) : null, book.year]} className="mt-1 text-xs text-zinc-400" />
                   </div>
                 </Link>
               ))}
@@ -249,7 +249,7 @@ export default async function PublisherDetailPage({
               {translators.length > 0 && (
                 <div className="rounded-xl border border-stone-200 bg-stone-50/60 p-6">
                   <h3 className="font-serif text-lg font-medium text-zinc-900 mb-4">
-                    Tarjimonlar
+                    {tPublisher("translators")}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {translators.map((t) => (
@@ -269,7 +269,7 @@ export default async function PublisherDetailPage({
               {authors.length > 0 && (
                 <div className="rounded-xl border border-stone-200 bg-stone-50/60 p-6">
                   <h3 className="font-serif text-lg font-medium text-zinc-900 mb-4">
-                    Mualliflar
+                    {tPublisher("authors")}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {authors.map((a) => (
