@@ -11,6 +11,8 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
 import { MetaLine } from "@/components/MetaLine";
+import { AskAiSection } from "@/components/AskAiSection";
+import { authorQuestion } from "@/lib/askAi";
 
 type PageParams = { locale: string; slug: string };
 
@@ -68,12 +70,13 @@ export default async function AuthorDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [author, books, tAuthor, tBookCard, tBooks] = await Promise.all([
+  const [author, books, tAuthor, tBookCard, tBooks, tAskAi] = await Promise.all([
     getAuthorBySlug(slug, locale),
     getBooks(locale, { author: slug, perPage: BOOKS_SHOWN }),
     getTranslations("authorDetail"),
     getTranslations("bookCard"),
     getTranslations("books"),
+    getTranslations("askAi"),
   ]);
 
   if (!author) notFound();
@@ -298,6 +301,9 @@ export default async function AuthorDetailPage({
               </div>
             </section>
           )}
+
+          {/* Last, once the reader has seen what we have. */}
+          <AskAiSection question={authorQuestion(author, tAskAi)} className="mt-16 sm:mt-20 pt-12" />
         </Container>
       </main>
     </>

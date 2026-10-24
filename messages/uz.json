@@ -317,5 +317,15 @@
     "orderNote": "Telegramda nashriyot bilan suhbat ochiladi",
     "viewPost": "Telegramdagi eʼlon",
     "orderMessage": "Assalomu alaykum! kitoblarim.uz saytida «{title}» kitobini koʻrdim. Buyurtma bermoqchiman."
+  },
+  "askAi": {
+    "title": "Yana bilmoqchimisiz?",
+    "lead": "Sunʼiy intellekt bu haqda kengroq maʼlumot beradi. Javob yangi oynada ochiladi, bu sahifa ochiq qoladi.",
+    "label": "AIʼdan batafsil soʻrash",
+    "book": "«{title}» kitobi haqida batafsil maʼlumot bering: nima haqida, asosiy gʻoyalari, kimlar uchun va nega oʻqishga arziydi?",
+    "bookByAuthor": "{author}ning «{title}» kitobi haqida batafsil maʼlumot bering: nima haqida, asosiy gʻoyalari, kimlar uchun va nega oʻqishga arziydi?",
+    "author": "Yozuvchi {name} haqida batafsil maʼlumot bering: kim, hayoti, asosiy asarlari va ijodining oʻziga xosligi.",
+    "translator": "Tarjimon {name} haqida batafsil maʼlumot bering: kim, qaysi kitoblarni oʻzbek tiliga tarjima qilgan va tarjimalari qanday baholanadi.",
+    "publisher": "«{name}» nashriyoti haqida batafsil maʼlumot bering: qachon tashkil topgan, qanday kitoblar chiqaradi va mashhur nashrlari qaysilar."
   }
 }
