@@ -1,6 +1,6 @@
 /**
  * A book page's link to a store goes through here: the click is counted
- * (lib/clicks.ts) and the reader is sent on to that store's search for the
+ * (lib/stats.ts) and the reader is sent on to that store's search for the
  * book's title. A plain redirect, so it works without JavaScript.
  *
  * The store address is built here from the book's own title, never taken
@@ -12,7 +12,7 @@
 import { after } from "next/server";
 import { routing } from "@/i18n/routing";
 import { getBookById } from "@/lib/api";
-import { isCountable, logClick } from "@/lib/clicks";
+import { isCountable, logClick } from "@/lib/stats";
 import { clientIp } from "@/lib/clientIp";
 import { storeSearchUrl } from "@/lib/stores";
 
@@ -59,7 +59,7 @@ export async function GET(request: Request, { params }: Params) {
 
   if (!url) return notFound();
 
-  if (isCountable(request)) {
+  if (isCountable(request.headers)) {
     const click = {
       kind: "store" as const,
       bookId,

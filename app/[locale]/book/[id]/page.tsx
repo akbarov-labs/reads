@@ -22,6 +22,7 @@ import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
+import { BookViewBeacon } from "@/components/BookViewBeacon";
 
 type PageParams = { locale: string; id: string };
 
@@ -345,6 +346,7 @@ export default async function BookDetailPage({
               {/* Books here travel by Telegram: a chat asking "what should I
                   read?" is answered with a link. */}
               <ShareLinks path={`/book/${id}`} text={bookTitle(book)} className="mt-1" />
+              <BookViewBeacon bookId={book.id} locale={locale} />
 
               {/* Many readers arrive looking for a copy. Say plainly that
                   there is none here, and where to look instead. */}

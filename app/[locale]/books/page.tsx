@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { after } from "next/server";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -8,6 +10,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { Pagination } from "@/components/Pagination";
 import { BookSearchForm } from "@/components/BookSearchForm";
+import { listingSearch, logSearch } from "@/lib/stats";
 
 /**
  * These listing pages read `page` out of searchParams, which is a dynamic
@@ -65,6 +68,15 @@ export default async function BooksPage({
     getTranslations("books"),
     getTranslations("bookCard"),
   ]);
+
+  // For the site's statistics: what readers search for, and what found nothing.
+  const search = listingSearch(
+    { q, page: currentPage, filters: [category, author, publisher, series] },
+    books.total,
+    locale,
+    await headers(),
+  );
+  if (search) after(() => logSearch(search));
 
   const paginatedBooks = books.items;
 
