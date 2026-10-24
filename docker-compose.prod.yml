@@ -30,6 +30,11 @@ services:
     labels:
       caddy: ${DOMAIN:?set DOMAIN in .env, e.g. kitoblarim.uz}
       caddy.reverse_proxy: "{{upstreams 3000}}"
+      # Behind Cloudflare, Caddy would append Cloudflare's address and the
+      # inquiry route would rate-limit by it. {client_ip} is the visitor,
+      # read from CF-Connecting-IP only when Cloudflare sent the request
+      # (docs/cloudflare-real-ip.md).
+      caddy.reverse_proxy.header_up: "X-Forwarded-For {client_ip}"
       # The address Reads was briefly announced on (canonical links and the
       # sitemap pointed there). Search engines learned it, so send each of
       # its URLs to the same path here instead of a certificate error.
