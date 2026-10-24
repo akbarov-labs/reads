@@ -16,12 +16,17 @@ const isDev = process.env.NODE_ENV !== "production";
  * do the real work here are the ones an XSS payload would need next:
  * object-src, base-uri, form-action and frame-ancestors.
  */
+// Cloudflare Turnstile on the inquiry form: its script, and the iframe the
+// check runs in. Verifying the token is server-side, so connect-src is
+// untouched.
+const TURNSTILE = "https://challenges.cloudflare.com";
+
 function contentSecurityPolicy(): string {
   return [
     "default-src 'self'",
     // 'unsafe-eval' is only ever added in development, where Next's hot
     // reloader needs it. It never reaches a production response.
-    `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'unsafe-inline' ${TURNSTILE}${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     // Covers and avatars are proxied through /_next/image, so they are
     // same-origin by the time a browser sees them; blob:/data: cover the
@@ -29,13 +34,14 @@ function contentSecurityPolicy(): string {
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
     // The inquiry form posts to this site's own /api/inquiries, which
-    // forwards it server-side, so the browser talks to nothing else.
+    // forwards it server-side, so the browser talks to nothing else
+    // (Turnstile's own requests come from its iframe, under its own policy).
     `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    "frame-src 'none'",
+    `frame-src ${TURNSTILE}`,
     "manifest-src 'self'",
     ...(isDev ? [] : ["upgrade-insecure-requests"]),
   ].join("; ");

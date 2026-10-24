@@ -9,6 +9,7 @@ import {
   type SearchPerson,
   type SearchResults,
 } from "@/lib/search";
+import { MetaLine } from "@/components/MetaLine";
 
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
@@ -109,9 +110,7 @@ function BookRow({ book }: { book: SearchBook }) {
       </span>
       <span className="min-w-0">
         <span className="block truncate font-serif text-sm text-zinc-900">{book.uzbekTitle}</span>
-        <span className="block truncate text-xs text-zinc-500">
-          {[book.author, book.year].filter(Boolean).join(" · ")}
-        </span>
+        <MetaLine parts={[book.author, book.year]} className="block truncate text-xs text-zinc-500" as="span" />
       </span>
     </>
   );

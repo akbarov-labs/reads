@@ -77,7 +77,6 @@
   "stats": {
     "booksTranslated": "Books & translations",
     "yearsActive": "years active",
-    "languagePairs": "Language directions",
     "booksValue": "{count}+",
     "yearsValue": "{years, plural, one {# year} other {# years}}"
   },
@@ -95,6 +94,8 @@
     "sourcePaneTab": "{language} (Original)",
     "translationPaneTab": "Translation",
     "originalLabel": "{language} · Original",
+    "originalLabelPlain": "Original",
+    "sourcePaneTabPlain": "Original",
     "bookExcerptLabel": "Excerpt from the book",
     "translationLabel": "Translation",
     "analysisLabel": "Literary analysis"
@@ -108,6 +109,8 @@
     "sendAnother": "Send another inquiry",
     "fixFields": "Please fix the highlighted fields below.",
     "tooMany": "Too many attempts. Please try again in a minute.",
+    "captchaRequired": "Please complete the check at the bottom of the form first.",
+    "captchaFailed": "The check didn't go through. Please try again.",
     "genericError": "Something went wrong sending this. Please try again shortly.",
     "labelName": "Your name",
     "labelEmail": "Email",
@@ -191,7 +194,7 @@
     "readersTitle": "Kitoblarim readers",
     "readersLead": "People who read this book in the Kitoblarim bot and rated it.",
     "readersCount": "{count, plural, one {# rating} other {# ratings}}",
-    "readingTime": "{pages} pages. At {minutes} minutes a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
+    "readingTime": "{pages} pages. At {perDay} pages a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
     "readersRating": "Kitoblarim readers rate it {rating}/5 ({count, plural, one {# rating} other {# ratings}}).",
     "titleTranslation": "translation",
     "titleEditions": "{count, plural, one {# edition} other {# editions}}",

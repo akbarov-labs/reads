@@ -73,7 +73,9 @@ export async function TaqrizCard({
                 >
                   {taqriz.book.uzbekTitle}
                 </Link>
-                <p className="text-xs text-zinc-500 truncate">{taqriz.book.author}</p>
+                {taqriz.book.author && (
+                  <p className="text-xs text-zinc-500 truncate">{taqriz.book.author}</p>
+                )}
               </>
             ) : (
               taqriz.taqrizchi && (

@@ -10,6 +10,7 @@ import { authorPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
+import { MetaLine } from "@/components/MetaLine";
 
 type PageParams = { locale: string; slug: string };
 
@@ -248,9 +249,7 @@ export default async function AuthorDetailPage({
                         })}
                       </p>
                     )}
-                    <p className="text-xs text-zinc-400 mt-0.5">
-                      {[book.publisher, book.year].filter(Boolean).join(" · ")}
-                    </p>
+                    <MetaLine parts={[book.publisher, book.year]} className="text-xs text-zinc-400 mt-0.5" />
                   </div>
                 </Link>
               ))}

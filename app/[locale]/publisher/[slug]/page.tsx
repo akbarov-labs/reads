@@ -10,6 +10,7 @@ import { publisherPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, Building2 } from "lucide-react";
+import { MetaLine } from "@/components/MetaLine";
 
 type PageParams = { locale: string; slug: string };
 
@@ -212,14 +213,12 @@ export default async function PublisherDetailPage({
                     <h3 className="font-serif text-base sm:text-lg text-zinc-900 font-medium group-hover:text-forest-800 transition-colors leading-snug">
                       {book.uzbekTitle}
                     </h3>
-                    <p className="mt-1 text-xs uppercase tracking-wider text-zinc-500">
-                      {book.author}
-                    </p>
-                    <p className="mt-1 text-xs text-zinc-400">
-                      {[book.translatorName ? tPublisher("bookTranslator", { name: book.translatorName }) : null, book.year]
-                        .filter(Boolean)
-                        .join(" · ")}
-                    </p>
+                    {book.author && (
+                      <p className="mt-1 text-xs uppercase tracking-wider text-zinc-500">
+                        {book.author}
+                      </p>
+                    )}
+                    <MetaLine parts={[book.translatorName ? tPublisher("bookTranslator", { name: book.translatorName }) : null, book.year]} className="mt-1 text-xs text-zinc-400" />
                   </div>
                 </Link>
               ))}
@@ -238,7 +237,8 @@ export default async function PublisherDetailPage({
             )}
           </section>
 
-          {/* Collaborating Translators & Authors */}
+          {/* Collaborating Translators & Authors: no heading over two empty boxes. */}
+          {(translators.length > 0 || authors.length > 0) && (
           <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12">
             <h2 className="font-serif text-2xl text-zinc-900 mb-6">
               {tPublisher("translatorsAndAuthors")}
@@ -285,6 +285,7 @@ export default async function PublisherDetailPage({
               )}
             </div>
           </section>
+          )}
         </Container>
       </main>
     </>

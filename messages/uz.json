@@ -77,7 +77,6 @@
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
     "yearsActive": "Ijodiy faoliyat",
-    "languagePairs": "Til yoʻnalishlari",
     "booksValue": "{count}+",
     "yearsValue": "{years} yil"
   },
@@ -95,6 +94,8 @@
     "sourcePaneTab": "{language} (Asl)",
     "translationPaneTab": "Tarjima",
     "originalLabel": "{language} · Asl nusxa",
+    "originalLabelPlain": "Asl nusxa",
+    "sourcePaneTabPlain": "Asl",
     "bookExcerptLabel": "Kitobdan parcha",
     "translationLabel": "Badiiy tarjima",
     "analysisLabel": "Adabiy tahlil va mohiyat"
@@ -108,6 +109,8 @@
     "sendAnother": "Yana bir buyurtma yuborish",
     "fixFields": "Iltimos, quyida belgilangan maydonlarni toʻgʻrilang.",
     "tooMany": "Juda koʻp urinish. Iltimos, bir daqiqadan soʻng qayta urinib koʻring.",
+    "captchaRequired": "Yuborishdan oldin pastdagi tekshiruvni yakunlang.",
+    "captchaFailed": "Tekshiruvdan oʻtilmadi. Qayta urinib koʻring.",
     "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan soʻng qayta urinib koʻring.",
     "labelName": "Ismingiz",
     "labelEmail": "Email",
@@ -191,7 +194,7 @@
     "readersTitle": "Kitoblarim oʻquvchilari",
     "readersLead": "Kitoblarim botida bu kitobni oʻqib, baho berganlar.",
     "readersCount": "{count} ta baho",
-    "readingTime": "{pages} bet. Kuniga {minutes} daqiqa oʻqisangiz, taxminan {days} kunda tugatasiz.",
+    "readingTime": "{pages} bet. Kuniga {perDay} bet oʻqisangiz, taxminan {days} kunda tugatasiz.",
     "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
     "titleTranslation": "tarjima",
     "titleEditions": "{count} ta nashr",

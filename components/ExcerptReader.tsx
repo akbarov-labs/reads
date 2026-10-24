@@ -45,11 +45,16 @@ export function ExcerptReader({ books }: { books: Book[] }) {
         )}
       </div>
 
-      <p className="mt-2 text-sm text-zinc-500">
-        {t("workLabel")}:{" "}
-        <span className="font-serif italic">{activeBook.originalTitle}</span>
-        , {activeBook.author}
-      </p>
+      {(activeBook.originalTitle || activeBook.author) && (
+        <p className="mt-2 text-sm text-zinc-500">
+          {t("workLabel")}:{" "}
+          {activeBook.originalTitle && (
+            <span className="font-serif italic">{activeBook.originalTitle}</span>
+          )}
+          {activeBook.originalTitle && activeBook.author ? ", " : null}
+          {activeBook.author}
+        </p>
+      )}
 
       <div className="mt-6 flex gap-1 rounded-full border border-zinc-200 p-1 sm:hidden">
         {(["source", "translation"] as const).map((pane) => (
@@ -64,7 +69,9 @@ export function ExcerptReader({ books }: { books: Book[] }) {
             }`}
           >
             {pane === "source"
-              ? t("sourcePaneTab", { language: sourceLanguage })
+              ? sourceLanguage
+                ? t("sourcePaneTab", { language: sourceLanguage })
+                : t("sourcePaneTabPlain")
               : t("translationPaneTab")}
           </button>
         ))}
@@ -75,7 +82,9 @@ export function ExcerptReader({ books }: { books: Book[] }) {
           <p className="text-xs font-medium uppercase tracking-widest2 text-zinc-400">
             {activeBook.role === "author"
               ? t("bookExcerptLabel")
-              : t("originalLabel", { language: sourceLanguage })}
+              : sourceLanguage
+              ? t("originalLabel", { language: sourceLanguage })
+              : t("originalLabelPlain")}
           </p>
           <p className="mt-4 font-serif text-lg leading-relaxed text-zinc-800">
             {sourceText}
