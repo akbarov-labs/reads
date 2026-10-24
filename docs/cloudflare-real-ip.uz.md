@@ -86,7 +86,7 @@ cd ~/edge && { cat Caddyfile; printf 'http://check.localhost {\n    respond ok\n
 ```
 
 ```bash
-cd ~/edge && docker run --rm --env-file .env -v /tmp/Caddyfile.check:/Caddyfile:ro lucaslorentz/caddy-docker-proxy:2.9-alpine adapt --config /Caddyfile --adapter caddyfile --validate > /dev/null && echo CADDYFILE OK
+cd ~/edge && sudo docker run --rm --env-file .env -v /tmp/Caddyfile.check:/Caddyfile:ro lucaslorentz/caddy-docker-proxy:2.9-alpine adapt --config /Caddyfile --adapter caddyfile --validate > /dev/null && echo CADDYFILE OK
 ```
 
 Undan oldin bir nechta log qatori chiqishi normal (bittasi fayl "is not
@@ -94,19 +94,19 @@ formatted" deb ogohlantiradi: zararsiz, gap boʻsh joy va tab haqida). Faqat
 oxirgi qator `CADDYFILE OK` boʻlsa, Caddy'ni qayta ishga tushiring:
 
 ```bash
-cd ~/edge && docker compose restart caddy
+cd ~/edge && sudo docker compose restart caddy
 ```
 
 Keyin xatolarni tekshiring (`0` chiqishi kerak):
 
 ```bash
-cd ~/edge && sleep 10 && docker compose logs --since 2m caddy | grep -c '"level":"error"'
+cd ~/edge && sleep 10 && sudo docker compose logs --since 2m caddy | grep -c '"level":"error"'
 ```
 
 **Biror narsa notoʻgʻri boʻlsa**, eski faylni qaytaring:
 
 ```bash
-cd ~/edge && cp Caddyfile.bak-cloudflare Caddyfile && docker compose restart caddy
+cd ~/edge && cp Caddyfile.bak-cloudflare Caddyfile && sudo docker compose restart caddy
 ```
 
 ## 2. Reads va Reads-admin'ga label
@@ -133,10 +133,13 @@ Bir-birining ostida ikki qator koʻrinishi kerak:
 
 Label'lar faqat konteyner qayta yaratilganda oʻzgaradi. Bu buyruq uni
 hozir ishlab turgan image bilan qayta yaratadi (yangi versiya deploy
-qilinmaydi):
+qilinmaydi). Aynan shunday qoʻying: bitta `sudo` bor, `env` dan oldin.
+`docker compose` oldiga ikkinchi `sudo` qoʻyilsa, `IMAGE` va `IMAGE_TAG`
+oʻchib ketadi, compose `reads:latest` ni yuklab olishga urinadi va
+`unauthorized` xatosi chiqadi:
 
 ```bash
-cd /opt/apps/reads && IMG=$(docker inspect --format '{{.Config.Image}}' reads-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
+cd /opt/apps/reads && IMG=$(sudo docker inspect --format '{{.Config.Image}}' reads-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### Reads-admin
@@ -160,7 +163,7 @@ cd /opt/apps/reads-admin && sudo grep -n "reverse_proxy" docker-compose.prod.yml
 ```
 
 ```bash
-cd /opt/apps/reads-admin && IMG=$(docker inspect --format '{{.Config.Image}}' reads-admin-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
+cd /opt/apps/reads-admin && IMG=$(sudo docker inspect --format '{{.Config.Image}}' reads-admin-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## 3. Tekshirish
@@ -168,14 +171,14 @@ cd /opt/apps/reads-admin && IMG=$(docker inspect --format '{{.Config.Image}}' re
 Serverda ikkala konteynerda ham label bor:
 
 ```bash
-for c in reads-app reads-admin-app; do echo "$c: $(docker inspect --format '{{index .Config.Labels "caddy.reverse_proxy.header_up"}}' $c)"; done
+for c in reads-app reads-admin-app; do echo "$c: $(sudo docker inspect --format '{{index .Config.Labels "caddy.reverse_proxy.header_up"}}' $c)"; done
 ```
 
 Har bir nomdan keyin `X-Forwarded-For {client_ip}` chiqishi kerak. Keyin
 Caddy uni olganini tekshiring (`2` yoki koʻproq chiqishi kerak):
 
 ```bash
-cd ~/edge && docker compose logs --since 5m caddy | grep -o 'header_up X-Forwarded-For {client_ip}' | wc -l
+cd ~/edge && sudo docker compose logs --since 5m caddy | grep -o 'header_up X-Forwarded-For {client_ip}' | wc -l
 ```
 
 **Mac**'da saytlar javob beradi:
