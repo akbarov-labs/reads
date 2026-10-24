@@ -3,20 +3,21 @@ import type { Translator } from "@/lib/types";
 
 type Translate = ReturnType<typeof useTranslations<"stats">>;
 
-/** Shared between the home page and the profile page — same three stats. */
+/**
+ * The profile's headline numbers, only the ones above zero. Reads-admin
+ * stores 0 for experience nobody entered, which read as "0 yil"; a new
+ * profile would say "0+" books. No count of language pairs: a bare "3" said
+ * nothing about which, and the inquiry form lists them where they matter.
+ */
 export function getTranslatorStats(t: Translate, translator: Translator) {
   return [
-    {
+    translator.totalBooksTranslated > 0 && {
       label: t("booksTranslated"),
       value: t("booksValue", { count: translator.totalBooksTranslated }),
     },
-    {
+    translator.yearsActive > 0 && {
       label: t("yearsActive"),
       value: t("yearsValue", { years: translator.yearsActive }),
     },
-    {
-      label: t("languagePairs"),
-      value: String(translator.languagePairs.length),
-    },
-  ];
+  ].filter((stat) => stat !== false);
 }

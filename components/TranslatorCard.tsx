@@ -3,7 +3,6 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { ArrowRight, MapPin } from "lucide-react";
 import type { Translator } from "@/lib/types";
-import { LanguagePairBadge } from "@/components/LanguagePairBadge";
 
 interface TranslatorCardProps {
   translator: Translator;
@@ -51,30 +50,14 @@ export function TranslatorCard({ translator }: TranslatorCardProps) {
         </div>
       </div>
 
-      {/* Language pairs */}
-      {translator.languagePairs.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {translator.languagePairs.slice(0, 3).map((pair) => (
-            <LanguagePairBadge
-              key={`${pair.from}-${pair.to}`}
-              from={pair.from}
-              to={pair.to}
-            />
-          ))}
-          {translator.languagePairs.length > 3 && (
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium text-zinc-400 bg-stone-100 border border-stone-200">
-              +{translator.languagePairs.length - 3}
-            </span>
-          )}
-        </div>
-      )}
-
       {/* Book count footer */}
       <div className="mt-4 pt-4 border-t border-stone-100 flex items-center justify-between">
-        <span className="text-xs text-zinc-400">
-          {t("books", { count: translator.totalBooksTranslated })}
-        </span>
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-forest-700 group-hover:text-forest-900 transition-colors">
+        {translator.totalBooksTranslated > 0 && (
+          <span className="text-xs text-zinc-400">
+            {t("books", { count: translator.totalBooksTranslated })}
+          </span>
+        )}
+        <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium text-forest-700 group-hover:text-forest-900 transition-colors">
           {t("viewProfile")}
           <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
         </span>

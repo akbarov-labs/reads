@@ -148,24 +148,25 @@ export function bookSeoTitle(book: BookWithTranslator, t: Translate): string {
 }
 
 /**
- * Minutes a day the reading-time line assumes. At about a page a minute,
- * the Kitoblarim bot's own rule, that is also the pages a day.
+ * Pages a day the reading-time line assumes: about 20 minutes at a page a
+ * minute, the Kitoblarim bot's own rule. The line says pages, not minutes,
+ * so the reader can check the days against the page count it just read.
  */
-export const MINUTES_A_DAY = 20;
+export const PAGES_A_DAY = 20;
 
 /** The page count of the first printing that has one, or null. */
 export function bookPages(book: BookWithTranslator): number | null {
   return (book.editions ?? []).find((edition) => edition.pages && edition.pages > 0)?.pages ?? null;
 }
 
-/** Days to read `pages` at MINUTES_A_DAY pages a day, at least one. */
+/** Days to read `pages` at PAGES_A_DAY pages a day, at least one. */
 export function readingDays(pages: number): number {
-  return Math.max(1, Math.ceil(pages / MINUTES_A_DAY));
+  return Math.max(1, Math.ceil(pages / PAGES_A_DAY));
 }
 
-/** "304 pages. At 20 minutes a day, you'll finish it in about 16 days." */
+/** "304 pages. At 20 pages a day, you'll finish it in about 16 days." */
 export function readingTime(pages: number, t: Translate): string {
-  return t("readingTime", { pages, minutes: MINUTES_A_DAY, days: readingDays(pages) });
+  return t("readingTime", { pages, perDay: PAGES_A_DAY, days: readingDays(pages) });
 }
 
 /**

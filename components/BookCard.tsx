@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Book } from "@/lib/types";
+import { MetaLine } from "@/components/MetaLine";
 
 export async function BookCard({ book }: { book: Book }) {
   const t = await getTranslations("bookCard");
@@ -53,15 +54,17 @@ export async function BookCard({ book }: { book: Book }) {
         <h3 className="font-serif text-lg leading-snug text-zinc-900">
           {book.uzbekTitle}
         </h3>
-        <p className="mt-0.5 font-serif text-sm italic text-zinc-500">
-          {book.originalTitle}
-        </p>
-        <p className="mt-2 text-xs uppercase tracking-widest2 text-zinc-400">
-          {book.author}
-        </p>
-        <p className="mt-1 text-xs text-zinc-400">
-          {[book.publisher, book.year].filter(Boolean).join(" · ")}
-        </p>
+        {book.originalTitle && (
+          <p className="mt-0.5 font-serif text-sm italic text-zinc-500">
+            {book.originalTitle}
+          </p>
+        )}
+        {book.author && (
+          <p className="mt-2 text-xs uppercase tracking-widest2 text-zinc-400">
+            {book.author}
+          </p>
+        )}
+        <MetaLine parts={[book.publisher, book.year]} className="mt-1 text-xs text-zinc-400" />
       </div>
     </article>
   </Link>
