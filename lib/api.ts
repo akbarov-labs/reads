@@ -41,7 +41,8 @@ export function publicAssetUrl(url: string | null | undefined): string | undefin
   return url.startsWith(ASSET_BASE_URL) ? PUBLIC_ASSET_BASE_URL + url.slice(ASSET_BASE_URL.length) : url;
 }
 
-function resolveAssetUrl(path: string | null | undefined): string {
+/** An API image path as this server reaches it: the form next/image is given. */
+export function resolveAssetUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (/^https?:\/\//.test(path)) return path;
   return `${ASSET_BASE_URL}${path}`;

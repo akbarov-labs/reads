@@ -39,12 +39,23 @@
     "pageDescription": "Oʻzbek tiliga yoki oʻzbek tilidan tarjima qilingan har bir kitob.",
     "empty": "Kitoblar topilmadi.",
     "translatedBy": "Tarjima qilgan",
-    "searchPlaceholder": "Kitob, muallif yoki ISBN",
+    "searchPlaceholder": "Kitob, muallif, tarjimon yoki nashriyot",
     "search": "Qidirish",
     "categories": "Boʻlimlar",
     "allCategories": "Hammasi",
     "count": "{count} ta kitob",
     "editions": "{count} ta nashr"
+  },
+  "search": {
+    "label": "Takliflar",
+    "books": "Kitoblar",
+    "authors": "Mualliflar",
+    "translators": "Tarjimonlar",
+    "publishers": "Nashriyotlar",
+    "bookCount": "{count} ta kitob",
+    "allResults": "«{query}» boʻyicha barcha kitoblar",
+    "noResults": "«{query}» boʻyicha hech narsa topilmadi",
+    "suggestions": "{count} ta taklif"
   },
   "authors": {
     "pageTitle": "Barcha Mualliflar",

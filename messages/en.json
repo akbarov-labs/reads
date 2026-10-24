@@ -39,12 +39,23 @@
     "pageDescription": "Every book translated into or from Uzbek, catalogued in one place.",
     "empty": "No books found.",
     "translatedBy": "Translated by",
-    "searchPlaceholder": "Book, author or ISBN",
+    "searchPlaceholder": "Book, author, translator or publisher",
     "search": "Search",
     "categories": "Shelves",
     "allCategories": "All",
     "count": "{count} books",
     "editions": "{count} editions"
+  },
+  "search": {
+    "label": "Suggestions",
+    "books": "Books",
+    "authors": "Authors",
+    "translators": "Translators",
+    "publishers": "Publishers",
+    "bookCount": "{count, plural, one {# book} other {# books}}",
+    "allResults": "All books for “{query}”",
+    "noResults": "Nothing found for “{query}”",
+    "suggestions": "{count, plural, one {# suggestion} other {# suggestions}}"
   },
   "authors": {
     "pageTitle": "All Authors",

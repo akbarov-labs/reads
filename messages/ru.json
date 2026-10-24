@@ -39,12 +39,23 @@
     "pageDescription": "Каждая книга, переведённая на узбекский язык или с узбекского, в одном каталоге.",
     "empty": "Книги не найдены.",
     "translatedBy": "Перевёл(а)",
-    "searchPlaceholder": "Книга, автор или ISBN",
+    "searchPlaceholder": "Книга, автор, переводчик или издательство",
     "search": "Найти",
     "categories": "Разделы",
     "allCategories": "Все",
     "count": "{count} книг",
     "editions": "{count} изд."
+  },
+  "search": {
+    "label": "Подсказки",
+    "books": "Книги",
+    "authors": "Авторы",
+    "translators": "Переводчики",
+    "publishers": "Издательства",
+    "bookCount": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
+    "allResults": "Все книги по запросу «{query}»",
+    "noResults": "По запросу «{query}» ничего не найдено",
+    "suggestions": "{count, plural, one {# подсказка} few {# подсказки} many {# подсказок} other {# подсказки}}"
   },
   "authors": {
     "pageTitle": "Все авторы",
