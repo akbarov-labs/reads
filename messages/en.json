@@ -317,5 +317,15 @@
     "orderNote": "Opens a chat with the publisher on Telegram",
     "viewPost": "Post on Telegram",
     "orderMessage": "Hello! I saw “{title}” on kitoblarim.uz and would like to order it."
+  },
+  "askAi": {
+    "title": "Want to know more?",
+    "lead": "AI can tell you more about this. The answer opens in a new tab, and this page stays open.",
+    "label": "Ask AI for more",
+    "book": "Tell me in detail about the book “{title}”: what it is about, its main ideas, and who should read it and why.",
+    "bookByAuthor": "Tell me in detail about the book “{title}” by {author}: what it is about, its main ideas, and who should read it and why.",
+    "author": "Tell me in detail about the writer {name}: who they are, their life, their main works and what sets their writing apart.",
+    "translator": "Tell me in detail about the translator {name}: who they are, which books they have translated into Uzbek, and how those translations are regarded.",
+    "publisher": "Tell me in detail about the publisher “{name}”: when it was founded, what kinds of books it publishes, and its best-known titles."
   }
 }

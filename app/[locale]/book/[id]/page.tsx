@@ -11,6 +11,8 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ShareLinks } from "@/components/ShareLinks";
+import { AskAiSection } from "@/components/AskAiSection";
+import { bookQuestion } from "@/lib/askAi";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
@@ -73,12 +75,13 @@ export default async function BookDetailPage({
   const { locale, id } = await params;
   setRequestLocale(locale);
 
-  const [book, tDetail, tCard, tTaqriz, tQuotes] = await Promise.all([
+  const [book, tDetail, tCard, tTaqriz, tQuotes, tAskAi] = await Promise.all([
     getBookById(id, locale),
     getTranslations("bookDetail"),
     getTranslations("bookCard"),
     getTranslations("taqriz"),
     getTranslations("quotes"),
+    getTranslations("askAi"),
   ]);
 
   if (!book) notFound();
@@ -511,6 +514,9 @@ export default async function BookDetailPage({
               </div>
             </section>
           )}
+
+          {/* Last, once the reader has seen what we have. */}
+          <AskAiSection question={bookQuestion(book, tAskAi)} className="mt-16 sm:mt-20 pt-12" />
         </Container>
       </main>
     </>
