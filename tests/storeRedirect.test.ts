@@ -107,12 +107,26 @@ describe("GET /go/store/[store]/[bookId]", () => {
     ["Telegram's link preview", "TelegramBot (like TwitterBot)"],
     ["curl", "curl/8.7.1"],
     ["no user agent", ""],
+    ["ClaudeBot", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)"],
+    ["an assistant fetching for a user", "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ChatGPT-User/1.0; +https://openai.com/bot"],
+    ["WhatsApp's link preview", "WhatsApp/2.23.20.0"],
   ])("does not count %s", async (_name, userAgent) => {
     const response = await visit("asaxiy", "42", "?l=uz", { "User-Agent": userAgent });
     await runDeferred();
 
     expect(response.status).toBe(302);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["Telegram's Android in-app browser", "Mozilla/5.0 (Linux; Android 14; SM-A546E Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.107 Mobile Safari/537.36 Telegram-Android/11.4.2 (Samsung SM-A546E; Android 14; SDK 34; AVERAGE)"],
+    ["a desktop app's built-in browser", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/3.6556.2 Chrome/152.0.7977.167 Safari/537.36"],
+    ["Yandex Browser", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 YaBrowser/24.10.0.0 Safari/537.36"],
+  ])("counts a reader in %s", async (_name, userAgent) => {
+    await visit("asaxiy", "42", "?l=uz", { "User-Agent": userAgent });
+    await runDeferred();
+
+    expect(fetchMock).toHaveBeenCalledOnce();
   });
 
   it("does not count a browser's prefetch", async () => {

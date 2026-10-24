@@ -45,9 +45,13 @@ export interface Search extends Visitor {
  * libraries. A missing user agent is one of them too: every browser sends
  * one. Rough on purpose: a stray miss costs one wrong count, while counting
  * Googlebot's walk over every store link would bury the real ones.
+ *
+ * Names only what "bot" does not already catch (TelegramBot, ClaudeBot,
+ * GPTBot...). Never an app's own name: Telegram's Android in-app browser
+ * says "Telegram-Android", and that is a reader, likely most of them.
  */
 const BOT_USER_AGENT =
-  /bot\b|bot\/|crawl|spider|slurp|scrap|preview|facebookexternalhit|embedly|whatsapp|telegram|discord|skype|curl|wget|python|httpx|aiohttp|axios|node-fetch|undici|go-http|java\/|okhttp|libwww|headless|lighthouse|pingdom|uptime|monitor|ahrefs|semrush|yandex|petal|bytespider|gptbot|claude|perplexity|ccbot|chatgpt/i;
+  /bot\b|bot\/|crawl|spider|slurp|scrap|preview|facebookexternalhit|embedly|whatsapp\/|curl|wget|python|httpx|aiohttp|axios|node-fetch|undici|go-http|java\/|okhttp|libwww|headless|lighthouse|pingdom|uptime|monitor|bytespider|claude-user|chatgpt-user|perplexity-user/i;
 
 export function isBot(userAgent: string | null): boolean {
   return !userAgent?.trim() || BOT_USER_AGENT.test(userAgent);
