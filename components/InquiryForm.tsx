@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useId, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Send, CheckCircle2, Loader2 } from "lucide-react";
 import type { LanguagePair } from "@/lib/types";
+import { TurnstileWidget, type TurnstileHandle } from "@/components/TurnstileWidget";
 
 const PROJECT_TYPE_VALUES = [
   "book",
@@ -30,12 +31,18 @@ function pairKey(pair: LanguagePair) {
 export function InquiryForm({
   slug,
   languagePairs,
+  turnstileSiteKey,
 }: {
   slug: string;
   languagePairs: LanguagePair[];
+  /** Null where Turnstile is not set up (local, staging): no check shown. */
+  turnstileSiteKey: string | null;
 }) {
   const t = useTranslations("inquiry");
+  const locale = useLocale();
   const formId = useId();
+  const turnstile = useRef<TurnstileHandle>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "success">(
     "idle"
@@ -55,6 +62,12 @@ export function InquiryForm({
     // filled, pretend everything went fine, no point tipping off a bot.
     if (String(data.get("website") ?? "").trim() !== "") {
       setStatus("success");
+      return;
+    }
+
+    if (turnstileSiteKey && !captchaToken) {
+      setFormError(t("captchaRequired"));
+      setStatus("idle");
       return;
     }
 
@@ -80,10 +93,18 @@ export function InquiryForm({
         `/api/inquiries/${encodeURIComponent(slug)}`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(captchaToken ? { "X-Turnstile-Token": captchaToken } : {}),
+          },
           body: JSON.stringify(payload),
         }
       );
+
+      // The server spent the token checking it, whatever came of the rest;
+      // a second try needs a new one.
+      turnstile.current?.reset();
 
       if (response.status === 201) {
         setStatus("success");
@@ -94,6 +115,12 @@ export function InquiryForm({
         const body = await response.json();
         setFieldErrors(body.errors ?? {});
         setFormError(t("fixFields"));
+        setStatus("idle");
+        return;
+      }
+
+      if (response.status === 403) {
+        setFormError(t("captchaFailed"));
         setStatus("idle");
         return;
       }
@@ -349,6 +376,20 @@ export function InquiryForm({
           )}
         </div>
       </div>
+
+      {turnstileSiteKey && (
+        <div className="mt-5">
+          <TurnstileWidget
+            ref={turnstile}
+            siteKey={turnstileSiteKey}
+            action="inquiry"
+            // Cloudflare has no Uzbek; "auto" follows the browser.
+            language={locale === "uz" ? "auto" : locale}
+            onToken={setCaptchaToken}
+            onError={() => setFormError(t("captchaFailed"))}
+          />
+        </div>
+      )}
 
       <button
         type="submit"

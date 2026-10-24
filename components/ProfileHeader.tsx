@@ -53,6 +53,7 @@ export function ProfileHeader({ translator }: { translator: Translator }) {
             <InquiryForm
               slug={translator.slug}
               languagePairs={translator.languagePairs}
+              turnstileSiteKey={process.env.TURNSTILE_SITE_KEY || null}
             />
           </div>
         </div>

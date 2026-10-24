@@ -107,6 +107,8 @@
     "sendAnother": "Yana bir buyurtma yuborish",
     "fixFields": "Iltimos, quyida belgilangan maydonlarni toʻgʻrilang.",
     "tooMany": "Juda koʻp urinish. Iltimos, bir daqiqadan soʻng qayta urinib koʻring.",
+    "captchaRequired": "Yuborishdan oldin pastdagi tekshiruvni yakunlang.",
+    "captchaFailed": "Tekshiruvdan oʻtilmadi. Qayta urinib koʻring.",
     "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan soʻng qayta urinib koʻring.",
     "labelName": "Ismingiz",
     "labelEmail": "Email",

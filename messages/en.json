@@ -107,6 +107,8 @@
     "sendAnother": "Send another inquiry",
     "fixFields": "Please fix the highlighted fields below.",
     "tooMany": "Too many attempts. Please try again in a minute.",
+    "captchaRequired": "Please complete the check at the bottom of the form first.",
+    "captchaFailed": "The check didn't go through. Please try again.",
     "genericError": "Something went wrong sending this. Please try again shortly.",
     "labelName": "Your name",
     "labelEmail": "Email",

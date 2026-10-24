@@ -84,6 +84,62 @@ describe("POST /api/inquiries/[slug]", () => {
     expect(response.status).toBe(502);
   });
 
+  describe("with Turnstile set up", () => {
+    const VERIFY = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+    beforeEach(() => {
+      vi.stubEnv("TURNSTILE_SECRET_KEY", "secret-key");
+    });
+
+    it("checks the token with Cloudflare, then forwards the inquiry", async () => {
+      fetchMock
+        .mockResolvedValueOnce(Response.json({ success: true }))
+        .mockResolvedValueOnce(new Response("{}", { status: 201 }));
+
+      const response = await submit("ali-valiyev", '{"name":"A"}', {
+        "X-Turnstile-Token": "token-1",
+        "X-Forwarded-For": "203.0.113.9",
+      });
+
+      expect(response.status).toBe(201);
+      const [url, init] = fetchMock.mock.calls[0];
+      expect(url).toBe(VERIFY);
+      expect(Object.fromEntries(init.body as URLSearchParams)).toEqual({
+        secret: "secret-key",
+        response: "token-1",
+        remoteip: "203.0.113.9",
+      });
+      expect(fetchMock.mock.calls[1][0]).toBe(UPSTREAM);
+      // The token is the site's business, not the admin's.
+      expect(fetchMock.mock.calls[1][1].headers).not.toHaveProperty("X-Turnstile-Token");
+    });
+
+    it("refuses without a token, without asking Cloudflare or the admin", async () => {
+      const response = await submit("ali-valiyev");
+
+      expect(response.status).toBe(403);
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("refuses a token Cloudflare rejects, and files nothing", async () => {
+      fetchMock.mockResolvedValueOnce(Response.json({ success: false, "error-codes": ["invalid-input-response"] }));
+
+      const response = await submit("ali-valiyev", "{}", { "X-Turnstile-Token": "forged" });
+
+      expect(response.status).toBe(403);
+      expect(fetchMock).toHaveBeenCalledOnce();
+    });
+
+    it("answers 503, not 403, when Cloudflare cannot be reached", async () => {
+      fetchMock.mockRejectedValueOnce(new TypeError("fetch failed"));
+
+      const response = await submit("ali-valiyev", "{}", { "X-Turnstile-Token": "token-1" });
+
+      expect(response.status).toBe(503);
+      expect(fetchMock).toHaveBeenCalledOnce();
+    });
+  });
+
   it("files nothing when inquiries are disabled (staging)", async () => {
     vi.stubEnv("INQUIRIES_DISABLED", "true");
 
