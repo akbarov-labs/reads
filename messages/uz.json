@@ -304,5 +304,18 @@
   "translatorCard": {
     "books": "{count} ta kitob",
     "viewProfile": "Profilni koʻrish"
+  },
+  "announcements": {
+    "title": "Yangi nashrlar va oldindan buyurtma",
+    "lead": "Nashriyotlar oʻz Telegram kanallarida eʼlon qilgan yangi kitoblar va chegirmali oldindan buyurtmalar. Buyurtma toʻgʻridan-toʻgʻri nashriyotga boradi.",
+    "preorder": "Oldindan buyurtma",
+    "newBook": "Yangi nashr",
+    "lastDay": "Oxirgi kun: {date}",
+    "price": "{price} soʻm",
+    "translatedBy": "Tarjimon: {name}",
+    "order": "Buyurtma berish",
+    "orderNote": "Telegramda nashriyot bilan suhbat ochiladi",
+    "viewPost": "Telegramdagi eʼlon",
+    "orderMessage": "Assalomu alaykum! kitoblarim.uz saytida «{title}» kitobini koʻrdim. Buyurtma bermoqchiman."
   }
 }

@@ -3,7 +3,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getBooks, getPublisherBySlug } from "@/lib/api";
+import { getAnnouncements, getBooks, getPublisherBySlug } from "@/lib/api";
+import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { SiteHeader } from "@/components/SiteHeader";
 import { JsonLd } from "@/components/JsonLd";
 import { publisherPageGraph } from "@/lib/jsonld";
@@ -60,9 +61,10 @@ export default async function PublisherDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [publisher, books, tPublisher, tBookCard, tBooks] = await Promise.all([
+  const [publisher, books, announcements, tPublisher, tBookCard, tBooks] = await Promise.all([
     getPublisherBySlug(slug, locale),
     getBooks(locale, { publisher: slug, perPage: BOOKS_SHOWN }),
+    getAnnouncements(locale, { publisher: slug, limit: 12 }),
     getTranslations("publisherDetail"),
     getTranslations("bookCard"),
     getTranslations("books"),
@@ -166,6 +168,15 @@ export default async function PublisherDetailPage({
               </div>
             </div>
           </div>
+
+          {/* This publisher's new books and pre-orders, from its Telegram
+              channel; absent when there are none. */}
+          <AnnouncementsSection
+            announcements={announcements}
+            locale={locale}
+            showPublisher={false}
+            className="mt-12 sm:mt-16"
+          />
 
           {/* Catalog */}
           <section className="mt-12 sm:mt-16">

@@ -1,6 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import {
+  ANNOUNCEMENTS_TAG,
   AUTHORS_TAG,
   BOOKS_TAG,
   PUBLISHERS_TAG,
@@ -96,12 +97,14 @@ export async function POST(request: Request) {
   // The collection tags always go. The home page, the sitemap and llms.txt
   // each list everything, so any single change can alter them. Authors and
   // Publishers have their own endpoints and tags, and their counts and
-  // covers change with any edition, so they go too.
+  // covers change with any edition, so they go too. Announcements are few
+  // and shown on the home page.
   revalidateTag(TRANSLATORS_TAG);
   revalidateTag(BOOKS_TAG);
   revalidateTag(AUTHORS_TAG);
   revalidateTag(PUBLISHERS_TAG);
   revalidateTag(TAQRIZCHILAR_TAG);
+  revalidateTag(ANNOUNCEMENTS_TAG);
 
   // Then the one page that actually changed, where the ping says which.
   if (type === "book" && id) {

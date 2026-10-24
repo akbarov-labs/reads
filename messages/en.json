@@ -304,5 +304,18 @@
   "translatorCard": {
     "books": "{count, plural, one {# book} other {# books}}",
     "viewProfile": "View profile"
+  },
+  "announcements": {
+    "title": "New books and pre-orders",
+    "lead": "New books and discounted pre-orders that publishers have announced on their Telegram channels. Your order goes straight to the publisher.",
+    "preorder": "Pre-order",
+    "newBook": "New book",
+    "lastDay": "Last day: {date}",
+    "price": "{price} so'm",
+    "translatedBy": "Translated by {name}",
+    "order": "Order",
+    "orderNote": "Opens a chat with the publisher on Telegram",
+    "viewPost": "Post on Telegram",
+    "orderMessage": "Hello! I saw “{title}” on kitoblarim.uz and would like to order it."
   }
 }

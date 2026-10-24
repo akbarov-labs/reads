@@ -304,5 +304,18 @@
   "translatorCard": {
     "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
     "viewProfile": "Открыть профиль"
+  },
+  "announcements": {
+    "title": "Новинки и предзаказ",
+    "lead": "Новые книги и предзаказы со скидкой, которые издательства объявили в своих Telegram-каналах. Заказ идёт напрямую в издательство.",
+    "preorder": "Предзаказ",
+    "newBook": "Новинка",
+    "lastDay": "Последний день: {date}",
+    "price": "{price} сум",
+    "translatedBy": "Перевод: {name}",
+    "order": "Заказать",
+    "orderNote": "Откроется чат с издательством в Telegram",
+    "viewPost": "Пост в Telegram",
+    "orderMessage": "Здравствуйте! Увидел(а) на kitoblarim.uz книгу «{title}». Хочу заказать."
   }
 }

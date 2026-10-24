@@ -4,12 +4,16 @@
  * copy to these stores' own search for its title. Each address is the one
  * the store's own search box opens (checked 2026-10-15). The links are
  * plain searches, not endorsements or affiliate links.
+ *
+ * `key` names the store in the click log (see /go/store) and on the admin's
+ * Store clicks page, so it stays the same if a store's name or address
+ * changes.
  */
-const STORES: { name: string; search: (query: string) => string }[] = [
-  { name: "Asaxiy", search: (query) => `https://asaxiy.uz/product?key=${query}` },
-  { name: "Book.uz", search: (query) => `https://book.uz/catalog?search=${query}` },
-  { name: "Hilol-nashr", search: (query) => `https://hilolnashr.uz/index.php?route=product/search&search=${query}` },
-  { name: "Qamar", search: (query) => `https://qamar.uz/?q=${query}` },
+const STORES: { key: string; name: string; search: (query: string) => string }[] = [
+  { key: "asaxiy", name: "Asaxiy", search: (query) => `https://asaxiy.uz/product?key=${query}` },
+  { key: "book.uz", name: "Book.uz", search: (query) => `https://book.uz/catalog?search=${query}` },
+  { key: "hilol-nashr", name: "Hilol-nashr", search: (query) => `https://hilolnashr.uz/index.php?route=product/search&search=${query}` },
+  { key: "qamar", name: "Qamar", search: (query) => `https://qamar.uz/?q=${query}` },
 ];
 
 /**
@@ -22,7 +26,22 @@ export function storeQuery(title: string): string {
 }
 
 /** Each store's search for this title, in the order the page lists them. */
-export function storeLinks(title: string): { name: string; url: string }[] {
+export function storeLinks(title: string): { key: string; name: string; url: string }[] {
   const query = encodeURIComponent(storeQuery(title));
-  return STORES.map((store) => ({ name: store.name, url: store.search(query) }));
+  return STORES.map((store) => ({ key: store.key, name: store.name, url: store.search(query) }));
+}
+
+/** One store's search for this title, or null for a store this site doesn't list. */
+export function storeSearchUrl(key: string, title: string): string | null {
+  const store = STORES.find((candidate) => candidate.key === key);
+  return store ? store.search(encodeURIComponent(storeQuery(title))) : null;
+}
+
+/**
+ * Where a book page's store link points: this site's own redirect, which
+ * counts the click and sends the reader on to the store's search. A plain
+ * link, so it counts without JavaScript too.
+ */
+export function storeRedirectPath(key: string, bookId: string, locale: string): string {
+  return `/go/store/${encodeURIComponent(key)}/${encodeURIComponent(bookId)}?l=${encodeURIComponent(locale)}`;
 }
