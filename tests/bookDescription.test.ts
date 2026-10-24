@@ -121,13 +121,13 @@ describe("reading time and readers' rating", () => {
 
   it("says how long the book takes and what readers gave it, before the credits", () => {
     expect(bookDescription(read, t)).toBe(
-      "Chol va dengiz (The Old Man and the Sea) — Ernest Hemingway. 304 pages. At 20 minutes a day, you'll finish it in about 16 days. Kitoblarim readers rate it 4.7/5 (12 ratings). Translator: Ibrohim Gʻafurov. Publisher: Sharq, 2015.",
+      "Chol va dengiz (The Old Man and the Sea) — Ernest Hemingway. 304 pages. At 20 pages a day, you'll finish it in about 16 days. Kitoblarim readers rate it 4.7/5 (12 ratings). Translator: Ibrohim Gʻafurov. Publisher: Sharq, 2015.",
     );
   });
 
   it("reads naturally in Uzbek", () => {
     const text = bookDescription(read, translator("uz", uz as typeof en));
-    expect(text).toContain("304 bet. Kuniga 20 daqiqa oʻqisangiz, taxminan 16 kunda tugatasiz.");
+    expect(text).toContain("304 bet. Kuniga 20 bet oʻqisangiz, taxminan 16 kunda tugatasiz.");
     expect(text).toContain("Kitoblarim oʻquvchilari bahosi: 4.7/5 (12 ta baho).");
   });
 
@@ -140,13 +140,20 @@ describe("reading time and readers' rating", () => {
     expect(text).toContain(`примерно за ${days}.`);
   });
 
+  it("counts the daily share in pages, as the page count is, in every language", () => {
+    const pages = { ...read, readerRating: null };
+    expect(bookDescription(pages, translator("ru", ru as typeof en))).toContain("304 стр. Если читать по 20 страниц в день,");
+    expect(bookDescription(pages, translator("uz", uz as typeof en))).not.toContain("daqiqa");
+    expect(bookDescription(pages, t)).not.toContain("minutes");
+  });
+
   it("leaves out the rating when nobody has rated the book", () => {
     expect(bookDescription({ ...read, readerRating: { average: 0, count: 0 } }, t)).not.toContain("rate it");
     expect(bookDescription({ ...read, readerRating: null }, t)).not.toContain("rate it");
   });
 
   it("leaves out the reading time when no printing has a page count", () => {
-    expect(bookDescription({ ...read, editions: [{ id: "a", translators: [], coverUrl: "", pages: 0 }] }, t)).not.toMatch(/pages|minutes/);
+    expect(bookDescription({ ...read, editions: [{ id: "a", translators: [], coverUrl: "", pages: 0 }] }, t)).not.toMatch(/pages/);
   });
 });
 
@@ -161,7 +168,7 @@ describe("bookPages", () => {
 });
 
 describe("readingDays", () => {
-  it("is a page a minute, 20 minutes a day, rounded up, never zero", () => {
+  it("is 20 pages a day, rounded up, never zero", () => {
     expect(readingDays(1)).toBe(1);
     expect(readingDays(20)).toBe(1);
     expect(readingDays(21)).toBe(2);

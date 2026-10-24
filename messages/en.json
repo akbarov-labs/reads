@@ -190,7 +190,7 @@
     "readersTitle": "Kitoblarim readers",
     "readersLead": "People who read this book in the Kitoblarim bot and rated it.",
     "readersCount": "{count, plural, one {# rating} other {# ratings}}",
-    "readingTime": "{pages} pages. At {minutes} minutes a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
+    "readingTime": "{pages} pages. At {perDay} pages a day, you'll finish it in about {days, plural, one {# day} other {# days}}.",
     "readersRating": "Kitoblarim readers rate it {rating}/5 ({count, plural, one {# rating} other {# ratings}}).",
     "titleTranslation": "translation",
     "titleEditions": "{count, plural, one {# edition} other {# editions}}",

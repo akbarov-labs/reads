@@ -190,7 +190,7 @@
     "readersTitle": "Читатели Kitoblarim",
     "readersLead": "Те, кто прочитал эту книгу в боте Kitoblarim и оценил её.",
     "readersCount": "{count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}",
-    "readingTime": "{pages} стр. Если читать по {minutes} минут в день, вы закончите её примерно за {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}.",
+    "readingTime": "{pages} стр. Если читать по {perDay, plural, one {# странице} few {# страницы} many {# страниц} other {# страницы}} в день, вы закончите её примерно за {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}.",
     "readersRating": "Оценка читателей Kitoblarim: {rating}/5 ({count, plural, one {# оценка} few {# оценки} many {# оценок} other {# оценки}}).",
     "titleTranslation": "перевод",
     "titleEditions": "{count, plural, one {# издание} few {# издания} many {# изданий} other {# издания}}",

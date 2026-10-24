@@ -190,7 +190,7 @@
     "readersTitle": "Kitoblarim oʻquvchilari",
     "readersLead": "Kitoblarim botida bu kitobni oʻqib, baho berganlar.",
     "readersCount": "{count} ta baho",
-    "readingTime": "{pages} bet. Kuniga {minutes} daqiqa oʻqisangiz, taxminan {days} kunda tugatasiz.",
+    "readingTime": "{pages} bet. Kuniga {perDay} bet oʻqisangiz, taxminan {days} kunda tugatasiz.",
     "readersRating": "Kitoblarim oʻquvchilari bahosi: {rating}/5 ({count} ta baho).",
     "titleTranslation": "tarjima",
     "titleEditions": "{count} ta nashr",
