@@ -1,3 +1,5 @@
+import { clientIp } from "@/lib/clientIp";
+
 /**
  * The inquiry form posts here, on the site's own origin, and this hands the
  * submission to Reads-admin over the internal network (API_URL).
@@ -22,20 +24,6 @@ const SLUG = /^[\p{L}\p{N}_-]{1,200}$/u;
 
 function json(body: unknown, status: number) {
   return Response.json(body, { status });
-}
-
-/**
- * The visitor's address, for Reads-admin's per-IP rate limit (5 a minute).
- * Without it every visitor would share this container's address and one
- * person could lock the form for everybody. The edge Caddy sets
- * X-Forwarded-For to the real client and drops what the client sent, so its
- * last entry is the one to trust.
- */
-function clientIp(request: Request): string | null {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const last = forwarded?.split(",").at(-1)?.trim();
-
-  return last || null;
 }
 
 export async function POST(

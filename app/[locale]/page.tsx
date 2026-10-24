@@ -101,7 +101,8 @@ export default async function Home({
 
       <main className="flex-1">
         {/* ─── HERO ─────────────────────────────────────────────── */}
-        <section className="relative overflow-hidden border-b border-stone-200 bg-stone-50">
+        {/* No overflow-hidden: the search box's suggestions hang below it. */}
+        <section className="relative border-b border-stone-200 bg-stone-50">
           <Container className="relative py-20 sm:py-28">
             <div className="max-w-2xl">
               <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-zinc-900 leading-[1.1] tracking-tight whitespace-pre-line">

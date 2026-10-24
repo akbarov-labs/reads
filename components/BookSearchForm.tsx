@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { SearchBox } from "@/components/SearchBox";
 
 /**
  * The catalogue search: a plain GET form, so it works without JavaScript and
@@ -31,14 +32,11 @@ export async function BookSearchForm({
       {Object.entries(hidden).map(([name, value]) =>
         value ? <input key={name} type="hidden" name={name} value={value} /> : null,
       )}
-      <input
-        type="search"
+      <SearchBox
         name="q"
         defaultValue={defaultValue}
         placeholder={t("searchPlaceholder")}
-        aria-label={t("searchPlaceholder")}
-        enterKeyHint="search"
-        className={`min-w-0 flex-1 rounded-lg border border-stone-300 bg-white text-zinc-900 placeholder:text-zinc-400 focus:border-forest-500 focus:outline-none ${field}`}
+        className={`rounded-lg border border-stone-300 bg-white text-zinc-900 placeholder:text-zinc-400 focus:border-forest-500 focus:outline-none ${field}`}
       />
       <button
         type="submit"
