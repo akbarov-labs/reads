@@ -11,6 +11,7 @@ import {
   getTaqrizchilar,
   getCollections,
   getQuoteOfTheDay,
+  getAnnouncements,
 } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -25,6 +26,8 @@ import { AuthorCard } from "@/components/AuthorCard";
 import { PublisherCard } from "@/components/PublisherCard";
 import { CollectionCard } from "@/components/CollectionCard";
 import { QuoteBlock } from "@/components/QuoteBlock";
+import { AnnouncementsSection } from "@/components/AnnouncementsSection";
+import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
 import { getPathname } from "@/i18n/navigation";
 
@@ -58,7 +61,7 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, quote, collections, t, tTaqrizchilar, tSite, tCollections, tQuotes] =
+  const [translators, books, authors, publishers, taqrizchilar, quote, collections, announcements, t, tTaqrizchilar, tSite, tCollections, tQuotes] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
@@ -67,6 +70,7 @@ export default async function Home({
     getTaqrizchilar(locale),
     getQuoteOfTheDay(locale),
     getCollections(locale),
+    getAnnouncements(locale, { limit: 6 }),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
     getTranslations("site"),
@@ -156,6 +160,16 @@ export default async function Home({
               </div>
             </Container>
           </section>
+        )}
+
+        {/* ─── NEW BOOKS AND PRE-ORDERS ─── from publishers' Telegram
+            channels; absent when there are none. */}
+        {stillOpen(announcements).length > 0 && (
+          <div className="py-16 sm:py-20 border-b border-stone-200">
+            <Container>
+              <AnnouncementsSection announcements={announcements} locale={locale} />
+            </Container>
+          </div>
         )}
 
         {/* ─── BOOKS ───────────────────────────────────────────── */}

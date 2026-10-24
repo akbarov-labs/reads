@@ -7,7 +7,8 @@
 
 import { clientIp } from "@/lib/clientIp";
 
-export type ClickKind = "store";
+/** "store": a store's search for a book. "publisher_order": an announcement's order button. */
+export type ClickKind = "store" | "publisher_order";
 
 /** What every report carries about the visitor. Reads-admin hashes it and keeps neither. */
 export interface Visitor {
@@ -18,8 +19,10 @@ export interface Visitor {
 export interface Click extends Visitor {
   kind: ClickKind;
   bookId?: string;
-  /** The store's key, as in lib/stores.ts. */
-  target: string;
+  /** For an order: Reads-admin finds its publisher and book itself. */
+  announcementId?: string;
+  /** The store's key, as in lib/stores.ts; unused for an order. */
+  target?: string;
   locale: string;
 }
 
@@ -111,7 +114,8 @@ export function logClick(click: Click): Promise<void> {
     {
       kind: click.kind,
       book_id: click.bookId ? Number(click.bookId) : null,
-      target: click.target,
+      announcement_id: click.announcementId ? Number(click.announcementId) : null,
+      target: click.target ?? null,
       locale: click.locale,
     },
     click,
