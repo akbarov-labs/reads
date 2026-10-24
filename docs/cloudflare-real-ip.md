@@ -80,7 +80,7 @@ cd ~/edge && { cat Caddyfile; printf 'http://check.localhost {\n    respond ok\n
 ```
 
 ```bash
-cd ~/edge && docker run --rm --env-file .env -v /tmp/Caddyfile.check:/Caddyfile:ro lucaslorentz/caddy-docker-proxy:2.9-alpine adapt --config /Caddyfile --adapter caddyfile --validate > /dev/null && echo CADDYFILE OK
+cd ~/edge && sudo docker run --rm --env-file .env -v /tmp/Caddyfile.check:/Caddyfile:ro lucaslorentz/caddy-docker-proxy:2.9-alpine adapt --config /Caddyfile --adapter caddyfile --validate > /dev/null && echo CADDYFILE OK
 ```
 
 A few log lines above it are normal (one warns that the file "is not
@@ -88,19 +88,19 @@ formatted": harmless, it is about spaces versus tabs). Only if the last line
 is `CADDYFILE OK`, restart Caddy:
 
 ```bash
-cd ~/edge && docker compose restart caddy
+cd ~/edge && sudo docker compose restart caddy
 ```
 
 Then check for errors (expect `0`):
 
 ```bash
-cd ~/edge && sleep 10 && docker compose logs --since 2m caddy | grep -c '"level":"error"'
+cd ~/edge && sleep 10 && sudo docker compose logs --since 2m caddy | grep -c '"level":"error"'
 ```
 
 **If anything is wrong**, put the old file back:
 
 ```bash
-cd ~/edge && cp Caddyfile.bak-cloudflare Caddyfile && docker compose restart caddy
+cd ~/edge && cp Caddyfile.bak-cloudflare Caddyfile && sudo docker compose restart caddy
 ```
 
 ## 2. The label on Reads and Reads-admin
@@ -126,10 +126,13 @@ You should see two lines, one under the other:
 ```
 
 Labels only change when the container is recreated. This recreates it with
-the image it is running now (no new version is deployed):
+the image it is running now (no new version is deployed). Paste it exactly:
+there is one `sudo`, before `env`. A second `sudo` before `docker compose`
+clears `IMAGE` and `IMAGE_TAG`, and compose then tries to download
+`reads:latest`, which fails with `unauthorized`:
 
 ```bash
-cd /opt/apps/reads && IMG=$(docker inspect --format '{{.Config.Image}}' reads-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
+cd /opt/apps/reads && IMG=$(sudo docker inspect --format '{{.Config.Image}}' reads-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### Reads-admin
@@ -153,7 +156,7 @@ cd /opt/apps/reads-admin && sudo grep -n "reverse_proxy" docker-compose.prod.yml
 ```
 
 ```bash
-cd /opt/apps/reads-admin && IMG=$(docker inspect --format '{{.Config.Image}}' reads-admin-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
+cd /opt/apps/reads-admin && IMG=$(sudo docker inspect --format '{{.Config.Image}}' reads-admin-app) && echo "$IMG" && sudo env IMAGE="${IMG%:*}" IMAGE_TAG="${IMG##*:}" docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## 3. Check
@@ -161,14 +164,14 @@ cd /opt/apps/reads-admin && IMG=$(docker inspect --format '{{.Config.Image}}' re
 On the server, both containers carry the label:
 
 ```bash
-for c in reads-app reads-admin-app; do echo "$c: $(docker inspect --format '{{index .Config.Labels "caddy.reverse_proxy.header_up"}}' $c)"; done
+for c in reads-app reads-admin-app; do echo "$c: $(sudo docker inspect --format '{{index .Config.Labels "caddy.reverse_proxy.header_up"}}' $c)"; done
 ```
 
 Expect `X-Forwarded-For {client_ip}` after each name. Then Caddy has picked
 it up (expect `2` or more):
 
 ```bash
-cd ~/edge && docker compose logs --since 5m caddy | grep -o 'header_up X-Forwarded-For {client_ip}' | wc -l
+cd ~/edge && sudo docker compose logs --since 5m caddy | grep -o 'header_up X-Forwarded-For {client_ip}' | wc -l
 ```
 
 On the **Mac**, the sites answer:
