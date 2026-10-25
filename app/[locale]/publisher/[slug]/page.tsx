@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { Link, permanentRedirect } from "@/i18n/navigation";
 import { getAnnouncements, getBooks, getPublisherBySlug } from "@/lib/api";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -74,6 +74,10 @@ export default async function PublisherDetailPage({
   ]);
 
   if (!publisher) notFound();
+  // A publisher merged into another in the admin keeps its old link, which
+  // the API answers with the kept publisher: send the reader (and search
+  // engines) to that publisher's own address.
+  if (publisher.slug !== slug) permanentRedirect({ href: `/publisher/${publisher.slug}`, locale });
 
   const publisherBooks = books.items;
 
