@@ -213,7 +213,14 @@
     "readersStarsRow": "{stars} yulduz: {count} ta baho ({percent}%)",
     "readersEmpty": "Bu kitobni Kitoblarim oʻquvchilari hali baholamagan. Oʻqigan boʻlsangiz, birinchi boʻlib fikringizni yozing.",
     "readersWrite": "Taqriz yozish",
-    "breadcrumbBooks": "Kitoblar"
+    "breadcrumbBooks": "Kitoblar",
+    "libTitle": "Kutubxonalarda",
+    "libLead": "Bepul oʻqish uchun kutubxonadan olishingiz mumkin:",
+    "libAvailable": "{count} ta bor",
+    "libAllOut": "hammasi band",
+    "libChecked": "{date} holatiga",
+    "libStale": "maʼlumot eskirgan boʻlishi mumkin",
+    "libMore": "Yana {count} ta kutubxona"
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",
@@ -329,5 +336,35 @@
     "author": "Yozuvchi {name} haqida batafsil maʼlumot bering: kim, hayoti, asosiy asarlari va ijodining oʻziga xosligi.",
     "translator": "Tarjimon {name} haqida batafsil maʼlumot bering: kim, qaysi kitoblarni oʻzbek tiliga tarjima qilgan va tarjimalari qanday baholanadi.",
     "publisher": "«{name}» nashriyoti haqida batafsil maʼlumot bering: qachon tashkil topgan, qanday kitoblar chiqaradi va mashhur nashrlari qaysilar."
+  },
+  "libraries": {
+    "pageTitle": "Kutubxonalar",
+    "pageDescription": "Kitoblarni bepul oʻqish mumkin boʻlgan kutubxonalar va ularda qaysi kitoblar borligi.",
+    "count": "{count} ta kutubxona",
+    "books": "{count} ta kitob",
+    "allRegions": "Barcha hududlar",
+    "empty": "Bu hududda hali kutubxona yoʻq.",
+    "footerLink": "Kutubxonalar"
+  },
+  "libraryDetail": {
+    "back": "Kutubxonalarga qaytish",
+    "breadcrumb": "Kutubxonalar",
+    "metaTitle": "{name} — kitoblar roʻyxati",
+    "metaDescription": "{name}: manzil, ish vaqti, aʼzolik va kutubxonadagi kitoblar.",
+    "address": "Manzil",
+    "hours": "Ish vaqti",
+    "membership": "Aʼzolik",
+    "contacts": "Bogʻlanish",
+    "call": "Qoʻngʻiroq",
+    "books": "Kutubxonadagi kitoblar",
+    "searchPlaceholder": "Kitob yoki muallif",
+    "search": "Qidirish",
+    "onlyAvailable": "Faqat bor kitoblar",
+    "available": "{count} ta bor",
+    "allOut": "hammasi band",
+    "updated": "Roʻyxat {date} holatiga",
+    "stale": "Roʻyxat uzoq vaqt yangilanmagan: kitob borligini kutubxonadan soʻrab oling.",
+    "noBooks": "Hech narsa topilmadi.",
+    "map": "Xaritada"
   }
 }

@@ -13,3 +13,30 @@ export function joinPresent(parts: Part[], separator = " · "): string | null {
 
   return present.length > 0 ? present.join(separator) : null;
 }
+
+const MONTHS_UZ = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+
+/**
+ * "24-oktabr", "24 октября", "24 October": a day a reader can trust
+ * without knowing when the page was cached, which "2 days ago" is not.
+ * Uzbek is spelled out by hand: Node's ICU names months in Uzbek
+ * inconsistently across versions.
+ */
+export function shortDate(iso: string | null | undefined, locale: string): string | null {
+  if (!iso) return null;
+
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+
+  if (locale === "uz") {
+    // Tashkent is UTC+5 all year, with no daylight saving.
+    const tashkent = new Date(date.getTime() + 5 * 60 * 60 * 1000);
+    return `${tashkent.getUTCDate()}-${MONTHS_UZ[tashkent.getUTCMonth()]}`;
+  }
+
+  return new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-GB", {
+    day: "numeric",
+    month: "long",
+    timeZone: "Asia/Tashkent",
+  }).format(date);
+}

@@ -15,6 +15,9 @@ import type {
   ReaderReview,
   Quote,
   Announcement,
+  Library,
+  LibraryAvailability,
+  LibraryBook,
 } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -66,6 +69,8 @@ export const BOOKS_TAG = "books";
 export const PUBLISHERS_TAG = "publishers";
 /** Publishers' new books and pre-orders: the home page's section and each publisher's own. */
 export const ANNOUNCEMENTS_TAG = "announcements";
+/** The libraries list, and every library's page with its books. */
+export const LIBRARIES_TAG = "libraries";
 
 /** Cache tag for one profile, so a single save doesn't rebuild the site. */
 export function translatorTag(slug: string): string {
@@ -92,6 +97,11 @@ export function authorTag(slug: string): string {
 /** One publisher's page, so saving one publisher doesn't rebuild the whole list. */
 export function publisherTag(slug: string): string {
   return `publisher:${slug}`;
+}
+
+/** Cache tag for one library's page and its books. */
+export function libraryTag(slug: string): string {
+  return `library:${slug}`;
 }
 
 interface ApiCollection<T> {
@@ -127,6 +137,7 @@ type ApiCatalogBook = Book & {
   description?: string | null;
   editions?: Edition[];
   relatedBooks?: ApiCatalogBook[];
+  libraries?: LibraryAvailability[];
 };
 
 async function apiFetch<T>(path: string, tags: string[]): Promise<T | null> {
@@ -441,6 +452,8 @@ export interface SitemapIndex {
   publishers: { slug: string; updatedAt: string | null }[];
   /** Published collections; absent from an admin that has none yet. */
   collections?: { slug: string; updatedAt: string | null }[];
+  /** Published libraries; absent from an admin that predates them. */
+  libraries?: { slug: string; updatedAt: string | null }[];
 }
 
 /**
@@ -527,4 +540,42 @@ export async function getAnnouncement(id: string): Promise<Announcement | null> 
 
 function normalizeAnnouncement(announcement: Announcement): Announcement {
   return { ...announcement, coverUrl: resolveAssetUrl(announcement.coverUrl) || null };
+}
+
+/**
+ * Published libraries by name, optionally in one region. Empty, not an
+ * error, from an admin that predates them (it answers 404).
+ */
+export async function getLibraries(locale: string, { region }: { region?: string } = {}): Promise<Library[]> {
+  const result = await apiFetch<ApiCollection<Library>>(
+    `/libraries?${query({ locale, region })}`,
+    [LIBRARIES_TAG]
+  );
+  return (result?.data ?? []).map(normalizeLibrary);
+}
+
+/** One published library with how to reach it, or null. */
+export async function getLibrary(slug: string, locale: string): Promise<Library | null> {
+  const result = await apiFetch<ApiResource<Library>>(
+    `/libraries/${encodeURIComponent(slug)}?locale=${encodeURIComponent(locale)}`,
+    [LIBRARIES_TAG, libraryTag(slug)]
+  );
+  return result?.data ? normalizeLibrary(result.data) : null;
+}
+
+/** A library's books a page at a time, searchable, optionally only those on the shelf. */
+export async function getLibraryBooks(
+  slug: string,
+  locale: string,
+  { page, perPage, q, available }: { page?: number; perPage?: number; q?: string; available?: boolean } = {}
+): Promise<Paginated<LibraryBook>> {
+  const result = await apiFetch<ApiPage<Omit<LibraryBook, "book"> & { book: ApiCatalogBook }>>(
+    `/libraries/${encodeURIComponent(slug)}/books?${query({ locale, page, per_page: perPage, q, available: available ? 1 : undefined })}`,
+    [LIBRARIES_TAG, BOOKS_TAG, libraryTag(slug)]
+  );
+  return toPaginated(result, (row) => ({ ...row, book: normalizeBook(row.book) }));
+}
+
+function normalizeLibrary(library: Library): Library {
+  return { ...library, photoUrl: resolveAssetUrl(library.photoUrl) || null };
 }

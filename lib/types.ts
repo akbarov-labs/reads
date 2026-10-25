@@ -141,6 +141,52 @@ export interface BookWithTranslator extends Book {
   editions?: Edition[];
   /** Book page only: what to read next, strongest signal first. */
   relatedBooks?: BookWithTranslator[];
+  /** Book page only: published libraries that hold it, free copies first. */
+  libraries?: LibraryAvailability[];
+}
+
+/** One library holding a book, as the book page lists it. */
+export interface LibraryAvailability {
+  slug: string;
+  name: string;
+  region: string;
+  district?: string | null;
+  copiesTotal: number;
+  copiesAvailable: number;
+  /** When the library last confirmed its list. */
+  updatedAt?: string | null;
+  /** Unconfirmed for over 60 days: "bor" may no longer be true. */
+  stale: boolean;
+}
+
+/** A library (kutubxona) readers can borrow from, as /api/libraries serves them. */
+export interface Library {
+  slug: string;
+  name: string;
+  region: string;
+  district?: string | null;
+  address?: string | null;
+  photoUrl?: string | null;
+  bookCount?: number;
+  holdingsUpdatedAt?: string | null;
+  stale: boolean;
+  /** Its own page only, from here down. */
+  description?: string | null;
+  hours?: string | null;
+  membership?: string | null;
+  phone?: string | null;
+  telegramUrl?: string | null;
+  instagramUrl?: string | null;
+  websiteUrl?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+/** A book on a library's page, with that library's copies. */
+export interface LibraryBook {
+  book: BookWithTranslator;
+  copiesTotal: number;
+  copiesAvailable: number;
 }
 
 /** A catalogue author, as /api/authors serves them. */

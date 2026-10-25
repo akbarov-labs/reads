@@ -59,6 +59,7 @@ export async function sitemapNames(): Promise<string[]> {
     ...(index.authors.length ? ["authors"] : []),
     ...(index.publishers.length ? ["publishers"] : []),
     ...(index.collections?.length ? ["collections"] : []),
+    ...(index.libraries?.length ? ["libraries"] : []),
     ...Array.from({ length: bookFiles }, (_, i) => `books-${i + 1}`),
   ];
 }
@@ -77,6 +78,15 @@ export async function sitemapEntries(name: string): Promise<Entry[] | null> {
     return [
       { path: "/collections", lastModified: newest },
       ...index.collections.map((c) => ({ path: `/collection/${c.slug}`, lastModified: c.updatedAt })),
+    ];
+  }
+
+  if (name === "libraries" && index.libraries?.length) {
+    // As with collections, the list page has nothing to show until there are some.
+    const newest = index.libraries.map((l) => l.updatedAt).filter(Boolean).sort().at(-1) ?? null;
+    return [
+      { path: "/libraries", lastModified: newest },
+      ...index.libraries.map((l) => ({ path: `/library/${l.slug}`, lastModified: l.updatedAt })),
     ];
   }
 
