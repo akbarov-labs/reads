@@ -26,6 +26,7 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 import { BookViewBeacon } from "@/components/BookViewBeacon";
+import { LibraryAvailability } from "@/components/LibraryAvailability";
 import { BookDescription } from "@/components/BookDescription";
 
 type PageParams = { locale: string; id: string };
@@ -383,6 +384,9 @@ export default async function BookDetailPage({
                     </li>
                   ))}
                 </ul>
+                {/* Or borrow it: the libraries that hold it, and whether a
+                    copy is on the shelf. Absent when none does. */}
+                <LibraryAvailability libraries={book.libraries} locale={locale} t={tDetail} className="mt-6" />
                 {wantHref ? (
                   <a
                     href={wantHref}

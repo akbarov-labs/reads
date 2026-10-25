@@ -499,3 +499,55 @@ export function publisherPageGraph({
     ],
   };
 }
+
+/**
+ * A library's page: a schema.org Library (a LocalBusiness) with its
+ * address and phone, so "kutubxona
+ * Shayxontohur" can find it.
+ */
+export function libraryPageGraph({
+  library,
+  locale,
+  path,
+  trail,
+}: {
+  library: import("@/lib/types").Library;
+  locale: Locale;
+  path: string;
+  trail: { name: string; path: string }[];
+}) {
+  const url = absoluteUrl(locale, path);
+  const libraryId = `${url}#library`;
+  const sameAs = [library.telegramUrl, library.instagramUrl, library.websiteUrl]
+    .map((link) => safeExternalUrl(link))
+    .filter((link): link is string => Boolean(link));
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      pageNode("WebPage", locale, url, library.name, libraryId),
+      compact({
+        "@type": "Library",
+        "@id": libraryId,
+        url,
+        name: library.name,
+        description: library.description ?? undefined,
+        image: publicAssetUrl(library.photoUrl),
+        telephone: library.phone ?? undefined,
+        address: compact({
+          "@type": "PostalAddress",
+          streetAddress: library.address ?? undefined,
+          addressLocality: library.district ?? undefined,
+          addressRegion: library.region,
+          addressCountry: "UZ",
+        }),
+        geo:
+          library.latitude != null && library.longitude != null
+            ? { "@type": "GeoCoordinates", latitude: library.latitude, longitude: library.longitude }
+            : undefined,
+        sameAs: sameAs.length > 0 ? sameAs : undefined,
+      }),
+      breadcrumbNode(locale, url, trail),
+    ],
+  };
+}

@@ -4,11 +4,13 @@ import {
   ANNOUNCEMENTS_TAG,
   AUTHORS_TAG,
   BOOKS_TAG,
+  LIBRARIES_TAG,
   PUBLISHERS_TAG,
   TAQRIZCHILAR_TAG,
   TRANSLATORS_TAG,
   authorTag,
   bookTag,
+  libraryTag,
   publisherTag,
   taqrizchiTag,
   translatorTag,
@@ -58,7 +60,7 @@ export async function POST(request: Request) {
 
   let slug: string | undefined;
   let id: string | undefined;
-  let type: "translator" | "taqrizchi" | "book" | "author" | "publisher" | undefined;
+  let type: "translator" | "taqrizchi" | "book" | "author" | "publisher" | "library" | undefined;
 
   try {
     const body = (await request.json()) as {
@@ -86,7 +88,8 @@ export async function POST(request: Request) {
       body.type === "taqrizchi" ||
       body.type === "book" ||
       body.type === "author" ||
-      body.type === "publisher"
+      body.type === "publisher" ||
+      body.type === "library"
     ) {
       type = body.type;
     }
@@ -98,13 +101,16 @@ export async function POST(request: Request) {
   // each list everything, so any single change can alter them. Authors and
   // Publishers have their own endpoints and tags, and their counts and
   // covers change with any edition, so they go too. Announcements are few
-  // and shown on the home page.
+  // and shown on the home page. Libraries list their books, and a book page
+  // lists its libraries, so a book change and a library change both reach
+  // the other through BOOKS_TAG and LIBRARIES_TAG.
   revalidateTag(TRANSLATORS_TAG);
   revalidateTag(BOOKS_TAG);
   revalidateTag(AUTHORS_TAG);
   revalidateTag(PUBLISHERS_TAG);
   revalidateTag(TAQRIZCHILAR_TAG);
   revalidateTag(ANNOUNCEMENTS_TAG);
+  revalidateTag(LIBRARIES_TAG);
 
   // Then the one page that actually changed, where the ping says which.
   if (type === "book" && id) {
@@ -115,6 +121,8 @@ export async function POST(request: Request) {
     revalidateTag(authorTag(slug));
   } else if (type === "publisher" && slug) {
     revalidateTag(publisherTag(slug));
+  } else if (type === "library" && slug) {
+    revalidateTag(libraryTag(slug));
   } else if (slug) {
     // Explicitly a translator, or an older caller that sent a bare slug
     // before `type` existed.

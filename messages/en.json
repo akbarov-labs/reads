@@ -213,7 +213,14 @@
     "readersStarsRow": "{stars, plural, one {# star} other {# stars}}: {count, plural, one {# rating} other {# ratings}} ({percent}%)",
     "readersEmpty": "No Kitoblarim reader has rated this book yet. If you've read it, be the first to say what you think.",
     "readersWrite": "Write a review",
-    "breadcrumbBooks": "Books"
+    "breadcrumbBooks": "Books",
+    "libTitle": "In libraries",
+    "libLead": "Borrow it from a library and read it for free:",
+    "libAvailable": "{count, plural, one {# copy} other {# copies}} in",
+    "libAllOut": "all out on loan",
+    "libChecked": "as of {date}",
+    "libStale": "may be out of date",
+    "libMore": "{count, plural, one {# more library} other {# more libraries}}"
   },
   "authorDetail": {
     "back": "Back to authors",
@@ -329,5 +336,35 @@
     "author": "Tell me in detail about the writer {name}: who they are, their life, their main works and what sets their writing apart.",
     "translator": "Tell me in detail about the translator {name}: who they are, which books they have translated into Uzbek, and how those translations are regarded.",
     "publisher": "Tell me in detail about the publisher “{name}”: when it was founded, what kinds of books it publishes, and its best-known titles."
+  },
+  "libraries": {
+    "pageTitle": "Libraries",
+    "pageDescription": "Libraries where you can read books for free, and which books each one has.",
+    "count": "{count, plural, one {# library} other {# libraries}}",
+    "books": "{count, plural, one {# book} other {# books}}",
+    "allRegions": "All regions",
+    "empty": "No libraries in this region yet.",
+    "footerLink": "Libraries"
+  },
+  "libraryDetail": {
+    "back": "All libraries",
+    "breadcrumb": "Libraries",
+    "metaTitle": "{name} — books",
+    "metaDescription": "{name}: address, opening hours, membership and the books it holds.",
+    "address": "Address",
+    "hours": "Opening hours",
+    "membership": "Membership",
+    "contacts": "Contact",
+    "call": "Call",
+    "books": "Books in this library",
+    "searchPlaceholder": "Book or author",
+    "search": "Search",
+    "onlyAvailable": "Only books on the shelf",
+    "available": "{count, plural, one {# copy} other {# copies}} in",
+    "allOut": "all out on loan",
+    "updated": "List as of {date}",
+    "stale": "This list has not been updated for a while: ask the library whether the book is in.",
+    "noBooks": "Nothing found.",
+    "map": "On the map"
   }
 }

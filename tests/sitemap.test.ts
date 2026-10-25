@@ -152,6 +152,26 @@ describe("sitemapEntries", () => {
     expect(await sitemapEntries("collections")).toBeNull();
   });
 
+  it("lists libraries with their list page, once there are some", async () => {
+    api.getSitemapIndex.mockResolvedValue({
+      ...index(1),
+      libraries: [
+        { slug: "mehr", updatedAt: "2026-10-24T09:00:00Z" },
+        { slug: "idrok", updatedAt: "2026-10-20T09:00:00Z" },
+      ],
+    });
+    expect(await sitemapNames()).toEqual(["pages", "authors", "publishers", "libraries", "books-1"]);
+    expect(await sitemapEntries("libraries")).toEqual([
+      { path: "/libraries", lastModified: "2026-10-24T09:00:00Z" },
+      { path: "/library/mehr", lastModified: "2026-10-24T09:00:00Z" },
+      { path: "/library/idrok", lastModified: "2026-10-20T09:00:00Z" },
+    ]);
+
+    api.getSitemapIndex.mockResolvedValue(index(1));
+    expect(await sitemapNames()).not.toContain("libraries");
+    expect(await sitemapEntries("libraries")).toBeNull();
+  });
+
   it.each(["books-0", "books-4", "books-x", "books-", "books", "nope", "", "../pages"])("is null for %j", async (name) => {
     api.getSitemapIndex.mockResolvedValue(index(12_345));
     expect(await sitemapEntries(name)).toBeNull();
