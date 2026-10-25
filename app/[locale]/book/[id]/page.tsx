@@ -8,7 +8,7 @@ import type { BookWithTranslator, Edition } from "@/lib/types";
 import { MetaLine } from "@/components/MetaLine";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, FileX, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ShareLinks } from "@/components/ShareLinks";
 import { AskAiSection } from "@/components/AskAiSection";
@@ -218,6 +218,21 @@ export default async function BookDetailPage({
                   ))}
                 </div>
               )}
+
+              {/* Most search visitors come for a PDF. Say before anything
+                  else that there is none here, and where a copy can be had. */}
+              <div role="note" className="mt-6 flex gap-3 rounded-xl border border-stone-300 bg-stone-50 p-4">
+                <FileX aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-zinc-700" />
+                <div className="text-sm leading-relaxed">
+                  <p className="font-medium text-zinc-900">{tDetail("noPdfTitle")}</p>
+                  <p className="mt-1 text-zinc-600">
+                    {tDetail("noPdfBody")}{" "}
+                    <a href="#where-to-get" className="font-medium text-forest-800 underline underline-offset-4 hover:text-forest-900">
+                      {tDetail("noPdfLink")}
+                    </a>
+                  </p>
+                </div>
+              </div>
 
               {book.description && (
                 <BookDescription
