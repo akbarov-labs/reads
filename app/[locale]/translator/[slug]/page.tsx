@@ -71,10 +71,11 @@ export default async function TranslatorProfilePage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [translator, t, tSite, tAskAi] = await Promise.all([
+  const [translator, t, tSite, tTranslators, tAskAi] = await Promise.all([
     getTranslatorBySlug(slug, locale),
     getTranslations("stats"),
     getTranslations("site"),
+    getTranslations("translators"),
     getTranslations("askAi"),
   ]);
   if (!translator) notFound();
@@ -95,7 +96,11 @@ export default async function TranslatorProfilePage({
         })}
       />
       <SiteHeader
-        subtitle={translator.title || tSite("roleTag")}
+        subtitle={
+          translator.title ||
+          // "Translator and author" only for someone credited as an author.
+          (translator.books.some((book) => book.role === "author") ? tSite("roleTag") : tTranslators("defaultRole"))
+        }
       />
       <main>
         <Container>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTranslator } from "next-intl";
-import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingDays } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingDays, sourceIsOriginal } from "@/lib/seo";
 import type { BookWithTranslator } from "@/lib/types";
 import en from "@/messages/en.json";
 import ru from "@/messages/ru.json";
@@ -101,11 +101,38 @@ describe("bookSeoTitle", () => {
     expect(bookSeoTitle({ ...original, readerRating: { average: 0, count: 0 } } as BookWithTranslator, t)).not.toContain("/5");
   });
 
+  it("does not call an edition with only an editor credited a translation", () => {
+    const edited = {
+      ...book,
+      translatorName: null,
+      editions: [{ id: "a", translators: [{ slug: "e", name: "E", role: "editor" as const }], coverUrl: "" }],
+    };
+    expect(bookSeoTitle(edited, t)).not.toContain("translation");
+  });
+
   it("reads naturally in Uzbek and Russian", () => {
     expect(bookSeoTitle(book, translator("uz", uz as typeof en))).toBe("Chol va dengiz — Ernest Hemingway: tarjima, 2 ta nashr");
     expect(bookSeoTitle({ ...book, editions: [...book.editions!, ...book.editions!, ...book.editions!] }, translator("ru", ru as typeof en))).toBe(
       "Chol va dengiz — Ernest Hemingway: перевод, 6 изданий",
     );
+  });
+});
+
+describe("sourceIsOriginal", () => {
+  const translated = { ...book, sourceLanguage: "Ingliz tili", editions: [{ id: "a", translators: [], coverUrl: "", language: "Oʻzbek tili" }] };
+
+  it("is the original's language on a credited translation", () => {
+    expect(sourceIsOriginal(translated)).toBe(true);
+  });
+
+  it("is not when nobody is credited with translating the book", () => {
+    // A store import: "Oʻzbek tili" on Adizes' book is its printing's language.
+    expect(sourceIsOriginal({ ...translated, translatorName: null, sourceLanguage: "O'zbek tili" })).toBe(false);
+    expect(sourceIsOriginal({ ...translated, translatorName: null, sourceLanguage: "Rus tili" })).toBe(false);
+  });
+
+  it("is not when it is the language the book is printed in", () => {
+    expect(sourceIsOriginal({ ...translated, sourceLanguage: "O'zbek tili" })).toBe(false);
   });
 });
 

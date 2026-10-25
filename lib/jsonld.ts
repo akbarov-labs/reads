@@ -79,22 +79,33 @@ function inLanguage(codes: string[]): string | string[] | undefined {
 }
 
 /**
+ * The language one of a translator's books is written in — which is not the
+ * language the page happens to be displayed in. Tagging a Russian-language
+ * view of the page as "these books are in Russian" would be a plain factual
+ * error, and structured data that contradicts the page is worse than none.
+ *
+ * A profile with language pairs says where its translations go: the pairs
+ * from the book's source language when it is a translation, all of them
+ * otherwise, and only a single target is said. A profile without any is one
+ * of the catalogue's credited translators, whose credits are on Uzbek
+ * printings.
+ */
+function bookLanguage(book: Book, translator: Translator): string | undefined {
+  const pairs = translator.languagePairs;
+  if (pairs.length === 0) return "uz";
+  const source = book.role === "translator" ? languageCodes(book.sourceLanguage) : [];
+  const fromSource = pairs.filter((pair) => languageCodes(pair.from).some((code) => source.includes(code)));
+  const targets = [...new Set((fromSource.length ? fromSource : pairs).flatMap((pair) => languageCodes(pair.to)))];
+  return targets.length === 1 ? targets[0] : undefined;
+}
+
+/**
  * One book, expressed from the translator's point of view. The role decides
  * which credit the person gets — translating a novel and writing one are
  * different claims, and an answer engine that conflates them will attribute
  * someone else's book to this person.
  */
-/**
- * The language a *book* is written in — which is not the language the page
- * happens to be displayed in. These editions are Uzbek: the model's title
- * field is literally `uzbekTitle`, and every language pair on the site runs
- * into Uzbek. Tagging a Russian-language view of the page as "these books
- * are in Russian" would be a plain factual error, and structured data that
- * contradicts the page is worse than none.
- */
-const BOOK_LANGUAGE = HREFLANG[routing.defaultLocale];
-
-function bookNode(book: Book, personId: string): Node {
+function bookNode(book: Book, personId: string, writtenIn: string | undefined): Node {
   const credit =
     book.role === "author"
       ? { author: { "@id": personId } }
@@ -124,7 +135,7 @@ function bookNode(book: Book, personId: string): Node {
     name: book.uzbekTitle,
     alternateName:
       book.originalTitle !== book.uzbekTitle ? book.originalTitle : undefined,
-    inLanguage: BOOK_LANGUAGE,
+    inLanguage: writtenIn,
     datePublished: book.year ? String(book.year) : undefined,
     publisher: book.publisher
       ? { "@type": "Organization", name: book.publisher }
@@ -196,7 +207,7 @@ export function translatorGraph({
       .slice(0, 12),
   });
 
-  const books = translator.books.map((book) => bookNode(book, personId));
+  const books = translator.books.map((book) => bookNode(book, personId, bookLanguage(book, translator)));
 
   const graph: Node[] = [
     compact({

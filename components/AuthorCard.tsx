@@ -59,7 +59,7 @@ export async function AuthorCard({ author }: AuthorCardProps) {
             {author.name}
           </h3>
           <p className="mt-0.5 text-xs text-zinc-400">
-            {t("booksInUzbek", { count: author.bookCount })}
+            {t("books", { count: author.bookCount })}
           </p>
           {author.originalName && author.originalName !== author.name && (
             <p className="mt-1 text-[11px] text-zinc-400">{author.originalName}</p>

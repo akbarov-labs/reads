@@ -37,14 +37,18 @@ export async function generateMetadata({
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const [publisher, t] = await Promise.all([
+  // The same books request as the page's, so it is fetched once.
+  const [publisher, books, t] = await Promise.all([
     getPublisherBySlug(slug, locale),
+    getBooks(locale, { publisher: slug, perPage: BOOKS_SHOWN }),
     getTranslations({ locale, namespace: "publisherDetail" }),
   ]);
   if (!publisher) return { robots: { index: false, follow: false } };
 
+  // Translators get a mention only when the page has some to show.
+  const translated = books.items.some((book) => book.translatorSlug);
   const title = t("metaTitle", { name: publisher.name });
-  const description = t("metaDescription", { name: publisher.name });
+  const description = t(translated ? "metaDescriptionTranslated" : "metaDescription", { name: publisher.name });
   // Its own address in each language; otherwise it inherits the home page's.
   const alternates = localeAlternates(locale as Locale, `/publisher/${slug}`);
   return {

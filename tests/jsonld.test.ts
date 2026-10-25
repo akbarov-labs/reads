@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { authorPageGraph, bookPageGraph, languageCodes, publisherPageGraph, siteGraph } from "@/lib/jsonld";
-import type { Author, BookWithTranslator, Publisher } from "@/lib/types";
+import { authorPageGraph, bookPageGraph, languageCodes, publisherPageGraph, siteGraph, translatorGraph } from "@/lib/jsonld";
+import type { Author, Book, BookWithTranslator, Publisher, Translator } from "@/lib/types";
 
 const ORIGIN = "https://kitoblarim.uz";
 const INTERNAL = "http://reads-admin-app";
@@ -442,3 +442,31 @@ describe("languageCodes", () => {
   });
 });
 
+
+describe("translatorGraph books' language", () => {
+  const book = (id: string, sourceLanguage: string, role: Book["role"] = "translator"): Book => ({
+    id, uzbekTitle: id, author: "A", publisher: "P", coverUrl: "", sourceLanguage, role,
+  });
+  const profile = (languagePairs: Translator["languagePairs"], books: Book[]): Translator => ({
+    slug: "t", name: "T", avatarUrl: "", location: "", bio: "", languagePairs, socialLinks: [],
+    yearsActive: 0, startYear: 0, totalBooksTranslated: books.length, books,
+  });
+  const languages = (translator: Translator) =>
+    json(translatorGraph({ translator, locale: "ru" }))["@graph"]
+      .filter((node) => node["@type"] === "Book")
+      .map((node) => node.inLanguage);
+
+  it("follows the pair from the book's source language", () => {
+    const pairs = [{ from: "Oʻzbek", to: "Ingliz" }, { from: "Ingliz", to: "Oʻzbek" }];
+    expect(languages(profile(pairs, [book("a", "Ingliz tili"), book("b", "Oʻzbek tili")]))).toEqual(["uz", "en"]);
+  });
+
+  it("says nothing when the pairs go to more than one language", () => {
+    const pairs = [{ from: "Oʻzbek", to: "Ingliz" }, { from: "Ingliz", to: "Oʻzbek" }];
+    expect(languages(profile(pairs, [book("a", "Oʻzbek tili", "author")]))).toEqual([undefined]);
+  });
+
+  it("is Uzbek for a credited translator with no pairs", () => {
+    expect(languages(profile([], [book("a", "Rus tili")]))).toEqual(["uz"]);
+  });
+});
