@@ -44,14 +44,20 @@ export async function generateMetadata({
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const [author, t] = await Promise.all([
+  // The same books request as the page's, so it is fetched once.
+  const [author, books, t] = await Promise.all([
     getAuthorBySlug(slug, locale),
+    getBooks(locale, { author: slug, perPage: BOOKS_SHOWN }),
     getTranslations({ locale, namespace: "authorDetail" }),
   ]);
   if (!author) return { robots: { index: false, follow: false } };
 
-  const title = t("metaTitle", { name: author.name });
-  const description = t("metaDescription", { name: author.name });
+  // "Translated into Uzbek" only for an author someone is credited with
+  // translating; an Uzbek writer's page, or one with only Russian
+  // printings, says "books" instead.
+  const translated = books.items.some((book) => book.translatorSlug);
+  const title = t(translated ? "metaTitleTranslated" : "metaTitle", { name: author.name });
+  const description = t(translated ? "metaDescriptionTranslated" : "metaDescription", { name: author.name });
   // Its own address in each language; otherwise it inherits the home page's.
   const alternates = localeAlternates(locale as Locale, `/author/${slug}`);
   return {
@@ -193,7 +199,7 @@ export default async function AuthorDetailPage({
             </div>
           </div>
 
-          {/* Books in Uzbek */}
+          {/* Books */}
           <section className="mt-12 sm:mt-16">
             <div className="mb-8">
               <h2 className="font-serif text-2xl sm:text-3xl text-zinc-900 font-semibold">

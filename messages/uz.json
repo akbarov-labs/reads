@@ -3,22 +3,22 @@
     "brand": "Kitoblarim",
     "roleTag": "Tarjimon va Muallif",
     "homeTitle": "Kitoblarim — oʻzbek kitoblari katalogi",
-    "homeDescription": "Oʻzbek adabiyotini shakllantirayotgan tarjimonlar, mualliflar, kitoblar va nashriyotlar.",
+    "homeDescription": "Oʻzbek, rus va ingliz tilidagi kitoblar: mualliflar, tarjimonlar va nashriyotlar.",
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Til",
     "brandSection": "katalog"
   },
   "home": {
-    "empty": "Hozircha tarjimon profili qoʻshilmagan.",
-    "heroHeadline": "Oʻzbek Adabiy Dunyosi,\nBir Joyda",
+    "empty": "Hozircha hech narsa qoʻshilmagan.",
+    "heroHeadline": "Kitoblar Olami,\nBir Joyda",
     "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bogʻliq, hammasi kashf qilinishi mumkin.",
     "statTranslators": "Tarjimonlar",
-    "statBooks": "Asarlar va tarjimalar",
+    "statBooks": "Kitoblar",
     "statAuthors": "Mualliflar",
     "statPublishers": "Nashriyotlar",
     "translatorsTitle": "Tarjimonlar",
     "translatorsSeeAll": "Barcha tarjimonlar",
-    "booksTitle": "Asarlar va Tarjimalar",
+    "booksTitle": "Kitoblar",
     "booksSeeAll": "Barcha kitoblar",
     "authorsTitle": "Mualliflar",
     "authorsSeeAll": "Barcha mualliflar",
@@ -35,8 +35,8 @@
     "empty": "Tarjimonlar topilmadi."
   },
   "books": {
-    "pageTitle": "Barcha Kitoblar va Tarjimalar",
-    "pageDescription": "Oʻzbek tiliga yoki oʻzbek tilidan tarjima qilingan har bir kitob.",
+    "pageTitle": "Barcha Kitoblar",
+    "pageDescription": "Oʻzbek, rus va ingliz tilidagi kitoblar: asl va tarjima asarlar.",
     "empty": "Kitoblar topilmadi.",
     "translatedBy": "Tarjima qilgan",
     "searchPlaceholder": "Kitob, muallif, tarjimon yoki nashriyot",
@@ -59,16 +59,15 @@
   },
   "authors": {
     "pageTitle": "Barcha Mualliflar",
-    "pageDescription": "Tarjima qilingan yoki yozilgan kitoblarning barcha mualliflari.",
+    "pageDescription": "Oʻzbek va jahon mualliflari, ularning kitoblari va tarjimalari.",
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
     "books": "{count} ta kitob",
-    "empty": "Mualliflar topilmadi.",
-    "booksInUzbek": "Oʻzbek tilida {count} ta kitob"
+    "empty": "Mualliflar topilmadi."
   },
   "publishers": {
     "pageTitle": "Barcha Nashriyotlar",
-    "pageDescription": "Tarjima qilingan kitoblarni nashr etgan barcha nashriyotlar.",
+    "pageDescription": "Katalogdagi kitoblarni nashr etgan barcha nashriyotlar.",
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
     "books": "{count} ta kitob",
@@ -85,7 +84,7 @@
     "count": "{count} ta kitob",
     "roleAuthor": "Mualliflik asari",
     "roleEditor": "Adabiy tahrir",
-    "roleTranslator": "Badiiy tarjima",
+    "roleTranslator": "Tarjima",
     "coverAlt": "{title} kitobining muqovasi"
   },
   "excerpt": {
@@ -97,7 +96,7 @@
     "originalLabelPlain": "Asl nusxa",
     "sourcePaneTabPlain": "Asl",
     "bookExcerptLabel": "Kitobdan parcha",
-    "translationLabel": "Badiiy tarjima",
+    "translationLabel": "Tarjima",
     "analysisLabel": "Adabiy tahlil va mohiyat"
   },
   "inquiry": {
@@ -224,26 +223,29 @@
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",
-    "totalBooks": "{count} ta kitob oʻzbek tilida",
+    "totalBooks": "{count} ta kitob",
     "about": "Muallif haqida",
-    "works": "Oʻzbek tilidagi asarlari",
+    "works": "Kitoblari",
     "translators": "Muallif asarlarini oʻgirgan tarjimonlar",
     "sourceLanguage": "Asosiy ijod tili",
     "breadcrumbAuthors": "Mualliflar",
-    "metaTitle": "{name} — Oʻzbek tiliga tarjima qilingan asarlari",
-    "metaDescription": "{name} asarlarining oʻzbekcha tarjimalari, kitoblari va tarjimonlari haqida toʻliq maʼlumot.",
+    "metaTitle": "{name} — kitoblari va asarlari",
+    "metaTitleTranslated": "{name} — asarlari oʻzbek tilida",
+    "metaDescription": "{name} asarlari: katalogdagi barcha kitoblari, nashrlari va nashriyotlari.",
+    "metaDescriptionTranslated": "{name} asarlarining oʻzbekcha tarjimalari, kitoblari va tarjimonlari haqida toʻliq maʼlumot.",
     "translatorProfile": "Tarjimon profili",
     "bookTranslator": "Tarjimon: <strong>{name}</strong>"
   },
   "publisherDetail": {
     "back": "Nashriyotlarga qaytish",
     "totalBooks": "{count} ta nashr",
-    "catalog": "Nashr qilingan tarjimalar",
+    "catalog": "Nashriyot kitoblari",
     "translatorsAndAuthors": "Hamkor ijodkorlar",
     "booksInCatalog": "Katalogdagi kitoblar",
     "breadcrumbPublishers": "Nashriyotlar",
     "metaTitle": "{name} — Nashriyot kitoblari",
-    "metaDescription": "{name} nashriyoti tomonidan chop etilgan tarjima kitoblar, mualliflar va tarjimonlar.",
+    "metaDescription": "{name} nashriyoti chop etgan kitoblar va ularning mualliflari.",
+    "metaDescriptionTranslated": "{name} nashriyoti chop etgan kitoblar, ularning mualliflari va tarjimonlari.",
     "bookTranslator": "Tarjimon: {name}",
     "translators": "Tarjimonlar",
     "authors": "Mualliflar"
@@ -288,7 +290,7 @@
   },
   "collections": {
     "pageTitle": "Toʻplamlar",
-    "pageDescription": "Muharrirlar tanlovi: tarjimalar atrofida yigʻilgan kitoblar roʻyxatlari.",
+    "pageDescription": "Muharrirlar tanlovi: oʻqishga arziydigan kitoblar roʻyxatlari.",
     "bookCount": "{count} ta kitob",
     "empty": "Hozircha toʻplam yoʻq.",
     "homeTitle": "Toʻplamlar",

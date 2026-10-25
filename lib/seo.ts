@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { BookWithTranslator, Translator } from "@/lib/types";
+import { languageCodes } from "@/lib/jsonld";
 import {
   HREFLANG,
   OG_LOCALE,
@@ -123,6 +124,33 @@ export function bookTitle(book: BookWithTranslator): string {
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
 /**
+ * Whether anyone is credited with translating the book. Most of the
+ * catalogue came from store imports that credit no translator, so a book
+ * without one is not known to be an original either: wording that says
+ * "translation" waits for this to be true, and otherwise stays neutral.
+ */
+export function isTranslation(book: BookWithTranslator): boolean {
+  return (
+    book.role === "translator" ||
+    Boolean(book.translatorName) ||
+    (book.editions ?? []).some((edition) => edition.translators?.some((credit) => credit.role !== "editor"))
+  );
+}
+
+/**
+ * Whether `sourceLanguage` names the language the book was translated from.
+ * Store imports put the edition's own language there ("Rus tili" on a
+ * Russian printing, "Oʻzbek tili" on an Uzbek translation nobody is credited
+ * for), so it is the original's only on a credited translation, and not
+ * when it is the language the book's own printings are in.
+ */
+export function sourceIsOriginal(book: BookWithTranslator): boolean {
+  if (!isTranslation(book)) return false;
+  const printed = new Set((book.editions ?? []).flatMap((edition) => languageCodes(edition.language)));
+  return !languageCodes(book.sourceLanguage).some((code) => printed.has(code));
+}
+
+/**
  * The book page's <title>: "1984 — Jorj Oruell: tarjima, 3 ta nashr,
  * 4.6/5, taqrizlar". After the name it says what the page has that a
  * search for the book is after, and only what it really has (no "reviews"
@@ -131,14 +159,10 @@ type Translate = (key: string, values?: Record<string, string | number>) => stri
  */
 export function bookSeoTitle(book: BookWithTranslator, t: Translate): string {
   const editions = book.editions?.length ?? 0;
-  const translated =
-    book.role === "translator" ||
-    Boolean(book.translatorName) ||
-    (book.editions ?? []).some((edition) => edition.translators?.length);
   const rating = book.readerRating?.count ? book.readerRating : null;
 
   const has = [
-    translated ? t("titleTranslation") : null,
+    isTranslation(book) ? t("titleTranslation") : null,
     editions > 1 ? t("titleEditions", { count: editions }) : null,
     rating ? t("titleRating", { rating: rating.average.toFixed(1) }) : null,
     book.taqrizlar?.length ? t("titleTaqrizlar") : null,

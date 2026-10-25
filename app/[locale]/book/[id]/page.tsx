@@ -23,7 +23,7 @@ import { storeLinks, storeRedirectPath } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime, sourceIsOriginal } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 import { BookViewBeacon } from "@/components/BookViewBeacon";
 import { LibraryAvailability } from "@/components/LibraryAvailability";
@@ -323,7 +323,7 @@ export default async function BookDetailPage({
                   {book.sourceLanguage && (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
-                      {tDetail("sourceLanguage")}
+                      {tDetail(sourceIsOriginal(book) ? "sourceLanguage" : "language")}
                     </dt>
                     <dd className="mt-1 font-serif text-base text-zinc-900">
                       {book.sourceLanguage}

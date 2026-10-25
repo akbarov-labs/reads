@@ -34,7 +34,7 @@ export async function GET() {
   const sections: string[] = [
     `# ${SITE_NAME}`,
     "",
-    `> The catalogue of Kitoblarim: Uzbek books and translations, every edition with its ISBN, publisher and year, the translators, authors and publishers behind them, critics' reviews (taqrizlar, scored out of 10) and Kitoblarim readers' ratings (out of 5). Readers plan and finish a book in the Kitoblarim Telegram bot (https://t.me/kitob_javonim_bot). Available in Uzbek (uz), Russian (ru) and English (en).`,
+    `> The catalogue of Kitoblarim: books in Uzbek, Russian and English — Uzbek originals, translations into Uzbek and Russian and English printings — every edition with its ISBN, publisher and year, the translators, authors and publishers behind them, critics' reviews (taqrizlar, scored out of 10) and Kitoblarim readers' ratings (out of 5). Readers plan and finish a book in the Kitoblarim Telegram bot (https://t.me/kitob_javonim_bot). Available in Uzbek (uz), Russian (ru) and English (en).`,
     "",
     `Site: ${SITE_URL}`,
     `Sitemap: ${SITE_URL}/sitemap.xml`,
@@ -93,7 +93,9 @@ export async function GET() {
             ? `original title: ${book.originalTitle}`
             : null,
           book.author ? `author: ${book.author}` : null,
-          book.sourceLanguage ? `from: ${book.sourceLanguage}` : null,
+          // The language it was translated from: nothing to say for the
+          // person's own book.
+          book.role !== "author" && book.sourceLanguage ? `from: ${book.sourceLanguage}` : null,
           book.publisher ? `publisher: ${book.publisher}` : null,
           book.year ? `year: ${book.year}` : null,
         ].filter(Boolean);
