@@ -85,12 +85,15 @@ export default async function PublisherDetailPage({
 
   const publisherBooks = books.items;
 
-  // Deduplicate authors and translators
-  const authorsSet = new Set<string>();
+  // Deduplicate authors and translators. Each author on their own, so a
+  // book by two people is two links, not one "A, B".
+  const authorsMap = new Map<string, { slug: string; name: string }>();
   const translatorsMap = new Map<string, { slug: string; name: string }>();
 
   for (const b of publisherBooks) {
-    if (b.author) authorsSet.add(b.author);
+    for (const a of b.authors ?? []) {
+      if (!authorsMap.has(a.slug)) authorsMap.set(a.slug, { slug: a.slug, name: a.name });
+    }
     if (b.translatorSlug && b.translatorName && !translatorsMap.has(b.translatorSlug)) {
       translatorsMap.set(b.translatorSlug, {
         slug: b.translatorSlug,
@@ -99,7 +102,7 @@ export default async function PublisherDetailPage({
     }
   }
 
-  const authors = Array.from(authorsSet);
+  const authors = Array.from(authorsMap.values());
   const translators = Array.from(translatorsMap.values());
   const gradientClass = publisherColor(publisher.name);
 
@@ -295,12 +298,13 @@ export default async function PublisherDetailPage({
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {authors.map((a) => (
-                      <span
-                        key={a}
-                        className="inline-flex items-center rounded-full bg-white border border-stone-200 px-3.5 py-1.5 text-xs text-zinc-700"
+                      <Link
+                        key={a.slug}
+                        href={`/author/${a.slug}`}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-white border border-stone-200 px-3.5 py-1.5 text-xs text-zinc-700 hover:border-forest-300 hover:text-forest-800 transition-colors"
                       >
-                        {a}
-                      </span>
+                        {a.name}
+                      </Link>
                     ))}
                   </div>
                 </div>
