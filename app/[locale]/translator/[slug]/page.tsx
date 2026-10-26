@@ -10,7 +10,6 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { AskAiSection } from "@/components/AskAiSection";
-import { translatorQuestion } from "@/lib/askAi";
 import { StatsBar } from "@/components/StatsBar";
 import { BookGrid } from "@/components/BookGrid";
 import { ExcerptReader } from "@/components/ExcerptReader";
@@ -71,12 +70,11 @@ export default async function TranslatorProfilePage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [translator, t, tSite, tTranslators, tAskAi] = await Promise.all([
+  const [translator, t, tSite, tTranslators] = await Promise.all([
     getTranslatorBySlug(slug, locale),
     getTranslations("stats"),
     getTranslations("site"),
     getTranslations("translators"),
-    getTranslations("askAi"),
   ]);
   if (!translator) notFound();
 
@@ -109,7 +107,7 @@ export default async function TranslatorProfilePage({
           <BookGrid books={translator.books} />
           <ExcerptReader books={translator.books} />
           {/* Last, once the reader has seen what we have. */}
-          <AskAiSection question={translatorQuestion(translator, tAskAi)} className="py-14 sm:py-16" />
+          <AskAiSection subject="translator" id={translator.slug} className="py-14 sm:py-16" />
         </Container>
       </main>
     </>

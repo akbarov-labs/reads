@@ -1,5 +1,18 @@
 type Translate = (key: string, values?: Record<string, string | number>) => string;
 
+/** The pages that carry an ask-AI button, as Reads-admin's click log names them. */
+export const ASK_AI_SUBJECTS = ["book", "author", "translator", "publisher"] as const;
+export type AskAiSubject = (typeof ASK_AI_SUBJECTS)[number];
+
+/**
+ * Where an ask-AI button points: this site's own redirect (app/go/ai),
+ * which counts the click and sends the reader on to askAiUrl. The question
+ * is built there from the catalogue, so it never travels in the link.
+ */
+export function askAiRedirectPath(subject: AskAiSubject, id: string, locale: string): string {
+  return `/go/ai/${subject}/${encodeURIComponent(id)}?l=${encodeURIComponent(locale)}`;
+}
+
 /**
  * Google's AI Mode (Gemini behind Google Search) with the question already
  * asked. gemini.google.com itself ignores a question in its address, so a

@@ -12,7 +12,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, FileX, User } 
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ShareLinks } from "@/components/ShareLinks";
 import { AskAiButton } from "@/components/AskAiSection";
-import { bookQuestion } from "@/lib/askAi";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
@@ -260,7 +259,8 @@ export default async function BookDetailPage({
               {/* What the description leaves out (often most of it), asked
                   of an AI while the reader is still reading about the book. */}
               <AskAiButton
-                question={bookQuestion(book, tAskAi)}
+                subject="book"
+                id={book.id}
                 label={tAskAi("bookCta")}
                 hint={tAskAi("bookHint")}
                 className="mt-6"

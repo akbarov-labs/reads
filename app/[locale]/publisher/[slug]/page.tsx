@@ -13,7 +13,6 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, Building2 } from "lucide-react";
 import { MetaLine } from "@/components/MetaLine";
 import { AskAiSection } from "@/components/AskAiSection";
-import { publisherQuestion } from "@/lib/askAi";
 
 type PageParams = { locale: string; slug: string };
 
@@ -67,14 +66,13 @@ export default async function PublisherDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [publisher, books, announcements, tPublisher, tBookCard, tBooks, tAskAi] = await Promise.all([
+  const [publisher, books, announcements, tPublisher, tBookCard, tBooks] = await Promise.all([
     getPublisherBySlug(slug, locale),
     getBooks(locale, { publisher: slug, perPage: BOOKS_SHOWN }),
     getAnnouncements(locale, { publisher: slug, limit: 12 }),
     getTranslations("publisherDetail"),
     getTranslations("bookCard"),
     getTranslations("books"),
-    getTranslations("askAi"),
   ]);
 
   if (!publisher) notFound();
@@ -314,7 +312,7 @@ export default async function PublisherDetailPage({
           )}
 
           {/* Last, once the reader has seen what we have. */}
-          <AskAiSection question={publisherQuestion(publisher, tAskAi)} className="mt-16 sm:mt-20 pt-12" />
+          <AskAiSection subject="publisher" id={publisher.slug} className="mt-16 sm:mt-20 pt-12" />
         </Container>
       </main>
     </>
