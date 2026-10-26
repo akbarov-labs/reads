@@ -137,6 +137,8 @@ export interface BookWithTranslator extends Book {
   quotes?: Quote[];
   /** Book page only: the work's own description. */
   description?: string | null;
+  /** Book page only: the shop listing the description was copied from, to credit; null when it is our own. */
+  descriptionSource?: { name: string; url: string } | null;
   /** Book page only: every published edition. */
   editions?: Edition[];
   /** Book page only: what to read next, strongest signal first. */

@@ -241,6 +241,21 @@ export default async function BookDetailPage({
                   lessLabel={tDetail("descriptionLess")}
                 />
               )}
+              {/* Most descriptions were copied from a shop's listing: say
+                  whose words they are and link back to it. */}
+              {book.description && book.descriptionSource ? (
+                <p className="mt-2 text-xs text-zinc-500">
+                  {tDetail("descriptionSource")}{" "}
+                  <a
+                    href={book.descriptionSource.url}
+                    target="_blank"
+                    rel="nofollow noopener"
+                    className="underline underline-offset-4 hover:text-forest-800"
+                  >
+                    {book.descriptionSource.name}
+                  </a>
+                </p>
+              ) : null}
 
               {/* Author and Translator Cards, each only when there is a name to show. */}
               {(book.author || book.translatorSlug) && (
