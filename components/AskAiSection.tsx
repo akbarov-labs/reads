@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { ArrowUpRight, Sparkles } from "lucide-react";
-import { askAiUrl } from "@/lib/askAi";
+import { askAiRedirectPath, type AskAiSubject } from "@/lib/askAi";
 
 /**
  * The same question as AskAiSection, as a plate right under what the page
@@ -9,12 +9,14 @@ import { askAiUrl } from "@/lib/askAi";
  * so it sits where the reader is still reading, not after everything else.
  */
 export async function AskAiButton({
-  question,
+  subject,
+  id,
   label,
   hint,
   className = "",
 }: {
-  question: string;
+  subject: AskAiSubject;
+  id: string;
   label: string;
   hint: string;
   className?: string;
@@ -23,7 +25,7 @@ export async function AskAiButton({
 
   return (
     <a
-      href={askAiUrl(question, locale)}
+      href={askAiRedirectPath(subject, id, locale)}
       target="_blank"
       rel="nofollow noopener"
       className={`group flex items-start gap-3 rounded-xl border border-forest-300 bg-forest-50 p-4 text-left transition-colors hover:border-forest-400 hover:bg-forest-100 ${className}`}
@@ -50,10 +52,19 @@ export async function AskAiButton({
  * reader meets everything Kitoblarim has first, and the new tab leaves this
  * one where it was.
  *
- * A plain link: nothing here calls an AI or holds a key. nofollow, because
- * it is a search, not a page we vouch for.
+ * A plain link through /go/ai, which counts the click: nothing here calls
+ * an AI or holds a key. nofollow, because it is a search, not a page we
+ * vouch for.
  */
-export async function AskAiSection({ question, className = "" }: { question: string; className?: string }) {
+export async function AskAiSection({
+  subject,
+  id,
+  className = "",
+}: {
+  subject: AskAiSubject;
+  id: string;
+  className?: string;
+}) {
   const [locale, t] = await Promise.all([getLocale(), getTranslations("askAi")]);
 
   return (
@@ -63,7 +74,7 @@ export async function AskAiSection({ question, className = "" }: { question: str
       </h2>
       <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-600">{t("lead")}</p>
       <a
-        href={askAiUrl(question, locale)}
+        href={askAiRedirectPath(subject, id, locale)}
         target="_blank"
         rel="nofollow noopener"
         className="mt-4 inline-flex items-center gap-2 rounded-full border border-stone-300 px-4 py-2 text-sm text-zinc-700 transition-colors hover:border-forest-400 hover:text-forest-800"

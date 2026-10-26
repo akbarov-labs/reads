@@ -12,7 +12,6 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
 import { MetaLine } from "@/components/MetaLine";
 import { AskAiButton } from "@/components/AskAiSection";
-import { authorQuestion } from "@/lib/askAi";
 
 type PageParams = { locale: string; slug: string };
 
@@ -199,7 +198,8 @@ export default async function AuthorDetailPage({
                 {/* The catalogue has a list of books but rarely a word about
                     the writer: ask an AI, from the top of the page. */}
                 <AskAiButton
-                  question={authorQuestion(author, tAskAi)}
+                  subject="author"
+                  id={author.slug}
                   label={tAskAi("authorCta")}
                   hint={tAskAi("authorHint")}
                   className="mt-6 max-w-xl"
