@@ -1,5 +1,5 @@
 import { getSitemapIndex, getTaqrizchilar, getTranslators } from "@/lib/api";
-import { routing } from "@/i18n/routing";
+import { routing, type Locale } from "@/i18n/routing";
 import { HREFLANG, SITE_URL, absoluteUrl } from "@/lib/site";
 
 /**
@@ -8,12 +8,21 @@ import { HREFLANG, SITE_URL, absoluteUrl } from "@/lib/site";
  * that). Each page is listed once per language with its hreflang siblings,
  * matching the <link rel="alternate"> tags on the page itself: a sitemap that
  * disagrees with the page is a signal Google resolves by ignoring both.
+ *
+ * Book and author pages are the exception: only their Uzbek page is a <loc>.
+ * Their ru and en pages translate the labels but carry the same Uzbek
+ * description, so Google crawled ~40,000 near-copies and indexed few
+ * ("Crawled - currently not indexed"). The ru and en pages stay up, still
+ * named as hreflang siblings, so Google can find and rank them on its own.
  */
 
-// 5,000 books × 3 languages = 15,000 URLs a file.
+// 5,000 books, one URL each (Uzbek only), a file.
 export const BOOKS_PER_FILE = 5000;
 
-type Entry = { path: string; lastModified?: string | null };
+/** The languages a catalogue page (book, author) is listed in. */
+export const CATALOGUE_LOCALES = [routing.defaultLocale] as const;
+
+type Entry = { path: string; lastModified?: string | null; locales?: readonly Locale[] };
 
 function escape(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -35,7 +44,7 @@ export function urlsetXml(entries: Entry[]): string {
       `<xhtml:link rel="alternate" hreflang="x-default" href="${escape(absoluteUrl(routing.defaultLocale, entry.path))}"/>`,
     ].join("");
     const lastmod = isoDate(entry.lastModified);
-    for (const locale of routing.locales) {
+    for (const locale of entry.locales ?? routing.locales) {
       urls.push(
         `<url><loc>${escape(absoluteUrl(locale, entry.path))}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ""}${links}</url>`,
       );
@@ -70,7 +79,9 @@ export async function sitemapEntries(name: string): Promise<Entry[] | null> {
 
   const index = await getSitemapIndex();
   if (!index) return null;
-  if (name === "authors") return index.authors.map((a) => ({ path: `/author/${a.slug}`, lastModified: a.updatedAt }));
+  if (name === "authors") {
+    return index.authors.map((a) => ({ path: `/author/${a.slug}`, lastModified: a.updatedAt, locales: CATALOGUE_LOCALES }));
+  }
   if (name === "publishers") return index.publishers.map((p) => ({ path: `/publisher/${p.slug}`, lastModified: p.updatedAt }));
   if (name === "collections" && index.collections?.length) {
     // The list page goes with them: it has nothing to show until there are some.
@@ -95,7 +106,7 @@ export async function sitemapEntries(name: string): Promise<Entry[] | null> {
   const n = Number(match[1]);
   const slice = index.books.slice((n - 1) * BOOKS_PER_FILE, n * BOOKS_PER_FILE);
   if (n < 1 || slice.length === 0) return null;
-  return slice.map((b) => ({ path: `/book/${b.id}`, lastModified: b.updatedAt }));
+  return slice.map((b) => ({ path: `/book/${b.id}`, lastModified: b.updatedAt, locales: CATALOGUE_LOCALES }));
 }
 
 /** Home, the listings, translator and reviewer profiles, and every taqriz. */

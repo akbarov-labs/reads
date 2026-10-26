@@ -73,6 +73,14 @@ describe("urlsetXml", () => {
     expect(escaped).not.toContain('a&b');
   });
 
+  it("lists a page limited to some locales only there, still naming every hreflang sibling", () => {
+    const limited = urls(urlsetXml([{ path: "/book/42", locales: ["uz"] }]));
+    expect(limited).toHaveLength(1);
+    expect(limited[0]).toContain(`<loc>${ORIGIN}/uz/book/42</loc>`);
+    const links = [...limited[0].matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(([, lang]) => lang);
+    expect(links).toEqual(["uz-UZ", "ru-RU", "en", "x-default"]);
+  });
+
   it("is an empty urlset for no entries", () => {
     expect(urls(urlsetXml([]))).toEqual([]);
   });
@@ -116,7 +124,7 @@ describe("sitemapEntries", () => {
     const first = await sitemapEntries("books-1");
     const last = await sitemapEntries("books-3");
     expect(first).toHaveLength(5000);
-    expect(first?.[0]).toEqual({ path: "/book/1", lastModified: "2026-10-01T10:00:00Z" });
+    expect(first?.[0]).toEqual({ path: "/book/1", lastModified: "2026-10-01T10:00:00Z", locales: ["uz"] });
     expect(first?.at(-1)?.path).toBe("/book/5000");
     expect((await sitemapEntries("books-2"))?.[0].path).toBe("/book/5001");
     expect(last).toHaveLength(2345);
@@ -125,8 +133,22 @@ describe("sitemapEntries", () => {
 
   it("maps authors and publishers to their pages", async () => {
     api.getSitemapIndex.mockResolvedValue(index(1));
-    expect(await sitemapEntries("authors")).toEqual([{ path: "/author/author-1", lastModified: null }]);
+    expect(await sitemapEntries("authors")).toEqual([{ path: "/author/author-1", lastModified: null, locales: ["uz"] }]);
     expect(await sitemapEntries("publishers")).toEqual([{ path: "/publisher/publisher-1", lastModified: "2026-09-01" }]);
+  });
+
+  it("lists book and author pages in Uzbek only, everything else in every language", async () => {
+    api.getSitemapIndex.mockResolvedValue(index(2));
+    const locs = async (name: string) =>
+      urls(urlsetXml((await sitemapEntries(name)) ?? [])).map((url) => /<loc>(.*?)<\/loc>/.exec(url)?.[1]);
+
+    expect(await locs("books-1")).toEqual([`${ORIGIN}/uz/book/1`, `${ORIGIN}/uz/book/2`]);
+    expect(await locs("authors")).toEqual([`${ORIGIN}/uz/author/author-1`]);
+    expect(await locs("publishers")).toEqual([
+      `${ORIGIN}/uz/publisher/publisher-1`,
+      `${ORIGIN}/ru/publisher/publisher-1`,
+      `${ORIGIN}/en/publisher/publisher-1`,
+    ]);
   });
 
   it("lists collections with their list page, once there are some", async () => {
