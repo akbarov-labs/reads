@@ -11,7 +11,7 @@ import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, FileX, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ShareLinks } from "@/components/ShareLinks";
-import { AskAiSection } from "@/components/AskAiSection";
+import { AskAiButton } from "@/components/AskAiSection";
 import { bookQuestion } from "@/lib/askAi";
 import { taqrizShareText } from "@/lib/share";
 import { ScoreBadge } from "@/components/ScoreBadge";
@@ -256,6 +256,15 @@ export default async function BookDetailPage({
                   </a>
                 </p>
               ) : null}
+
+              {/* What the description leaves out (often most of it), asked
+                  of an AI while the reader is still reading about the book. */}
+              <AskAiButton
+                question={bookQuestion(book, tAskAi)}
+                label={tAskAi("bookCta")}
+                hint={tAskAi("bookHint")}
+                className="mt-6"
+              />
 
               {/* Author and Translator Cards, each only when there is a name to show. */}
               {(book.author || book.translatorSlug) && (
@@ -551,9 +560,6 @@ export default async function BookDetailPage({
               </div>
             </section>
           )}
-
-          {/* Last, once the reader has seen what we have. */}
-          <AskAiSection question={bookQuestion(book, tAskAi)} className="mt-16 sm:mt-20 pt-12" />
         </Container>
       </main>
     </>

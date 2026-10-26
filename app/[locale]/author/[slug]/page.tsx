@@ -11,7 +11,7 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
 import { MetaLine } from "@/components/MetaLine";
-import { AskAiSection } from "@/components/AskAiSection";
+import { AskAiButton } from "@/components/AskAiSection";
 import { authorQuestion } from "@/lib/askAi";
 
 type PageParams = { locale: string; slug: string };
@@ -195,6 +195,15 @@ export default async function AuthorDetailPage({
                     </span>
                   )}
                 </div>
+
+                {/* The catalogue has a list of books but rarely a word about
+                    the writer: ask an AI, from the top of the page. */}
+                <AskAiButton
+                  question={authorQuestion(author, tAskAi)}
+                  label={tAskAi("authorCta")}
+                  hint={tAskAi("authorHint")}
+                  className="mt-6 max-w-xl"
+                />
               </div>
             </div>
           </div>
@@ -307,9 +316,6 @@ export default async function AuthorDetailPage({
               </div>
             </section>
           )}
-
-          {/* Last, once the reader has seen what we have. */}
-          <AskAiSection question={authorQuestion(author, tAskAi)} className="mt-16 sm:mt-20 pt-12" />
         </Container>
       </main>
     </>
