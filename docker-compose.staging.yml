@@ -15,11 +15,18 @@
 # docs/staging.md). Its `$` signs are written `$$` there, because compose
 # would otherwise try to read them as variables.
 
+# Docker keeps container logs forever unless told otherwise; cap every
+# service at 3 files of 10 MB. Applies to containers created after this lands.
+x-logging: &default-logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
 services:
   app:
     image: ${IMAGE:-ghcr.io/akbarov-labs/reads}:${IMAGE_TAG:-latest}
     container_name: reads-staging-app
     restart: unless-stopped
+    logging: *default-logging
     env_file: .env
     mem_limit: 256m
     networks:
