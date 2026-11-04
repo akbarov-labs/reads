@@ -17,7 +17,7 @@ import { ScoreBadge } from "@/components/ScoreBadge";
 import { ReaderReviews } from "@/components/ReaderReviews";
 import { QuoteBlock } from "@/components/QuoteBlock";
 import { ReaderCounts } from "@/components/ReaderCounts";
-import { botPlanUrl, botReviewUrl, botWantUrl } from "@/lib/bot";
+import { bookIsbn, botPlanUrl, botReviewRedirectPath, botWantUrl } from "@/lib/bot";
 import { storeLinks, storeRedirectPath } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
@@ -103,8 +103,7 @@ export default async function BookDetailPage({
   // genre) — the page no longer loads the whole catalogue to work it out.
   const relatedBooks = book.relatedBooks ?? [];
   const editions = book.editions ?? [];
-  // The bot finds the book by ISBN; any printing with one will do.
-  const isbn = editions.find((edition) => edition.isbn)?.isbn;
+  const isbn = bookIsbn(book);
   const botHref = botPlanUrl(isbn);
   const wantHref = botWantUrl(isbn);
   const pages = bookPages(book);
@@ -530,7 +529,7 @@ export default async function BookDetailPage({
             reviews={book.readerReviews ?? []}
             locale={locale}
             botHref={botHref}
-            reviewHref={botReviewUrl(isbn)}
+            reviewHref={botReviewRedirectPath(book.id, locale, isbn)}
             t={tDetail}
           />
 
