@@ -43,6 +43,21 @@ export function botReviewUrl(isbn?: string | null): string | null {
   return digits ? `${BOT_URL}?start=review_${digits}_${PARTNER}` : null;
 }
 
+/**
+ * Where a book page's "write a review" button points: this site's own
+ * redirect (app/go/review), which counts the click and sends the reader on
+ * to botReviewUrl. Null when the book has no usable ISBN, as there is then
+ * no review link to send them to.
+ */
+export function botReviewRedirectPath(bookId: string, locale: string, isbn?: string | null): string | null {
+  return isbnDigits(isbn) ? `/go/review/${encodeURIComponent(bookId)}?l=${encodeURIComponent(locale)}` : null;
+}
+
+/** The ISBN the bot finds a book by: any printing with one will do. */
+export function bookIsbn(book: { editions?: { isbn?: string | null }[] | null }): string | undefined {
+  return book.editions?.find((edition) => edition.isbn)?.isbn ?? undefined;
+}
+
 /** An ISBN's digits (and check digit X), or null when it can't be one. */
 function isbnDigits(isbn?: string | null): string | null {
   const digits = String(isbn ?? "").replace(/[^0-9Xx]/g, "");
