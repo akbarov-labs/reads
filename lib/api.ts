@@ -302,6 +302,8 @@ export interface BookFilters {
   perPage?: number;
   /** Title, author (either spelling) or an ISBN. */
   q?: string;
+  /** Only the book with an edition of exactly this ISBN. */
+  isbn?: string;
   author?: string;
   publisher?: string;
   translator?: string;
