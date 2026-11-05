@@ -27,7 +27,7 @@ export function ReaderReviews({
   const empty = !rating && reviews.length === 0;
 
   return (
-    <section className="mt-16 sm:mt-20 border-t border-stone-200 pt-12 sm:pt-16">
+    <section id="readers" className="mt-16 sm:mt-20 scroll-mt-24 border-t border-stone-200 pt-12 sm:pt-16">
       <div className="flex items-baseline justify-between gap-4">
         <div className="min-w-0">
           <h2 className="font-serif text-2xl text-zinc-900">{t("readersTitle")}</h2>

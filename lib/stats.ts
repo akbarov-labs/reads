@@ -10,9 +10,10 @@ import { clientIp } from "@/lib/clientIp";
 /**
  * "store": a store's search for a book. "publisher_order": an announcement's
  * order button. "ask_ai": a page's ask-AI button. "bot_review": a book
- * page's "write a review" button, into the bot.
+ * page's "write a review" button, into the bot. "shared_list": a title in a
+ * reader's monthly list, shared in Telegram, to the book's page here.
  */
-export type ClickKind = "store" | "publisher_order" | "ask_ai" | "bot_review";
+export type ClickKind = "store" | "publisher_order" | "ask_ai" | "bot_review" | "shared_list";
 
 /** What every report carries about the visitor. Reads-admin hashes it and keeps neither. */
 export interface Visitor {
