@@ -6,7 +6,10 @@
     "homeDescription": "Oʻzbek, rus va ingliz tilidagi kitoblar: mualliflar, tarjimonlar va nashriyotlar.",
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Til",
-    "brandSection": "katalog"
+    "brandSection": "katalog",
+    "botLink": "Telegram bot",
+    "botLinkLabel": "Kitoblarim botini Telegramda ochish",
+    "sectionsLabel": "Katalog boʻlimlari"
   },
   "home": {
     "empty": "Hozircha hech narsa qoʻshilmagan.",
