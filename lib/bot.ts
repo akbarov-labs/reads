@@ -13,6 +13,14 @@ export function botUrl(): string {
 }
 
 /**
+ * The header's link to the bot, under a partner name of its own so the bot's
+ * /stats can compare readers who came this way with those from book pages.
+ */
+export function botHeaderUrl(): string {
+  return `${BOT_URL}?start=src_${PARTNER}-header`;
+}
+
+/**
  * "Plan reading this book": the bot finds the book by ISBN and asks how many
  * days the reader wants. A book that isn't in the bot's catalogue yet just
  * starts the bot's usual questions. Falls back to the plain link when the

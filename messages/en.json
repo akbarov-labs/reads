@@ -6,7 +6,10 @@
     "homeDescription": "Books in Uzbek, Russian and English, with their authors, translators and publishers.",
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Language",
-    "brandSection": "catalogue"
+    "brandSection": "catalogue",
+    "botLink": "Telegram bot",
+    "botLinkLabel": "Open the Kitoblarim bot in Telegram",
+    "sectionsLabel": "Catalogue sections"
   },
   "home": {
     "empty": "Nothing here yet.",

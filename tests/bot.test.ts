@@ -1,11 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { botPlanUrl, botReviewUrl, botUrl, botWantUrl } from "@/lib/bot";
+import { botHeaderUrl, botPlanUrl, botReviewUrl, botUrl, botWantUrl } from "@/lib/bot";
 
 const FALLBACK = "https://t.me/kitob_javonim_bot?start=src_reads";
 
 describe("botUrl", () => {
   it("tags the plain link with the reads partner", () => {
     expect(botUrl()).toBe(FALLBACK);
+  });
+});
+
+describe("botHeaderUrl", () => {
+  it("has a partner name of its own, in the characters the bot accepts", () => {
+    expect(botHeaderUrl()).toBe("https://t.me/kitob_javonim_bot?start=src_reads-header");
+    expect(new URL(botHeaderUrl()).searchParams.get("start")).toMatch(/^src_[a-z0-9-]{1,32}$/);
   });
 });
 

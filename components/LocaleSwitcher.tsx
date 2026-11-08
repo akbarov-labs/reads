@@ -58,7 +58,7 @@ export function LocaleSwitcher() {
         className="flex cursor-pointer list-none items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-stone-100 hover:text-zinc-900 group-open:bg-stone-100 group-open:text-zinc-900 [&::-webkit-details-marker]:hidden"
       >
         <Globe aria-hidden="true" className="h-4 w-4 text-zinc-500" />
-        <span lang={locale}>{NAMES[locale]}</span>
+        <span lang={locale} className="hidden min-[360px]:inline">{NAMES[locale]}</span>
         <ChevronDown
           aria-hidden="true"
           className="h-3.5 w-3.5 text-zinc-500 transition-transform duration-200 group-open:rotate-180"
