@@ -3,6 +3,9 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { type PageItem, compactPageNumbers, pageNumbers } from "@/lib/pagination";
+
+const ARROW_CLASS = "flex h-9 min-w-9 items-center justify-center gap-1 text-sm sm:px-3";
 
 interface PaginationProps {
   currentPage: number;
@@ -31,101 +34,72 @@ export function Pagination({ currentPage, totalPages, basePath, query = {} }: Pa
     return search ? `${basePath}?${search}` : basePath;
   }
 
-  // Show at most 7 page buttons; collapse the middle with "…" when needed.
-  function getPageNumbers(): (number | "…")[] {
-    if (totalPages <= 7) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-    if (currentPage <= 4) {
-      return [1, 2, 3, 4, 5, "…", totalPages];
-    }
-    if (currentPage >= totalPages - 3) {
-      return [
-        1,
-        "…",
-        totalPages - 4,
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-        totalPages,
-      ];
-    }
-    return [
-      1,
-      "…",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      "…",
-      totalPages,
-    ];
+  function pageItems(items: PageItem[]) {
+    return items.map((page, i) =>
+      page === "…" ? (
+        <span
+          key={`ellipsis-${i}`}
+          className="w-9 h-9 flex items-center justify-center text-sm text-zinc-400"
+        >
+          …
+        </span>
+      ) : (
+        <Link
+          key={page}
+          href={pageHref(page)}
+          className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg font-medium transition-colors ${
+            page === currentPage
+              ? "bg-forest-700 text-white"
+              : "text-zinc-600 hover:bg-stone-100 hover:text-zinc-900"
+          }`}
+          aria-label={t("page", { page })}
+          aria-current={page === currentPage ? "page" : undefined}
+        >
+          {page}
+        </Link>
+      ),
+    );
   }
-
-  const pages = getPageNumbers();
 
   return (
     <nav
-      className="flex items-center justify-center gap-1 mt-12"
+      className="flex items-center justify-center gap-0.5 mt-12 sm:gap-1"
       aria-label={t("nav")}
     >
-      {/* Previous */}
+      {/* Previous: the word needs more room than a phone has */}
       {currentPage > 1 ? (
         <Link
           href={pageHref(currentPage - 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors"
+          className={`${ARROW_CLASS} font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors`}
           aria-label={t("previousPage")}
         >
           <ChevronLeft className="h-4 w-4" />
-          {t("previous")}
+          <span className="hidden sm:inline">{t("previous")}</span>
         </Link>
       ) : (
-        <span aria-hidden="true" className="invisible flex items-center gap-1 px-3 py-2 text-sm">
+        <span aria-hidden="true" className={`invisible ${ARROW_CLASS}`}>
           <ChevronLeft className="h-4 w-4" />
-          {t("previous")}
+          <span className="hidden sm:inline">{t("previous")}</span>
         </span>
       )}
 
-      {/* Page numbers */}
-      <div className="flex items-center gap-1">
-        {pages.map((page, i) =>
-          page === "…" ? (
-            <span
-              key={`ellipsis-${i}`}
-              className="w-9 h-9 flex items-center justify-center text-sm text-zinc-400"
-            >
-              …
-            </span>
-          ) : (
-            <Link
-              key={page}
-              href={pageHref(page)}
-              className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg font-medium transition-colors ${
-                page === currentPage
-                  ? "bg-forest-700 text-white"
-                  : "text-zinc-600 hover:bg-stone-100 hover:text-zinc-900"
-              }`}
-              aria-label={t("page", { page })}
-              aria-current={page === currentPage ? "page" : undefined}
-            >
-              {page}
-            </Link>
-          )
-        )}
-      </div>
+      {/* Page numbers: fewer on a phone. Only one of these two lists is ever displayed. */}
+      <div className="flex items-center gap-0.5 sm:hidden">{pageItems(compactPageNumbers(currentPage, totalPages))}</div>
+      <div className="hidden items-center gap-1 sm:flex">{pageItems(pageNumbers(currentPage, totalPages))}</div>
 
       {/* Next */}
       {currentPage < totalPages ? (
         <Link
           href={pageHref(currentPage + 1)}
-          className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors"
+          className={`${ARROW_CLASS} font-medium text-zinc-600 hover:text-zinc-900 hover:bg-stone-100 rounded-lg transition-colors`}
           aria-label={t("nextPage")}
         >
-          {t("next")}
+          <span className="hidden sm:inline">{t("next")}</span>
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span aria-hidden="true" className="invisible flex items-center gap-1 px-3 py-2 text-sm">
-          {t("next")}
+        <span aria-hidden="true" className={`invisible ${ARROW_CLASS}`}>
+          <span className="hidden sm:inline">{t("next")}</span>
           <ChevronRight className="h-4 w-4" />
         </span>
       )}
