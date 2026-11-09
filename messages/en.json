@@ -7,8 +7,8 @@
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Language",
     "brandSection": "catalogue",
-    "botLink": "Telegram bot",
-    "botLinkLabel": "Open the Kitoblarim bot in Telegram",
+    "recommendLink": "Recommend",
+    "recommendLinkLabel": "Choose your next book in the Telegram bot",
     "sectionsLabel": "Catalogue sections"
   },
   "home": {
@@ -26,7 +26,9 @@
     "authorsTitle": "Authors",
     "authorsSeeAll": "All authors",
     "publishersTitle": "Publishers",
-    "publishersSeeAll": "All publishers"
+    "publishersSeeAll": "All publishers",
+    "recommendPrompt": "Not sure what to read?",
+    "recommendPromptLink": "Our Telegram bot will pick a book"
   },
   "translators": {
     "pageTitle": "All Translators",

@@ -7,8 +7,8 @@
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Язык",
     "brandSection": "каталог",
-    "botLink": "Telegram-бот",
-    "botLinkLabel": "Открыть бот Kitoblarim в Telegram",
+    "recommendLink": "Что почитать",
+    "recommendLinkLabel": "Подобрать следующую книгу в Telegram-боте",
     "sectionsLabel": "Разделы каталога"
   },
   "home": {
@@ -26,7 +26,9 @@
     "authorsTitle": "Авторы",
     "authorsSeeAll": "Все авторы",
     "publishersTitle": "Издательства",
-    "publishersSeeAll": "Все издательства"
+    "publishersSeeAll": "Все издательства",
+    "recommendPrompt": "Не знаете, что почитать?",
+    "recommendPromptLink": "Telegram-бот подберёт книгу"
   },
   "translators": {
     "pageTitle": "Все переводчики",
