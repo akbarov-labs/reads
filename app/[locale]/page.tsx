@@ -29,7 +29,7 @@ import { QuoteBlock } from "@/components/QuoteBlock";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
-import { getPathname, Link } from "@/i18n/navigation";
+import { getPathname } from "@/i18n/navigation";
 
 export async function generateMetadata({
   params,
@@ -121,16 +121,6 @@ export default async function Home({
                 large
                 className="mt-8 max-w-xl"
               />
-              {/* …and those who came for no book in particular, a way in. */}
-              <p className="mt-4 text-sm text-zinc-500">
-                {t("recommendPrompt")}{" "}
-                <Link
-                  href="/recommend"
-                  className="font-medium text-forest-700 underline-offset-4 transition-colors hover:text-forest-800 hover:underline"
-                >
-                  {t("recommendLink")} →
-                </Link>
-              </p>
             </div>
 
             {/* Stats row */}

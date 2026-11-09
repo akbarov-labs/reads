@@ -5,7 +5,6 @@
  */
 export const SITE_SECTIONS = [
   { href: "/books", detail: "/book", labelKey: "statBooks" },
-  { href: "/recommend", detail: "/recommend", labelKey: "navRecommend" },
   { href: "/authors", detail: "/author", labelKey: "statAuthors" },
   { href: "/translators", detail: "/translator", labelKey: "statTranslators" },
   { href: "/publishers", detail: "/publisher", labelKey: "statPublishers" },
