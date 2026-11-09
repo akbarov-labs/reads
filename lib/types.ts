@@ -221,6 +221,12 @@ export interface Publisher {
   logoUrl?: string | null;
   imageUrl?: string | null;
   websiteUrl?: string | null;
+  /** The publisher's public Telegram channel, a bare username. */
+  telegramChannel?: string | null;
+  phone?: string | null;
+  /** An Instagram username. */
+  instagram?: string | null;
+  address?: string | null;
   bookCount: number;
   /** A few recent covers, for the card. */
   coverUrls?: string[];

@@ -407,9 +407,32 @@ describe("publisherPageGraph", () => {
       url,
       name: "Sharq",
       logo: `${PUBLIC}/storage/logos/sharq.png`,
-      sameAs: "https://sharq.uz/",
+      sameAs: ["https://sharq.uz/"],
     });
     expect(emptyValues(graph)).toEqual([]);
+  });
+
+  it("adds the phone, address and every profile when the publisher has them", () => {
+    const full = json(publisherPageGraph({
+      publisher: {
+        slug: "sharq",
+        name: "Sharq",
+        bookCount: 3,
+        websiteUrl: "https://sharq.uz",
+        telegramChannel: "sharq_nmak",
+        instagram: "sharq.nmak",
+        phone: "+998 71 233 26 54",
+        address: "Toshkent, Buyuk Turon koʻchasi 41",
+      },
+      locale: "uz",
+      path: "/publisher/sharq",
+      trail: [],
+    }));
+    expect(byType(full, "Organization")).toMatchObject({
+      telephone: "+998 71 233 26 54",
+      address: { "@type": "PostalAddress", streetAddress: "Toshkent, Buyuk Turon koʻchasi 41", addressCountry: "UZ" },
+      sameAs: ["https://t.me/sharq_nmak", "https://www.instagram.com/sharq.nmak/", "https://sharq.uz/"],
+    });
   });
 
   it("cross-references by @id and lists the breadcrumb in order", () => {

@@ -3,6 +3,7 @@ import { publicAssetUrl } from "@/lib/api";
 import { HREFLANG, SITE_NAME, SITE_URL, absoluteUrl, type Locale } from "@/lib/site";
 import { routing } from "@/i18n/routing";
 import { safeExternalUrl } from "@/lib/safeUrl";
+import { publisherLinks } from "@/lib/publisherLinks";
 
 type Node = Record<string, unknown>;
 
@@ -492,6 +493,7 @@ export function publisherPageGraph({
 }) {
   const url = absoluteUrl(locale, path);
   const orgId = `${url}#publisher`;
+  const sameAs = publisherLinks(publisher).map((link) => link.href);
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -504,7 +506,11 @@ export function publisherPageGraph({
         description: publisher.bio ?? undefined,
         foundingDate: publisher.establishedYear ? String(publisher.establishedYear) : undefined,
         logo: publicAssetUrl(publisher.logoUrl),
-        sameAs: safeExternalUrl(publisher.websiteUrl) ?? undefined,
+        telephone: publisher.phone ?? undefined,
+        address: publisher.address
+          ? { "@type": "PostalAddress", streetAddress: publisher.address, addressCountry: "UZ" }
+          : undefined,
+        sameAs: sameAs.length > 0 ? sameAs : undefined,
       }),
       breadcrumbNode(locale, url, trail),
     ],
