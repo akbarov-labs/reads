@@ -255,6 +255,7 @@
     "metaTitle": "{name} — книги издательства",
     "metaDescription": "Книги издательства {name} и их авторы.",
     "metaDescriptionTranslated": "Книги издательства {name}, их авторы и переводчики.",
+    "contacts": "Контакты",
     "bookTranslator": "Переводчик: {name}",
     "translators": "Переводчики",
     "authors": "Авторы"

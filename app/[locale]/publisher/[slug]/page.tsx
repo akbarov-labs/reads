@@ -10,7 +10,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { publisherPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
-import { ArrowLeft, ArrowRight, BookOpen, Building2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Building2, MapPin, Phone } from "lucide-react";
+import { publisherLinks } from "@/lib/publisherLinks";
 import { MetaLine } from "@/components/MetaLine";
 import { AskAiSection } from "@/components/AskAiSection";
 
@@ -24,6 +25,12 @@ function publisherColor(name: string): string {
   const colors = ["from-forest-50 to-forest-100 text-forest-800"];
   const idx = name.charCodeAt(0) % colors.length;
   return colors[idx];
+}
+
+function truncate(text: string, max: number): string {
+  const flat = text.replace(/\s+/g, " ").trim();
+  if (flat.length <= max) return flat;
+  return `${flat.slice(0, flat.lastIndexOf(" ", max - 1)).replace(/[,;:—–-]$/, "")}…`;
 }
 
 export async function generateStaticParams(): Promise<PageParams[]> {
@@ -47,7 +54,10 @@ export async function generateMetadata({
   // Translators get a mention only when the page has some to show.
   const translated = books.items.some((book) => book.translatorSlug);
   const title = t("metaTitle", { name: publisher.name });
-  const description = t(translated ? "metaDescriptionTranslated" : "metaDescription", { name: publisher.name });
+  // The publisher's own About text says more than the template, when it has one.
+  const description = publisher.bio
+    ? truncate(publisher.bio, 160)
+    : t(translated ? "metaDescriptionTranslated" : "metaDescription", { name: publisher.name });
   // Its own address in each language; otherwise it inherits the home page's.
   const alternates = localeAlternates(locale as Locale, `/publisher/${slug}`);
   return {
@@ -103,6 +113,12 @@ export default async function PublisherDetailPage({
   const authors = Array.from(authorsMap.values());
   const translators = Array.from(translatorsMap.values());
   const gradientClass = publisherColor(publisher.name);
+  const contacts = [
+    ...(publisher.phone
+      ? [{ href: `tel:${publisher.phone.replace(/[^\d+]/g, "")}`, label: publisher.phone, external: false }]
+      : []),
+    ...publisherLinks(publisher).map((link) => ({ href: link.href, label: link.label, external: true })),
+  ];
 
   return (
     <>
@@ -170,12 +186,47 @@ export default async function PublisherDetailPage({
                     {publisher.name}
                   </h1>
 
+                  {publisher.bio ? (
+                    <p className="mt-3 max-w-2xl text-left text-[15px] leading-relaxed text-zinc-700 whitespace-pre-line">
+                      {publisher.bio}
+                    </p>
+                  ) : null}
+
                   <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white/90 shadow-sm px-3.5 py-1 text-xs font-medium text-zinc-800">
                       <BookOpen className="h-3.5 w-3.5 text-zinc-500" />
                       {tPublisher("totalBooks", { count: publisher.bookCount })}
                     </span>
                   </div>
+
+                  {contacts.length > 0 ? (
+                    <ul
+                      className="mt-4 flex flex-wrap justify-center sm:justify-start gap-2"
+                      aria-label={tPublisher("contacts")}
+                    >
+                      {contacts.map((contact) => (
+                        <li key={contact.href}>
+                          <a
+                            href={contact.href}
+                            target={contact.external ? "_blank" : undefined}
+                            rel={contact.external ? "noopener" : undefined}
+                            className="inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white/70 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:border-forest-400 hover:text-forest-800"
+                          >
+                            {contact.external ? null : <Phone aria-hidden="true" className="h-3.5 w-3.5" />}
+                            {contact.label}
+                            {contact.external ? <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" /> : null}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+
+                  {publisher.address ? (
+                    <p className="mt-3 inline-flex items-start gap-1.5 text-sm text-zinc-600">
+                      <MapPin aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                      <span>{publisher.address}</span>
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </div>
