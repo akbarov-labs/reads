@@ -331,6 +331,33 @@ export async function getBooks(
   return toPaginated(result, normalizeBook);
 }
 
+export const RECOMMEND_LENGTHS = ["short", "medium", "long"] as const;
+export const RECOMMEND_PICKS = ["popular", "new"] as const;
+
+export interface RecommendAnswers {
+  /** A category slug; a parent includes its children. */
+  genre?: string;
+  length?: (typeof RECOMMEND_LENGTHS)[number];
+  pick?: (typeof RECOMMEND_PICKS)[number];
+  page?: number;
+}
+
+/**
+ * The "recommend me a book" quiz: eight books with a cover for what the
+ * reader picked, most read about and liked first (or newest first).
+ */
+export async function getRecommendations(
+  locale: string,
+  answers: RecommendAnswers
+): Promise<Paginated<BookWithTranslator>> {
+  const result = await apiFetch<ApiPage<ApiCatalogBook>>(
+    `/recommend?${query({ locale, ...answers })}`,
+    [BOOKS_TAG]
+  );
+
+  return toPaginated(result, normalizeBook);
+}
+
 export interface ListFilters {
   page?: number;
   perPage?: number;

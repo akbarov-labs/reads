@@ -4,7 +4,8 @@ import en from "@/messages/en.json";
 import ru from "@/messages/ru.json";
 import uz from "@/messages/uz.json";
 
-const [books, authors] = SITE_SECTIONS;
+const books = SITE_SECTIONS.find((s) => s.href === "/books")!;
+const authors = SITE_SECTIONS.find((s) => s.href === "/authors")!;
 
 describe("isInSection", () => {
   it("matches a section's list and its entries", () => {
