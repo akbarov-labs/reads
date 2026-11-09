@@ -125,6 +125,7 @@ async function pageEntries(): Promise<Entry[]> {
   return [
     { path: "", lastModified: newest },
     { path: "/books" },
+    { path: "/recommend" },
     { path: "/authors" },
     { path: "/publishers" },
     { path: "/translators", lastModified: newest },
