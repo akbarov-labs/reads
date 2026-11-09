@@ -7,8 +7,8 @@
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Til",
     "brandSection": "katalog",
-    "botLink": "Telegram bot",
-    "botLinkLabel": "Kitoblarim botini Telegramda ochish",
+    "recommendLink": "Tavsiya",
+    "recommendLinkLabel": "Telegram botda keyingi kitobingizni tanlash",
     "sectionsLabel": "Katalog boʻlimlari"
   },
   "home": {
@@ -27,9 +27,8 @@
     "authorsSeeAll": "Barcha mualliflar",
     "publishersTitle": "Nashriyotlar",
     "publishersSeeAll": "Barcha nashriyotlar",
-    "navRecommend": "Tavsiya",
     "recommendPrompt": "Nima oʻqishni bilmayapsizmi?",
-    "recommendLink": "Kitob tanlab beramiz"
+    "recommendPromptLink": "Telegram bot kitob tanlab beradi"
   },
   "translators": {
     "pageTitle": "Barcha Tarjimonlar",
@@ -51,26 +50,6 @@
     "allCategories": "Hammasi",
     "count": "{count} ta kitob",
     "editions": "{count} ta nashr"
-  },
-  "recommend": {
-    "pageTitle": "Kitob tavsiyasi: nima oʻqisam ekan?",
-    "heading": "Qanday kitob oʻqimoqchisiz?",
-    "pageDescription": "Janr, hajm va didingizni tanlang: kitobxonlar eng koʻp oʻqigan va yoqtirgan kitoblardan 8 tasini tanlab beramiz.",
-    "genre": "Janr",
-    "length": "Hajmi",
-    "pick": "Qaysilari?",
-    "any": "Farqi yoʻq",
-    "short": "Qisqa (200 betgacha)",
-    "medium": "Oʻrtacha (200–400 bet)",
-    "long": "Katta (400 betdan koʻp)",
-    "popular": "Kitobxonlar sevgani",
-    "new": "Yangi nashrlar",
-    "submit": "Kitob topish",
-    "resultsTitle": "Siz uchun tanladik",
-    "more": "Boshqasini koʻrsat",
-    "reset": "Qaytadan tanlash",
-    "empty": "Bunday kitob topilmadi. Janr yoki hajmni oʻzgartirib koʻring.",
-    "howRanked": "«Kitobxonlar sevgani»: saytdagi koʻrishlar, Telegram botdagi oʻquvchilar va baholar boʻyicha."
   },
   "search": {
     "label": "Takliflar",

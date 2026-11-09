@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { botHeaderUrl, botPlanUrl, botReviewUrl, botUrl, botWantUrl } from "@/lib/bot";
+import { botPlanUrl, botRecommendUrl, botReviewUrl, botUrl, botWantUrl } from "@/lib/bot";
 
 const FALLBACK = "https://t.me/kitob_javonim_bot?start=src_reads";
 
@@ -9,10 +9,12 @@ describe("botUrl", () => {
   });
 });
 
-describe("botHeaderUrl", () => {
-  it("has a partner name of its own, in the characters the bot accepts", () => {
-    expect(botHeaderUrl()).toBe("https://t.me/kitob_javonim_bot?start=src_reads-header");
-    expect(new URL(botHeaderUrl()).searchParams.get("start")).toMatch(/^src_[a-z0-9-]{1,32}$/);
+describe("botRecommendUrl", () => {
+  it("opens the bot's next-book questions, naming where on the site it was tapped", () => {
+    expect(botRecommendUrl("header")).toBe("https://t.me/kitob_javonim_bot?start=next_reads-header");
+    expect(botRecommendUrl("home")).toBe("https://t.me/kitob_javonim_bot?start=next_reads-home");
+    // The bot's next_<partner>: a partner name is letters, digits and "-", 32 at most.
+    expect(new URL(botRecommendUrl("header")).searchParams.get("start")).toMatch(/^next_[a-z0-9-]{1,32}$/);
   });
 });
 

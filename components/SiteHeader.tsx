@@ -1,19 +1,20 @@
-import { Send } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Container } from "@/components/Container";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { BrandMark } from "@/components/BrandMark";
 import { SiteNav } from "@/components/SiteNav";
-import { botHeaderUrl } from "@/lib/bot";
+import { botRecommendUrl } from "@/lib/bot";
 
 /**
- * The Kitoblarim lockup, as on the bot's landing page: the mark tile, the
- * name, and here a quiet word saying which part of Kitoblarim this is. Then
- * the catalogue's sections and the way to the bot.
+ * The Kitoblarim lockup, as on the bot's landing page: the mark tile and the
+ * name. Then the catalogue's sections and "Tavsiya", which opens the bot at
+ * choosing the reader's next book: recommendations come from there, where
+ * the reader's shelf is.
  *
- * A phone's row is full, so there the quiet word goes, the bot link is its
- * icon alone, and the sections get a row of their own under the header. That
+ * A phone's row is full, so there "Tavsiya" is its icon alone, and the
+ * sections get a row of their own under the header. That
  * row isn't sticky: it scrolls away, leaving the reading space as it was and
  * anchors clear of the header.
  */
@@ -27,8 +28,6 @@ export async function SiteHeader({ subtitle }: { subtitle?: string }) {
           <Link href="/" className="group inline-flex min-w-0 shrink-0 items-center gap-2.5 rounded-lg">
             <BrandMark size={32} className="shrink-0 transition-transform duration-300 ease-out group-hover:-rotate-3" />
             <span className="text-[1.125rem] font-bold tracking-[-0.025em] text-zinc-900">Kitoblarim</span>
-            <span aria-hidden="true" className="hidden h-4 w-px bg-stone-300 sm:block" />
-            <span className="hidden text-sm font-medium text-zinc-500 sm:inline">{t("brandSection")}</span>
           </Link>
           <SiteNav className="hidden min-w-0 flex-1 lg:ml-2 lg:flex" />
           <div className="flex shrink-0 items-center gap-1 text-sm text-zinc-600 sm:gap-4">
@@ -38,14 +37,14 @@ export async function SiteHeader({ subtitle }: { subtitle?: string }) {
               </span>
             )}
             <a
-              href={botHeaderUrl()}
+              href={botRecommendUrl("header")}
               target="_blank"
               rel="noopener"
-              aria-label={t("botLinkLabel")}
+              aria-label={t("recommendLinkLabel")}
               className="inline-flex min-h-9 min-w-9 items-center justify-center gap-1.5 rounded-lg font-medium text-forest-700 transition-colors duration-200 hover:bg-forest-100 sm:px-2"
             >
-              <Send aria-hidden="true" className="h-4 w-4 shrink-0" />
-              <span className="hidden whitespace-nowrap sm:inline">{t("botLink")}</span>
+              <Sparkles aria-hidden="true" className="h-4 w-4 shrink-0" />
+              <span className="hidden whitespace-nowrap sm:inline">{t("recommendLink")}</span>
             </a>
             <LocaleSwitcher />
           </div>

@@ -223,7 +223,6 @@ describe("sitemapEntries", () => {
     expect(paths).toEqual([
       "",
       "/books",
-      "/recommend",
       "/authors",
       "/publishers",
       "/translators",

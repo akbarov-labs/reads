@@ -7,8 +7,8 @@
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Language",
     "brandSection": "catalogue",
-    "botLink": "Telegram bot",
-    "botLinkLabel": "Open the Kitoblarim bot in Telegram",
+    "recommendLink": "Recommend",
+    "recommendLinkLabel": "Choose your next book in the Telegram bot",
     "sectionsLabel": "Catalogue sections"
   },
   "home": {
@@ -27,9 +27,8 @@
     "authorsSeeAll": "All authors",
     "publishersTitle": "Publishers",
     "publishersSeeAll": "All publishers",
-    "navRecommend": "Recommend",
     "recommendPrompt": "Not sure what to read?",
-    "recommendLink": "Let us pick a book"
+    "recommendPromptLink": "Our Telegram bot will pick a book"
   },
   "translators": {
     "pageTitle": "All Translators",
@@ -51,26 +50,6 @@
     "allCategories": "All",
     "count": "{count} books",
     "editions": "{count} editions"
-  },
-  "recommend": {
-    "pageTitle": "Book recommendations: what to read next",
-    "heading": "What would you like to read?",
-    "pageDescription": "Pick a genre, a length and what matters more to you: we'll suggest 8 books readers read and like most.",
-    "genre": "Genre",
-    "length": "Length",
-    "pick": "Which ones?",
-    "any": "Any",
-    "short": "Short (under 200 pages)",
-    "medium": "Medium (200–400 pages)",
-    "long": "Long (over 400 pages)",
-    "popular": "Readers' favourites",
-    "new": "New editions",
-    "submit": "Find books",
-    "resultsTitle": "Picked for you",
-    "more": "Show others",
-    "reset": "Start over",
-    "empty": "No books like that. Try another genre or length.",
-    "howRanked": "Readers' favourites: by views on this site, and readers and ratings in the Telegram bot."
   },
   "search": {
     "label": "Suggestions",

@@ -13,11 +13,13 @@ export function botUrl(): string {
 }
 
 /**
- * The header's link to the bot, under a partner name of its own so the bot's
- * /stats can compare readers who came this way with those from book pages.
+ * "Tavsiya": the bot goes straight to choosing the reader's next book (its
+ * "Keyingi kitobim" questions, docs/bookseller.md there), from what is on
+ * their shelf. Each place on the site has a partner name of its own, so the
+ * bot's /stats can tell the header from the home page and from book pages.
  */
-export function botHeaderUrl(): string {
-  return `${BOT_URL}?start=src_${PARTNER}-header`;
+export function botRecommendUrl(place: "header" | "home"): string {
+  return `${BOT_URL}?start=next_${PARTNER}-${place}`;
 }
 
 /**
