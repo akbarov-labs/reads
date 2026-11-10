@@ -10,8 +10,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { publisherPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
-import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Building2, MapPin, Phone } from "lucide-react";
-import { publisherLinks } from "@/lib/publisherLinks";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Building2, MapPin, Phone, ShoppingBag } from "lucide-react";
+import { publisherLinks, publisherShop } from "@/lib/publisherLinks";
 import { MetaLine } from "@/components/MetaLine";
 import { AskAiSection } from "@/components/AskAiSection";
 
@@ -113,6 +113,7 @@ export default async function PublisherDetailPage({
   const authors = Array.from(authorsMap.values());
   const translators = Array.from(translatorsMap.values());
   const gradientClass = publisherColor(publisher.name);
+  const shop = publisherShop(publisher);
   const contacts = [
     ...(publisher.phone
       ? [{ href: `tel:${publisher.phone.replace(/[^\d+]/g, "")}`, label: publisher.phone, external: false }]
@@ -181,7 +182,7 @@ export default async function PublisherDetailPage({
                   </div>
                 )}
 
-                <div className="flex-1">
+                <div className="w-full min-w-0 flex-1">
                   <h1 className="font-serif text-3xl sm:text-4xl text-zinc-900 font-semibold">
                     {publisher.name}
                   </h1>
@@ -198,6 +199,20 @@ export default async function PublisherDetailPage({
                       {tPublisher("totalBooks", { count: publisher.bookCount })}
                     </span>
                   </div>
+
+                  {shop ? (
+                    <a
+                      href={shop.href}
+                      target="_blank"
+                      rel="noopener"
+                      className="mt-4 inline-flex max-w-full items-center gap-2 whitespace-nowrap rounded-full bg-forest-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-forest-800"
+                    >
+                      <ShoppingBag aria-hidden="true" className="h-4 w-4 shrink-0" />
+                      {tPublisher("officialShop")}
+                      <span className="hidden min-w-0 truncate font-normal text-white/80 sm:inline">{shop.label}</span>
+                      <ArrowUpRight aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    </a>
+                  ) : null}
 
                   {contacts.length > 0 ? (
                     <ul

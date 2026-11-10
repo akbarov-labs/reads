@@ -223,6 +223,8 @@ export interface Publisher {
   websiteUrl?: string | null;
   /** The publisher's public Telegram channel, a bare username. */
   telegramChannel?: string | null;
+  /** Where to buy straight from the publisher: a t.me, Uzum or own-shop URL. */
+  shopUrl?: string | null;
   phone?: string | null;
   /** An Instagram username. */
   instagram?: string | null;
