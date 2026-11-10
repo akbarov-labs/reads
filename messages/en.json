@@ -235,7 +235,10 @@
     "storeSoldOut": "Sold out",
     "storeLeft": "Only {count} left",
     "storePrice": "{price} so'm",
-    "whereLeadOther": "Search other stores:"
+    "whereLeadOther": "Search other stores:",
+    "storeCheapest": "cheapest",
+    "storePublisher": "publisher",
+    "storesMore": "{count, plural, one {# more store} other {# more stores}}"
   },
   "authorDetail": {
     "back": "Back to authors",
