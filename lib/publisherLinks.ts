@@ -28,5 +28,31 @@ export function publisherLinks(publisher: Publisher): PublisherLink[] {
     links.push({ kind: "website", href: website, label: new URL(website).hostname.replace(/^www\./, "") });
   }
 
-  return links;
+  const shop = publisherShop(publisher);
+  return shop ? links.filter((link) => !sameUrl(link.href, shop.href)) : links;
+}
+
+/**
+ * The publisher's official shop, shown apart from its other links since
+ * buying there is often cheapest. Labelled by where it is: "@name" for a
+ * Telegram shop, "Uzum Market", or the site's own address.
+ */
+export function publisherShop(publisher: Publisher): { href: string; label: string } | null {
+  const href = safeExternalUrl(publisher.shopUrl);
+  if (!href) return null;
+
+  const url = new URL(href);
+  const host = url.hostname.replace(/^www\./, "");
+  const telegram = host === "t.me" ? url.pathname.replace(/^\/|\/$/g, "") : null;
+
+  if (telegram !== null) {
+    return TELEGRAM_USERNAME.test(telegram) ? { href, label: `@${telegram}` } : null;
+  }
+
+  return { href, label: host === "uzum.uz" ? "Uzum Market" : host };
+}
+
+function sameUrl(a: string, b: string): boolean {
+  const key = (url: string) => url.toLowerCase().replace(/^https?:\/\/(www\.)?/, "").replace(/\/+$/, "");
+  return key(a) === key(b);
 }

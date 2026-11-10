@@ -256,6 +256,7 @@
     "metaDescription": "Книги издательства {name} и их авторы.",
     "metaDescriptionTranslated": "Книги издательства {name}, их авторы и переводчики.",
     "contacts": "Контакты",
+    "officialShop": "Официальный магазин",
     "bookTranslator": "Переводчик: {name}",
     "translators": "Переводчики",
     "authors": "Авторы"

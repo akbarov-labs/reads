@@ -256,6 +256,7 @@
     "metaDescription": "Books published by {name}, and their authors.",
     "metaDescriptionTranslated": "Books published by {name}, with their authors and translators.",
     "contacts": "Contacts",
+    "officialShop": "Official shop",
     "bookTranslator": "Translator: {name}",
     "translators": "Translators",
     "authors": "Authors"
