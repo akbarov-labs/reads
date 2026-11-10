@@ -21,6 +21,7 @@ import { bookIsbn, botPlanUrl, botReviewRedirectPath, botWantUrl } from "@/lib/b
 import { storeLinks, storeRedirectPath } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
+import { bookPublishers } from "@/lib/bookPublishers";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { bookPages, bookSnippet, bookSeoTitle, bookTitle, readingTime, sourceIsOriginal } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
@@ -103,6 +104,10 @@ export default async function BookDetailPage({
   // genre) — the page no longer loads the whole catalogue to work it out.
   const relatedBooks = book.relatedBooks ?? [];
   const editions = book.editions ?? [];
+  // Every house that printed the book, so the facts at the top agree with
+  // each publisher's page that lists it.
+  const publishers = bookPublishers(book);
+  const severalPublishers = publishers.length > 1;
   const isbn = bookIsbn(book);
   const botHref = botPlanUrl(isbn);
   const wantHref = botWantUrl(isbn);
@@ -321,33 +326,40 @@ export default async function BookDetailPage({
 
               {/* Publication Specs: only the facts we have. A row of dashes
                   tells the reader nothing and makes the page look unfinished. */}
-              {(book.publisher || book.year || book.sourceLanguage) ? (
+              {(publishers.length > 0 || book.year || book.sourceLanguage) ? (
               <div className="mt-8 rounded-2xl border border-stone-200 bg-stone-50/70 p-6">
                 <h2 className="font-serif text-lg font-medium text-zinc-900 mb-4">
                   {tDetail("details")}
                 </h2>
                 <dl className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
-                  {book.publisher && (
-                  <div>
+                  {publishers.length > 0 && (
+                  <div className={severalPublishers ? "col-span-2" : undefined}>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("publisher")}
                     </dt>
-                    <dd className="mt-1 font-serif text-base text-zinc-900">
-                      {book.publisherSlug ? (
+                    {publishers.map((publisher) => (
+                    <dd key={publisher.slug ?? publisher.name} className="mt-1 font-serif text-base text-zinc-900">
+                      {publisher.slug ? (
                         <Link
-                          href={`/publisher/${book.publisherSlug}`}
+                          href={`/publisher/${publisher.slug}`}
                           className="hover:text-forest-800 underline-offset-4 hover:underline transition-colors"
                         >
-                          {book.publisher}
+                          {publisher.name}
                         </Link>
                       ) : (
-                        book.publisher
+                        publisher.name
                       )}
+                      {/* Each house with its own year; one year for the
+                          book would belong to only one of them. */}
+                      {severalPublishers && publisher.year ? (
+                        <span className="text-zinc-400"> · {publisher.year}</span>
+                      ) : null}
                     </dd>
+                    ))}
                   </div>
                   )}
 
-                  {book.year ? (
+                  {book.year && !severalPublishers ? (
                   <div>
                     <dt className="text-xs uppercase tracking-wider text-zinc-400 font-medium">
                       {tDetail("year")}
