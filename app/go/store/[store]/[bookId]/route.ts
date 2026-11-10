@@ -1,10 +1,12 @@
 /**
  * A book page's link to a store goes through here: the click is counted
- * (lib/stats.ts) and the reader is sent on to that store's search for the
- * book's title. A plain redirect, so it works without JavaScript.
+ * (lib/stats.ts) and the reader is sent on to that store's page for the
+ * book when the catalogue has read one, else to its search for the book's
+ * title. A plain redirect, so it works without JavaScript.
  *
- * The store address is built here from the book's own title, never taken
- * from the URL, so this can't be used to send anyone anywhere else.
+ * The address comes from the catalogue (only a page on that store's own
+ * site) or is built from the book's title, never taken from the URL, so
+ * this can't be used to send anyone anywhere else.
  *
  * Outside [locale] and the locale middleware (middleware.ts), and disallowed
  * in robots.txt: it is not a page.
@@ -14,7 +16,7 @@ import { routing } from "@/i18n/routing";
 import { getBookById } from "@/lib/api";
 import { isCountable, logClick } from "@/lib/stats";
 import { clientIp } from "@/lib/clientIp";
-import { storeSearchUrl } from "@/lib/stores";
+import { storePageUrl, storeSearchUrl } from "@/lib/stores";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,7 +46,10 @@ async function destination(store: string, bookId: string, lang: string): Promise
 
   try {
     const book = await getBookById(bookId, lang);
-    return book ? storeSearchUrl(store, book.uzbekTitle) : null;
+    if (!book) return null;
+
+    const page = book.stores?.find((offer) => offer.store === store);
+    return storePageUrl(store, page?.url) ?? storeSearchUrl(store, book.uzbekTitle);
   } catch {
     // The catalogue is unreachable. The reader still came for this store:
     // its search, empty, is better than an error page.
