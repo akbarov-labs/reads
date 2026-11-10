@@ -235,7 +235,10 @@
     "storeSoldOut": "Нет в наличии",
     "storeLeft": "Осталось {count} шт.",
     "storePrice": "{price} сум",
-    "whereLeadOther": "Поищите в других магазинах:"
+    "whereLeadOther": "Поищите в других магазинах:",
+    "storeCheapest": "дешевле всего",
+    "storePublisher": "издательство",
+    "storesMore": "Ещё {count, plural, one {# магазин} few {# магазина} many {# магазинов} other {# магазина}}"
   },
   "authorDetail": {
     "back": "Назад к авторам",

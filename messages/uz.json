@@ -235,7 +235,10 @@
     "storeSoldOut": "Tugagan",
     "storeLeft": "Soʻnggi {count} ta",
     "storePrice": "{price} soʻm",
-    "whereLeadOther": "Boshqa doʻkonlarda izlang:"
+    "whereLeadOther": "Boshqa doʻkonlarda izlang:",
+    "storeCheapest": "eng arzon",
+    "storePublisher": "nashriyot",
+    "storesMore": "Yana {count} ta doʻkon"
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",

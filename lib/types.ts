@@ -163,6 +163,8 @@ export interface StoreOffer {
   left: number | null;
   /** When its page was read. */
   checkedAt: string;
+  /** The publisher's own shop, selling its own book. */
+  fromPublisher?: boolean;
 }
 
 /** One library holding a book, as the book page lists it. */
