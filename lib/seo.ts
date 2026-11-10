@@ -215,3 +215,38 @@ export function bookDescription(book: BookWithTranslator, t: Translate): string 
     .filter(Boolean)
     .join(" ");
 }
+
+/** How long a search result's snippet runs before it is cut off. */
+const SNIPPET_LENGTH = 160;
+
+/**
+ * What a search result and the page's structured data say about a book.
+ * On the Uzbek page, a book with a description of its own leads with it:
+ * that says what the book is about, which the facts line can't. A text
+ * copied from a shop (`descriptionSource`) is that shop's words, which
+ * search engines already have, so those books keep the facts line, as do
+ * the Russian and English pages, since descriptions are written in Uzbek.
+ */
+export function bookSnippet(book: BookWithTranslator, t: Translate, locale: string): string {
+  const own = locale === "uz" && !book.descriptionSource ? (book.description ?? "").replace(/\s+/g, " ").trim() : "";
+  return own ? excerpt(own, SNIPPET_LENGTH) : bookDescription(book, t);
+}
+
+/**
+ * The text up to `max` characters: whole sentences when the ones that fit
+ * say enough, otherwise cut at a word with an ellipsis.
+ */
+export function excerpt(text: string, max: number): string {
+  if (text.length <= max) return text;
+
+  const head = text.slice(0, max + 1);
+  let end = -1;
+  for (const match of head.matchAll(/[.!?…]["”»)]?(?=\s|$)/g)) {
+    end = (match.index ?? 0) + match[0].length;
+  }
+  if (end >= max * 0.45 && end <= max) return head.slice(0, end);
+
+  const space = head.lastIndexOf(" ", max - 1);
+  const cut = head.slice(0, space > 0 ? space : max - 1).replace(/[\s,;:—–-]+$/, "");
+  return `${cut}…`;
+}
