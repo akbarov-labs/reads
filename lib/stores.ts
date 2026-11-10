@@ -9,12 +9,29 @@
  * Store clicks page, so it stays the same if a store's name or address
  * changes.
  */
-const STORES: { key: string; name: string; search: (query: string) => string }[] = [
-  { key: "asaxiy", name: "Asaxiy", search: (query) => `https://asaxiy.uz/product?key=${query}` },
-  { key: "book.uz", name: "Book.uz", search: (query) => `https://book.uz/catalog?search=${query}` },
-  { key: "hilol-nashr", name: "Hilol-nashr", search: (query) => `https://hilolnashr.uz/index.php?route=product/search&search=${query}` },
-  { key: "qamar", name: "Qamar", search: (query) => `https://qamar.uz/?q=${query}` },
+const STORES: { key: string; name: string; host: string; search: (query: string) => string }[] = [
+  { key: "asaxiy", name: "Asaxiy", host: "asaxiy.uz", search: (query) => `https://asaxiy.uz/product?key=${query}` },
+  { key: "book.uz", name: "Book.uz", host: "book.uz", search: (query) => `https://book.uz/catalog?search=${query}` },
+  { key: "hilol-nashr", name: "Hilol-nashr", host: "hilolnashr.uz", search: (query) => `https://hilolnashr.uz/index.php?route=product/search&search=${query}` },
+  { key: "qamar", name: "Qamar", host: "qamar.uz", search: (query) => `https://qamar.uz/?q=${query}` },
 ];
+
+/**
+ * A store's own page for the book (from the catalogue's nightly read), or
+ * null unless it is an https page on that store's own site: the redirect
+ * must never send a reader anywhere else.
+ */
+export function storePageUrl(key: string, url: string | null | undefined): string | null {
+  const store = STORES.find((candidate) => candidate.key === key);
+  if (!store || !url) return null;
+
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" && parsed.hostname === store.host ? parsed.toString() : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
  * What to search the stores for: the title without its bracketed parts.
@@ -39,8 +56,9 @@ export function storeSearchUrl(key: string, title: string): string | null {
 
 /**
  * Where a book page's store link points: this site's own redirect, which
- * counts the click and sends the reader on to the store's search. A plain
- * link, so it counts without JavaScript too.
+ * counts the click and sends the reader on to the store's page for the
+ * book when the catalogue knows it, else to its search. A plain link, so
+ * it counts without JavaScript too.
  */
 export function storeRedirectPath(key: string, bookId: string, locale: string): string {
   return `/go/store/${encodeURIComponent(key)}/${encodeURIComponent(bookId)}?l=${encodeURIComponent(locale)}`;

@@ -228,7 +228,14 @@
     "libAllOut": "hammasi band",
     "libChecked": "{date} holatiga",
     "libStale": "maʼlumot eskirgan boʻlishi mumkin",
-    "libMore": "Yana {count} ta kutubxona"
+    "libMore": "Yana {count} ta kutubxona",
+    "storesTitle": "Doʻkonlarda",
+    "storesNote": "Narx va mavjudlik doʻkon sahifasidan olingan. Xariddan oldin doʻkonda tekshiring.",
+    "storeInStock": "Bor",
+    "storeSoldOut": "Tugagan",
+    "storeLeft": "Soʻnggi {count} ta",
+    "storePrice": "{price} soʻm",
+    "whereLeadOther": "Boshqa doʻkonlarda izlang:"
   },
   "authorDetail": {
     "back": "Mualliflarga qaytish",

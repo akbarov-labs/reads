@@ -57,6 +57,32 @@ describe("GET /go/store/[store]/[bookId]", () => {
     expect(getBookById).toHaveBeenCalledWith("42", "ru");
   });
 
+  it("sends the reader to the store's own page for the book when the catalogue has read one", async () => {
+    getBookById.mockResolvedValue({
+      id: "42",
+      uzbekTitle: "Tazarru (Tergovchi)",
+      stores: [{ store: "qamar", name: "Qamar", url: "https://qamar.uz/kitob/tazarru", price: 65000, inStock: true, left: null, checkedAt: "2026-11-11T00:00:00Z" }],
+    });
+
+    expect((await visit("qamar", "42")).headers.get("Location")).toBe("https://qamar.uz/kitob/tazarru");
+    // Another store still gets its search.
+    expect((await visit("book.uz", "42")).headers.get("Location")).toBe("https://book.uz/catalog?search=Tazarru");
+  });
+
+  it("never follows a store page that is not on that store's own site", async () => {
+    getBookById.mockResolvedValue({
+      id: "42",
+      uzbekTitle: "Tazarru",
+      stores: [
+        { store: "qamar", name: "Qamar", url: "https://evil.example/qamar.uz", price: null, inStock: true, left: null, checkedAt: "2026-11-11T00:00:00Z" },
+        { store: "asaxiy", name: "Asaxiy", url: "http://asaxiy.uz/product/tazarru", price: null, inStock: true, left: null, checkedAt: "2026-11-11T00:00:00Z" },
+      ],
+    });
+
+    expect((await visit("qamar", "42")).headers.get("Location")).toBe("https://qamar.uz/?q=Tazarru");
+    expect((await visit("asaxiy", "42")).headers.get("Location")).toBe("https://asaxiy.uz/product?key=Tazarru");
+  });
+
   it("is never cached or indexed", async () => {
     const response = await visit("asaxiy", "42");
 

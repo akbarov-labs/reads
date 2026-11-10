@@ -228,7 +228,14 @@
     "libAllOut": "all out on loan",
     "libChecked": "as of {date}",
     "libStale": "may be out of date",
-    "libMore": "{count, plural, one {# more library} other {# more libraries}}"
+    "libMore": "{count, plural, one {# more library} other {# more libraries}}",
+    "storesTitle": "In stores",
+    "storesNote": "Price and stock are from the store's own page. Check with the store before you buy.",
+    "storeInStock": "In stock",
+    "storeSoldOut": "Sold out",
+    "storeLeft": "Only {count} left",
+    "storePrice": "{price} so'm",
+    "whereLeadOther": "Search other stores:"
   },
   "authorDetail": {
     "back": "Back to authors",

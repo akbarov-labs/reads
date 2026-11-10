@@ -228,7 +228,14 @@
     "libAllOut": "все на руках",
     "libChecked": "на {date}",
     "libStale": "данные могли устареть",
-    "libMore": "Ещё {count, plural, one {# библиотека} few {# библиотеки} many {# библиотек} other {# библиотеки}}"
+    "libMore": "Ещё {count, plural, one {# библиотека} few {# библиотеки} many {# библиотек} other {# библиотеки}}",
+    "storesTitle": "В магазинах",
+    "storesNote": "Цена и наличие — со страницы магазина. Перед покупкой уточните в магазине.",
+    "storeInStock": "В наличии",
+    "storeSoldOut": "Нет в наличии",
+    "storeLeft": "Осталось {count} шт.",
+    "storePrice": "{price} сум",
+    "whereLeadOther": "Поищите в других магазинах:"
   },
   "authorDetail": {
     "back": "Назад к авторам",

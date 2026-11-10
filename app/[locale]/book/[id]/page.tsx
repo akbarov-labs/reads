@@ -27,6 +27,7 @@ import { bookPages, bookSnippet, bookSeoTitle, bookTitle, readingTime, sourceIsO
 import { BrandMark } from "@/components/BrandMark";
 import { BookViewBeacon } from "@/components/BookViewBeacon";
 import { LibraryAvailability } from "@/components/LibraryAvailability";
+import { StoreAvailability } from "@/components/StoreAvailability";
 import { BookDescription } from "@/components/BookDescription";
 
 type PageParams = { locale: string; id: string };
@@ -415,9 +416,16 @@ export default async function BookDetailPage({
                 <h2 id="where-to-get" className="font-serif text-lg text-zinc-900">
                   {tDetail("whereTitle")}
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{tDetail("whereLead")}</p>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {storeLinks(book.uzbekTitle).map((store) => (
+                {/* Stores whose own page for it was read lately: price and
+                    stock, linking to that page. Absent when none was. */}
+                <StoreAvailability offers={book.stores} bookId={book.id} locale={locale} t={tDetail} className="mt-4" />
+                <p className="mt-4 text-sm leading-relaxed text-zinc-600">
+                  {tDetail(book.stores?.length ? "whereLeadOther" : "whereLead")}
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {storeLinks(book.uzbekTitle)
+                    .filter((store) => !book.stores?.some((offer) => offer.store === store.key))
+                    .map((store) => (
                     <li key={store.key}>
                       {/* Through /go/store, which counts the click and
                           redirects to the same search. A plain <a>, not

@@ -145,6 +145,24 @@ export interface BookWithTranslator extends Book {
   relatedBooks?: BookWithTranslator[];
   /** Book page only: published libraries that hold it, free copies first. */
   libraries?: LibraryAvailability[];
+  /** Book page only: stores whose page for it was read lately, in stock first. */
+  stores?: StoreOffer[];
+}
+
+/** A store's own page for the book, as last read: price and whether it had it. */
+export interface StoreOffer {
+  /** The store's key in lib/stores.ts ("qamar", "asaxiy"). */
+  store: string;
+  name: string;
+  url: string;
+  /** Whole so'm. */
+  price: number | null;
+  /** Null when the page didn't say. */
+  inStock: boolean | null;
+  /** "Only N left", when the store says so. */
+  left: number | null;
+  /** When its page was read. */
+  checkedAt: string;
 }
 
 /** One library holding a book, as the book page lists it. */
