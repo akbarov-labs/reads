@@ -22,7 +22,7 @@ import { storeLinks, storeRedirectPath } from "@/lib/stores";
 import { JsonLd } from "@/components/JsonLd";
 import { bookPageGraph } from "@/lib/jsonld";
 import { localeAlternates, type Locale } from "@/lib/site";
-import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingTime, sourceIsOriginal } from "@/lib/seo";
+import { bookPages, bookSnippet, bookSeoTitle, bookTitle, readingTime, sourceIsOriginal } from "@/lib/seo";
 import { BrandMark } from "@/components/BrandMark";
 import { BookViewBeacon } from "@/components/BookViewBeacon";
 import { LibraryAvailability } from "@/components/LibraryAvailability";
@@ -47,7 +47,7 @@ export async function generateMetadata({
   if (!book) return { robots: { index: false, follow: false } };
 
   const title = bookTitle(book);
-  const description = bookDescription(book, t);
+  const description = bookSnippet(book, t, locale);
   const cover = publicAssetUrl(book.coverUrl);
 
   return {
@@ -115,7 +115,7 @@ export default async function BookDetailPage({
           book,
           locale: locale as Locale,
           path: `/book/${id}`,
-          description: bookDescription(book, tDetail),
+          description: bookSnippet(book, tDetail, locale),
           trail: [
             { name: "Kitoblarim", path: "" },
             { name: tDetail("breadcrumbBooks"), path: "/books" },

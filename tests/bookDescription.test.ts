@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createTranslator } from "next-intl";
-import { bookDescription, bookPages, bookSeoTitle, bookTitle, readingDays, sourceIsOriginal } from "@/lib/seo";
+import { bookDescription, bookPages, bookSeoTitle, bookSnippet, bookTitle, excerpt, readingDays, sourceIsOriginal } from "@/lib/seo";
 import type { BookWithTranslator } from "@/lib/types";
 import en from "@/messages/en.json";
 import ru from "@/messages/ru.json";
@@ -200,5 +200,46 @@ describe("readingDays", () => {
     expect(readingDays(20)).toBe(1);
     expect(readingDays(21)).toBe(2);
     expect(readingDays(304)).toBe(16);
+  });
+});
+
+describe("bookSnippet", () => {
+  const described: BookWithTranslator = {
+    ...book,
+    description:
+      "Ernest Xemingueyning “Chol va dengiz” qissasi (1952) — keksa baliqchi Santyago haqida.\n\nU sakson to'rt kun quruq qaytganidan keyin dengizga yolg'iz chiqadi va ulkan baliq bilan uch kunlik kurashga kirishadi. Bu sabr, g'urur va mag'lubiyatda ham yengilmaslik haqida.",
+  };
+
+  it("leads with the book's own description on the Uzbek page, in whole sentences", () => {
+    const text = bookSnippet(described, t, "uz");
+    expect(text).toBe("Ernest Xemingueyning “Chol va dengiz” qissasi (1952) — keksa baliqchi Santyago haqida.");
+    expect(text.length).toBeLessThanOrEqual(160);
+  });
+
+  it("keeps the facts line for a shop's text, a book with none, and the other languages", () => {
+    const facts = bookDescription(book, t);
+    expect(bookSnippet({ ...described, descriptionSource: { name: "Asaxiy", url: "https://asaxiy.uz/x" } }, t, "uz")).toBe(facts);
+    expect(bookSnippet({ ...book, description: "  " }, t, "uz")).toBe(facts);
+    expect(bookSnippet(described, t, "ru")).toBe(facts);
+    expect(bookSnippet(described, t, "en")).toBe(facts);
+  });
+});
+
+describe("excerpt", () => {
+  it("returns short text as it is", () => {
+    expect(excerpt("Qisqa matn.", 160)).toBe("Qisqa matn.");
+  });
+
+  it("cuts at a word with an ellipsis when no sentence ends in time", () => {
+    const long = "So'z ".repeat(60).trim();
+    const text = excerpt(long, 160);
+    expect(text.endsWith("…")).toBe(true);
+    expect(text.length).toBeLessThanOrEqual(160);
+    expect(text).not.toMatch(/\s…$/);
+  });
+
+  it("does not stop at a sentence that says too little", () => {
+    const text = excerpt(`Kitob. ${"Uzun gap davom etadi ".repeat(12)}`, 160);
+    expect(text.endsWith("…")).toBe(true);
   });
 });
