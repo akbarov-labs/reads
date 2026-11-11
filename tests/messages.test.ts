@@ -4,10 +4,12 @@ import en from "@/messages/en.json";
 import ru from "@/messages/ru.json";
 import uz from "@/messages/uz.json";
 
-type Tree = { [key: string]: string | Tree };
+/** A namespace; lists (a page's questions, its steps) are numbered keys here. */
+type Value = string | Tree | Value[];
+type Tree = { [key: string]: Value };
 
-/** Every message as "namespace.key" → text. */
-function flatten(tree: Tree, prefix = ""): Record<string, string> {
+/** Every message as "namespace.key" → text, a list's items as "key.0", "key.1"… */
+function flatten(tree: Tree | Value[], prefix = ""): Record<string, string> {
   return Object.fromEntries(
     Object.entries(tree).flatMap(([key, value]) =>
       typeof value === "string" ? [[`${prefix}${key}`, value]] : Object.entries(flatten(value, `${prefix}${key}.`)),

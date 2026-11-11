@@ -227,6 +227,7 @@ describe("sitemapEntries", () => {
       "/publishers",
       "/translators",
       "/taqrizchilar",
+      "/bot",
       "/translator/shown",
       "/translator/no-seo",
       "/taqrizchi/critic",

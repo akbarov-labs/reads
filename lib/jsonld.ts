@@ -569,3 +569,67 @@ export function libraryPageGraph({
     ],
   };
 }
+
+type BotPageInput = {
+  locale: Locale;
+  path: string;
+  name: string;
+  description: string;
+  botUrl: string;
+  faq: { q: string; a: string }[];
+  steps: { title: string; body: string }[];
+  trail: { name: string; path: string }[];
+};
+
+/**
+ * The bot's own page: what Kitoblarim is (a free Telegram app), the three
+ * steps to start, and the page's questions and answers, all of which are on
+ * the page as visible text. No rating: there is no real one to state.
+ */
+export function botPageGraph({ locale, path, name, description, botUrl, faq, steps, trail }: BotPageInput) {
+  const url = absoluteUrl(locale, path);
+  const appId = `${url}#app`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      pageNode("WebPage", locale, url, name, appId, description),
+      {
+        "@type": "SoftwareApplication",
+        "@id": appId,
+        name: SITE_NAME,
+        alternateName: "@kitob_javonim_bot",
+        description,
+        url: botUrl,
+        applicationCategory: "LifestyleApplication",
+        operatingSystem: "Telegram",
+        inLanguage: routing.locales.map((code) => HREFLANG[code]),
+        offers: { "@type": "Offer", price: 0, priceCurrency: "UZS" },
+        publisher: { "@id": ORGANIZATION_ID },
+      },
+      {
+        "@type": "HowTo",
+        "@id": `${url}#howto`,
+        name,
+        step: steps.map((step, index) => ({
+          "@type": "HowToStep",
+          position: index + 1,
+          name: step.title,
+          text: step.body,
+        })),
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        url,
+        inLanguage: HREFLANG[locale],
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+      breadcrumbNode(locale, url, trail),
+    ],
+  };
+}
