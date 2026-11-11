@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { authorPageGraph, bookPageGraph, languageCodes, publisherPageGraph, siteGraph, translatorGraph } from "@/lib/jsonld";
+import { authorPageGraph, bookPageGraph, botPageGraph, languageCodes, publisherPageGraph, siteGraph, translatorGraph } from "@/lib/jsonld";
 import type { Author, Book, BookWithTranslator, Publisher, Translator } from "@/lib/types";
 
 const ORIGIN = "https://kitoblarim.uz";
@@ -493,5 +493,41 @@ describe("translatorGraph books' language", () => {
 
   it("is Uzbek for a credited translator with no pairs", () => {
     expect(languages(profile([], [book("a", "Rus tili")]))).toEqual(["uz"]);
+  });
+});
+
+describe("botPageGraph", () => {
+  const graph = botPageGraph({
+    locale: "uz",
+    path: "/bot",
+    name: "Kitoblarim boti",
+    description: "Bepul bot.",
+    botUrl: "https://t.me/kitob_javonim_bot?start=src_reads-botpage",
+    faq: [{ q: "Pullikmi?", a: "Yoʻq, bepul." }],
+    steps: [{ title: "Botni oching", body: "Telegramda." }],
+    trail: [
+      { name: "Kitoblarim", path: "" },
+      { name: "Kitoblarim boti", path: "/bot" },
+    ],
+  }) as Graph;
+
+  it("describes the bot as a free Telegram app, with no rating to claim", () => {
+    const app = byType(graph, "SoftwareApplication");
+    expect(app).toMatchObject({
+      operatingSystem: "Telegram",
+      offers: { "@type": "Offer", price: 0, priceCurrency: "UZS" },
+      url: "https://t.me/kitob_javonim_bot?start=src_reads-botpage",
+    });
+    expect(app).not.toHaveProperty("aggregateRating");
+    expect(byType(graph, "WebPage")).toMatchObject({ mainEntity: { "@id": app["@id"] } });
+  });
+
+  it("gives the page's questions and steps as FAQPage and HowTo", () => {
+    expect(byType(graph, "FAQPage")).toMatchObject({
+      mainEntity: [{ "@type": "Question", name: "Pullikmi?", acceptedAnswer: { "@type": "Answer", text: "Yoʻq, bepul." } }],
+    });
+    expect(byType(graph, "HowTo")).toMatchObject({
+      step: [{ "@type": "HowToStep", position: 1, name: "Botni oching", text: "Telegramda." }],
+    });
   });
 });

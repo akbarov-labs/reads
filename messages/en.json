@@ -393,5 +393,140 @@
     "stale": "This list has not been updated for a while: ask the library whether the book is in.",
     "noBooks": "Nothing found.",
     "map": "On the map"
+  },
+  "botPage": {
+    "pageTitle": "Kitoblarim bot — finish the books you start",
+    "pageDescription": "Books left half-read? Kitoblarim is a free Telegram bot that splits a book into a few pages a day, reminds you daily and picks your next book.",
+    "breadcrumb": "Kitoblarim bot",
+    "heroHeadline": "You start a book.\nIt stops halfway.",
+    "heroSubline": "Kitoblarim is a free Telegram bot. It splits a book into a few pages a day, reminds you every day and takes you to the last page.",
+    "cta": "Open in Telegram",
+    "how": "How it works",
+    "facts": [
+      "Free",
+      "Nothing to install",
+      "In Uzbek, Russian and English"
+    ],
+    "mock": {
+      "label": "A sample daily reminder from the bot",
+      "now": "Reading now",
+      "book": "Starry Nights",
+      "author": "Pirimqul Qodirov",
+      "progress": "186 / 544 pages",
+      "today": "Today: 12 pages",
+      "bot": "Kitoblarim",
+      "message": "Today's goal: 12 pages of “Starry Nights”. 358 pages to go.",
+      "time": "20:30",
+      "button1": "Read 12 pages",
+      "button2": "Read 24 pages"
+    },
+    "painsTitle": "Sound familiar?",
+    "painsLead": "Most books are dropped not because they're bad, but because there's no daily habit. Kitoblarim builds exactly that habit.",
+    "pains": [
+      {
+        "pain": "The book stalls at page 40.",
+        "fix": "The bot splits it into a daily goal: 300 pages in 20 days is 15 pages a day. A big book becomes small steps."
+      },
+      {
+        "pain": "You forget where you stopped.",
+        "fix": "Log what you read with one button, right in the chat. The bot remembers the page and shows what's left."
+      },
+      {
+        "pain": "“I'll read tomorrow,” and tomorrow there's no time either.",
+        "fix": "The bot reminds you at the time you choose. It stays quiet on days you read, and if you fall behind, the goal is spread over the days left."
+      },
+      {
+        "pain": "You don't know what to read next.",
+        "fix": "The bot suggests three books based on your shelf and ratings."
+      },
+      {
+        "pain": "Reading alone is dull.",
+        "fix": "Run a reading marathon in your Telegram group, or share one shelf with your family."
+      },
+      {
+        "pain": "You can't recall how much you've read.",
+        "fix": "Every finished book on one shelf, by year, and at the end of each month a list ready to share."
+      }
+    ],
+    "stepsTitle": "Three steps, one minute",
+    "steps": [
+      {
+        "title": "Open the bot",
+        "body": "@kitob_javonim_bot in Telegram. No sign-up, no password."
+      },
+      {
+        "title": "Pick a book and a deadline",
+        "body": "Type its title, scan its barcode, or jump in from a book's page in this catalogue with one tap. You choose how many days."
+      },
+      {
+        "title": "A few pages a day",
+        "body": "The bot tells you the daily goal and reminds you. You read and log it with one button."
+      }
+    ],
+    "example": "For example, “Oʻtkan kunlar” (Bygone Days) has 384 pages. Finish it in 30 days, and the bot plans 13 pages a day.",
+    "featuresTitle": "What else the bot does",
+    "features": [
+      {
+        "title": "Your shelf",
+        "body": "Want to read, reading, read: every book in its place. Search works in Latin and Cyrillic."
+      },
+      {
+        "title": "Barcode scanner",
+        "body": "Point the camera at the ISBN: title, author and page count fill in by themselves."
+      },
+      {
+        "title": "Audiobooks",
+        "body": "Listen right in Telegram; the bot remembers where you stopped."
+      },
+      {
+        "title": "Reading marathon",
+        "body": "Add the bot to a group: an admin starts it with /marafon, members check in daily with one button."
+      },
+      {
+        "title": "Family shelf",
+        "body": "Invite your family with one link: the books are shared, and everyone keeps their own reading status."
+      },
+      {
+        "title": "Month in review",
+        "body": "Once a month, a list of your books, days and pages, ready to share."
+      }
+    ],
+    "catalogueTitle": "From the catalogue to the bot in one tap",
+    "catalogueBody": "Every book page on kitoblarim.uz has a “Make a reading plan in Telegram” button. The bot finds the book itself and only asks how many days you want. A review you write in the bot appears here, on the book's page, once an editor approves it.",
+    "catalogueLink": "Choose a book",
+    "faqTitle": "Questions and answers",
+    "faq": [
+      {
+        "q": "What is the Kitoblarim bot?",
+        "a": "Kitoblarim is a free bot and mini app inside Telegram. It helps you finish the book you started: it splits the book into a daily goal, reminds you every day and keeps what you've read on one shelf. In Telegram: @kitob_javonim_bot."
+      },
+      {
+        "q": "Is the bot free?",
+        "a": "Yes. No sign-up and no card details: your Telegram account is enough."
+      },
+      {
+        "q": "Can I get a book's PDF in the bot?",
+        "a": "No. Kitoblarim doesn't hand out book files. You can buy the book in a shop or read it free in a library: each book's page shows where it's sold, for how much, and which libraries have it. Audiobooks shared with permission can be played in the bot."
+      },
+      {
+        "q": "Will the reminders be annoying?",
+        "a": "A reminder comes at the time you choose, and only if you haven't read yet that day. If you ignore three in a row, the bot stops reminding you until you come back. You can also turn them off in Settings."
+      },
+      {
+        "q": "Do I need to download anything?",
+        "a": "No. Everything runs inside Telegram, on your phone and on your computer."
+      },
+      {
+        "q": "What if my book isn't in the bot?",
+        "a": "Enter its title and page count yourself, or scan its barcode. Once a moderator checks it, the book joins the catalogue for other readers too."
+      },
+      {
+        "q": "Can we run a reading marathon in a group?",
+        "a": "Yes. Add the bot to the group, and an admin picks a length (7, 14 or 30 days) and a daily goal with /marafon. The bot posts every day, members check in with one button, and a ranking comes out every week. The bot doesn't read the group's messages."
+      }
+    ],
+    "finalTitle": "Start your first book today.",
+    "finalBody": "Free, right in Telegram, in a minute.",
+    "footerLink": "How the bot works"
   }
 }

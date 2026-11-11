@@ -13,6 +13,14 @@ export function botUrl(): string {
 }
 
 /**
+ * The buttons on this site's page about the bot (/bot). Their own partner
+ * name, so the bot's /stats shows how many readers that page brings.
+ */
+export function botPageUrl(): string {
+  return `${BOT_URL}?start=src_${PARTNER}-botpage`;
+}
+
+/**
  * "Tavsiya": the bot goes straight to choosing the reader's next book (its
  * "Keyingi kitobim" questions, docs/bookseller.md there), from what is on
  * their shelf. Each place on the site has a partner name of its own, so the

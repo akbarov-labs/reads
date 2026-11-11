@@ -129,6 +129,7 @@ async function pageEntries(): Promise<Entry[]> {
     { path: "/publishers" },
     { path: "/translators", lastModified: newest },
     { path: "/taqrizchilar" },
+    { path: "/bot" },
     ...indexable.map((translator) => ({ path: `/translator/${translator.slug}`, lastModified: translator.updatedAt })),
     ...taqrizchilar.map((taqrizchi) => ({ path: `/taqrizchi/${taqrizchi.slug}`, lastModified: taqrizchi.updatedAt })),
     ...taqrizchilar.flatMap((taqrizchi) =>

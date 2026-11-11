@@ -393,5 +393,140 @@
     "stale": "Roʻyxat uzoq vaqt yangilanmagan: kitob borligini kutubxonadan soʻrab oling.",
     "noBooks": "Hech narsa topilmadi.",
     "map": "Xaritada"
+  },
+  "botPage": {
+    "pageTitle": "Kitoblarim boti — kitobni oxirigacha oʻqing",
+    "pageDescription": "Boshlagan kitobingiz yarim yoʻlda qolyaptimi? Kitoblarim — Telegramdagi bepul bot: kunlik normani hisoblaydi, har kuni eslatadi, keyingi kitobni tanlaydi.",
+    "breadcrumb": "Kitoblarim boti",
+    "heroHeadline": "Kitobni boshlaysiz.\nU esa yarim yoʻlda qoladi.",
+    "heroSubline": "Kitoblarim — Telegramdagi bepul bot. U kitobni kuniga bir necha betga boʻlib beradi, har kuni eslatadi va oxirgi sahifagacha olib boradi.",
+    "cta": "Telegramda ochish",
+    "how": "Qanday ishlaydi",
+    "facts": [
+      "Bepul",
+      "Oʻrnatish shart emas",
+      "Oʻzbek, rus va ingliz tilida"
+    ],
+    "mock": {
+      "label": "Botdagi kunlik eslatma namunasi",
+      "now": "Hozir oʻqilmoqda",
+      "book": "Yulduzli tunlar",
+      "author": "Pirimqul Qodirov",
+      "progress": "186 / 544 bet",
+      "today": "Bugun: 12 bet",
+      "bot": "Kitoblarim",
+      "message": "Bugungi norma: 12 bet, «Yulduzli tunlar». Oxirigacha 358 bet qoldi.",
+      "time": "20:30",
+      "button1": "12 bet oʻqidim",
+      "button2": "24 bet oʻqidim"
+    },
+    "painsTitle": "Tanish holatmi?",
+    "painsLead": "Kitob koʻpincha yomon boʻlgani uchun emas, kunlik odat boʻlmagani uchun chala qoladi. Kitoblarim aynan shu odatni quradi.",
+    "pains": [
+      {
+        "pain": "Kitob 40-betda qolib ketadi.",
+        "fix": "Bot kitobni kunlik normaga boʻladi: 300 bet 20 kunda — kuniga 15 bet. Katta kitob kichik qadamlarga aylanadi."
+      },
+      {
+        "pain": "Qayerda toʻxtaganingiz esdan chiqadi.",
+        "fix": "Oʻqiganingizni chatning oʻzida bir tugma bilan belgilaysiz. Bot sahifani eslab qoladi va qancha qolganini koʻrsatadi."
+      },
+      {
+        "pain": "«Ertaga oʻqiyman» deysiz, ertaga ham vaqt topilmaydi.",
+        "fix": "Siz tanlagan vaqtda bot eslatadi. Oʻqigan kuningiz jim turadi, ortda qolsangiz norma qolgan kunlarga qayta taqsimlanadi."
+      },
+      {
+        "pain": "Keyin nimani oʻqishni bilmaysiz.",
+        "fix": "«Keyingi kitobim» javoningiz va baholaringizga qarab uchta kitob taklif qiladi."
+      },
+      {
+        "pain": "Yolgʻiz oʻqish zerikarli.",
+        "fix": "Telegram guruhingizda kitob marafoni oʻtkazing yoki oila bilan umumiy javon tuting."
+      },
+      {
+        "pain": "Qancha kitob oʻqiganingizni bilmaysiz.",
+        "fix": "Oʻqiganlaringiz yillar boʻyicha bitta javonda, oy oxirida esa ulashishga tayyor roʻyxat."
+      }
+    ],
+    "stepsTitle": "Uch qadam, bir daqiqa",
+    "steps": [
+      {
+        "title": "Botni oching",
+        "body": "Telegramda @kitob_javonim_bot. Roʻyxatdan oʻtish ham, parol ham kerak emas."
+      },
+      {
+        "title": "Kitob va muddatni tanlang",
+        "body": "Nomini yozing, shtrix-kodini skanerlang yoki shu katalogdagi kitob sahifasidan bir bosishda oʻting. Necha kunda oʻqishni oʻzingiz belgilaysiz."
+      },
+      {
+        "title": "Har kuni bir necha bet",
+        "body": "Bot kunlik normani aytadi va eslatib turadi. Siz oʻqiysiz va bir tugma bilan belgilaysiz."
+      }
+    ],
+    "example": "Masalan, «Oʻtkan kunlar» 384 bet. 30 kunda tugataman desangiz, bot kuniga 13 betdan reja tuzadi.",
+    "featuresTitle": "Botda yana nimalar bor",
+    "features": [
+      {
+        "title": "Javoningiz",
+        "body": "Oʻqiyman, oʻqiyapman, oʻqidim: har bir kitob oʻz joyida. Lotin yoki kirillda qidirsangiz ham topiladi."
+      },
+      {
+        "title": "Shtrix-kod skaneri",
+        "body": "ISBN kodini kameraga tuting: nomi, muallifi va sahifalar soni oʻzi toʻladi."
+      },
+      {
+        "title": "Audiokitoblar",
+        "body": "Telegramning oʻzida tinglang, bot toʻxtagan joyingizni eslab qoladi."
+      },
+      {
+        "title": "Kitob marafoni",
+        "body": "Botni guruhga qoʻshing: admin /marafon bilan boshlaydi, aʼzolar har kuni bir tugma bilan belgilaydi."
+      },
+      {
+        "title": "Oilaviy javon",
+        "body": "Yaqinlaringizni bitta havola bilan taklif qiling: kitoblar umumiy, oʻqish holati esa har kimniki oʻziniki."
+      },
+      {
+        "title": "Oy yakuni",
+        "body": "Oyiga bir roʻyxat: oʻqigan kitoblaringiz, kunlaringiz va sahifalaringiz, ulashishga tayyor."
+      }
+    ],
+    "catalogueTitle": "Katalogdan botga bir bosishda",
+    "catalogueBody": "Kitoblarim.uz dagi har bir kitob sahifasida «Oʻqish rejasini Telegramda tuzing» tugmasi bor. Bot kitobni oʻzi topadi va faqat necha kunda oʻqishingizni soʻraydi. Botda yozgan taqrizingiz esa muharrir tasdiqlagach, shu yerda, kitob sahifasida chiqadi.",
+    "catalogueLink": "Kitob tanlash",
+    "faqTitle": "Savollar va javoblar",
+    "faq": [
+      {
+        "q": "Kitoblarim boti nima?",
+        "a": "Kitoblarim — Telegram ichida ishlaydigan bepul bot va mini-ilova. U boshlagan kitobingizni oxirigacha oʻqishga yordam beradi: kitobni kunlik normaga boʻladi, har kuni eslatib turadi va oʻqiganlaringizni bitta javonda saqlaydi. Telegramda: @kitob_javonim_bot."
+      },
+      {
+        "q": "Bot pullikmi?",
+        "a": "Yoʻq, bepul. Roʻyxatdan oʻtish ham, karta maʼlumotlari ham kerak emas: Telegram akkauntingiz yetarli."
+      },
+      {
+        "q": "Botdan kitobning PDF faylini olsa boʻladimi?",
+        "a": "Yoʻq. Kitoblarim kitob fayllarini bermaydi. Kitobni doʻkondan olishingiz yoki kutubxonada bepul oʻqishingiz mumkin: kitob sahifasida qaysi doʻkonda qanchaga sotilishi va qaysi kutubxonalarda borligi yozilgan. Ruxsat bilan ulashilgan audiokitoblarni esa botda tinglash mumkin."
+      },
+      {
+        "q": "Eslatmalar bezovta qilmaydimi?",
+        "a": "Eslatma siz tanlagan vaqtda va faqat oʻsha kuni hali oʻqimagan boʻlsangiz keladi. Ketma-ket uch marta javob bermasangiz, bot qaytib kelguningizcha eslatma yubormaydi. Sozlamalarda butunlay oʻchirib qoʻyish ham mumkin."
+      },
+      {
+        "q": "Biror narsani yuklab olish kerakmi?",
+        "a": "Yoʻq. Hammasi Telegramning oʻzida ishlaydi: telefonda ham, kompyuterda ham."
+      },
+      {
+        "q": "Kitobim botda boʻlmasa-chi?",
+        "a": "Nomi va sahifalar sonini qoʻlda kiriting yoki shtrix-kodini skanerlang. Moderator tekshirgach, kitob boshqa oʻquvchilar uchun ham katalogga qoʻshiladi."
+      },
+      {
+        "q": "Guruhda kitob marafoni oʻtkazsa boʻladimi?",
+        "a": "Ha. Botni guruhga qoʻshing, admin esa /marafon buyrugʻi bilan muddatni (7, 14 yoki 30 kun) va kunlik normani tanlaydi. Bot har kuni post joylaydi, aʼzolar bir tugma bilan belgilaydi, har hafta reyting eʼlon qilinadi. Bot guruhdagi yozishmalarni oʻqimaydi."
+      }
+    ],
+    "finalTitle": "Birinchi kitobingizni bugun boshlang.",
+    "finalBody": "Bepul, Telegramning oʻzida, bir daqiqada.",
+    "footerLink": "Bot qanday ishlaydi"
   }
 }
