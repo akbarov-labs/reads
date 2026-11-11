@@ -187,6 +187,12 @@ export default async function PublisherDetailPage({
                     {publisher.name}
                   </h1>
 
+                  {publisher.motto?.trim() ? (
+                    <p className="mt-2 font-serif text-lg italic text-forest-800">
+                      «{publisher.motto.trim().replace(/^[«"“]+|[»"”]+$/g, "")}»
+                    </p>
+                  ) : null}
+
                   {publisher.bio ? (
                     <p className="mt-3 max-w-2xl text-left text-[15px] leading-relaxed text-zinc-700 whitespace-pre-line">
                       {publisher.bio}

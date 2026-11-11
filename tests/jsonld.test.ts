@@ -423,6 +423,7 @@ describe("publisherPageGraph", () => {
         instagram: "sharq.nmak",
         phone: "+998 71 233 26 54",
         address: "Toshkent, Buyuk Turon koʻchasi 41",
+        motto: "Kitob — bilim manbai!",
       },
       locale: "uz",
       path: "/publisher/sharq",
@@ -430,6 +431,7 @@ describe("publisherPageGraph", () => {
     }));
     expect(byType(full, "Organization")).toMatchObject({
       telephone: "+998 71 233 26 54",
+      slogan: "Kitob — bilim manbai!",
       address: { "@type": "PostalAddress", streetAddress: "Toshkent, Buyuk Turon koʻchasi 41", addressCountry: "UZ" },
       sameAs: ["https://t.me/sharq_nmak", "https://www.instagram.com/sharq.nmak/", "https://sharq.uz/"],
     });

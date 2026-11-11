@@ -504,6 +504,7 @@ export function publisherPageGraph({
         url,
         name: publisher.name,
         description: publisher.bio ?? undefined,
+        slogan: publisher.motto?.trim() || undefined,
         foundingDate: publisher.establishedYear ? String(publisher.establishedYear) : undefined,
         logo: publicAssetUrl(publisher.logoUrl),
         telephone: publisher.phone ?? undefined,

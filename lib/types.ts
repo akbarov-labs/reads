@@ -243,6 +243,8 @@ export interface Publisher {
   websiteUrl?: string | null;
   /** The publisher's public Telegram channel, a bare username. */
   telegramChannel?: string | null;
+  /** The publisher's own slogan, word for word, in the page's language. */
+  motto?: string | null;
   /** Where to buy straight from the publisher: a t.me, Uzum or own-shop URL. */
   shopUrl?: string | null;
   phone?: string | null;
