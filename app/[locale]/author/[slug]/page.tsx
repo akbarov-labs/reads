@@ -11,6 +11,7 @@ import { localeAlternates, type Locale } from "@/lib/site";
 import { Container } from "@/components/Container";
 import { ArrowLeft, ArrowRight, BookOpen, User } from "lucide-react";
 import { MetaLine } from "@/components/MetaLine";
+import { authorLifeLine } from "@/lib/authorLife";
 import { AskAiButton } from "@/components/AskAiSection";
 
 type PageParams = { locale: string; slug: string };
@@ -85,6 +86,8 @@ export default async function AuthorDetailPage({
   ]);
 
   if (!author) notFound();
+
+  const lifeLine = authorLifeLine(author);
   // An author merged into another in the admin keeps its old link, which
   // the API answers with the kept author: send the reader (and search
   // engines) to that author's own address.
@@ -181,6 +184,13 @@ export default async function AuthorDetailPage({
                 {author.originalName && author.originalName !== author.name && (
                   <p className="mt-1 font-serif text-lg text-zinc-500">{author.originalName}</p>
                 )}
+                {lifeLine ? <p className="mt-1 text-sm text-zinc-500">{lifeLine}</p> : null}
+
+                {author.bio?.trim() ? (
+                  <p className="mt-4 max-w-2xl text-left text-[15px] leading-relaxed text-zinc-700 whitespace-pre-line">
+                    {author.bio.trim()}
+                  </p>
+                ) : null}
 
                 <div className="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-stone-100 px-3.5 py-1 text-xs font-medium text-zinc-700">
