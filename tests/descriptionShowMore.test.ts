@@ -38,7 +38,7 @@ describe("the book description", () => {
 
   it("has its labels in every language", () => {
     expect([uz, ru, en].map((m) => [m.bookDetail.descriptionMore, m.bookDetail.descriptionLess])).toEqual([
-      ["Koʻproq", "Kamroq"],
+      ["Toʻliq koʻrsatish", "Qisqartirish"],
       ["Подробнее", "Свернуть"],
       ["Show more", "Show less"],
     ]);

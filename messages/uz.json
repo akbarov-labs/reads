@@ -1,9 +1,9 @@
 {
   "site": {
     "brand": "Kitoblarim",
-    "roleTag": "Tarjimon va Muallif",
+    "roleTag": "Tarjimon va muallif",
     "homeTitle": "Kitoblarim — oʻzbek kitoblari katalogi",
-    "homeDescription": "Oʻzbek, rus va ingliz tilidagi kitoblar: mualliflar, tarjimonlar va nashriyotlar.",
+    "homeDescription": "Oʻzbek, rus va ingliz tillaridagi kitoblar: mualliflar, tarjimonlar va nashriyotlar.",
     "profileTitle": "{name}, Kitoblarim",
     "languageLabel": "Til",
     "brandSection": "katalog",
@@ -13,8 +13,8 @@
   },
   "home": {
     "empty": "Hozircha hech narsa qoʻshilmagan.",
-    "heroHeadline": "Kitoblar Olami,\nBir Joyda",
-    "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bogʻliq, hammasi kashf qilinishi mumkin.",
+    "heroHeadline": "Kitoblar olami,\nbir joyda",
+    "heroSubline": "Tarjimonlar, mualliflar, kitoblar va nashriyotlar — hammasi bir-biriga bogʻlangan, biridan ikkinchisiga oson oʻtasiz.",
     "statTranslators": "Tarjimonlar",
     "statBooks": "Kitoblar",
     "statAuthors": "Mualliflar",
@@ -28,11 +28,11 @@
     "publishersTitle": "Nashriyotlar",
     "publishersSeeAll": "Barcha nashriyotlar",
     "recommendPrompt": "Nima oʻqishni bilmayapsizmi yoki kitoblar chala qolyaptimi?",
-    "recommendPromptLink": "Telegram bot kitob tanlab, oxirigacha oʻqishga yordam beradi",
+    "recommendPromptLink": "Telegram bot kitob tanlab beradi va oxirigacha oʻqishga yordam beradi",
     "navDeals": "Chegirmalar"
   },
   "translators": {
-    "pageTitle": "Barcha Tarjimonlar",
+    "pageTitle": "Barcha tarjimonlar",
     "pageDescription": "Oʻzbek tiliga yoki oʻzbek tilidan tarjima qiluvchi barcha tarjimonlar.",
     "sectionTitle": "Tarjimonlar",
     "count": "{count} ta tarjimon",
@@ -45,8 +45,8 @@
     "found": "«{q}» boʻyicha {count} ta tarjimon"
   },
   "books": {
-    "pageTitle": "Barcha Kitoblar",
-    "pageDescription": "Oʻzbek, rus va ingliz tilidagi kitoblar: asl va tarjima asarlar.",
+    "pageTitle": "Barcha kitoblar",
+    "pageDescription": "Oʻzbek, rus va ingliz tillaridagi kitoblar: asl va tarjima asarlar.",
     "empty": "Kitoblar topilmadi.",
     "translatedBy": "Tarjima qilgan",
     "searchPlaceholder": "Kitob, muallif, tarjimon yoki nashriyot",
@@ -64,7 +64,7 @@
     "allAuthors": "Barcha mualliflar",
     "filterTranslator": "Tarjimon",
     "allTranslators": "Barcha tarjimonlar",
-    "sort": "Tartib",
+    "sort": "Saralash",
     "sortRelevance": "Avval eng mosi",
     "sortYear": "Avval yangi nashrlar",
     "sortTitle": "Nomi boʻyicha",
@@ -87,7 +87,7 @@
     "suggestions": "{count} ta taklif"
   },
   "authors": {
-    "pageTitle": "Barcha Mualliflar",
+    "pageTitle": "Barcha mualliflar",
     "pageDescription": "Oʻzbek va jahon mualliflari, ularning kitoblari va tarjimalari.",
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
@@ -99,7 +99,7 @@
     "found": "«{q}» boʻyicha {count} ta muallif"
   },
   "publishers": {
-    "pageTitle": "Barcha Nashriyotlar",
+    "pageTitle": "Barcha nashriyotlar",
     "pageDescription": "Katalogdagi kitoblarni nashr etgan barcha nashriyotlar.",
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
@@ -127,7 +127,7 @@
   "excerpt": {
     "sectionTitle": "Qiyosiy mutolaa",
     "workLabel": "Asar",
-    "sourcePaneTab": "{language} (Asl)",
+    "sourcePaneTab": "{language} (asl)",
     "translationPaneTab": "Tarjima",
     "originalLabel": "{language} · Asl nusxa",
     "originalLabelPlain": "Asl nusxa",
@@ -146,13 +146,13 @@
     "fixFields": "Iltimos, quyida belgilangan maydonlarni toʻgʻrilang.",
     "tooMany": "Juda koʻp urinish. Iltimos, bir daqiqadan soʻng qayta urinib koʻring.",
     "captchaRequired": "Yuborishdan oldin pastdagi tekshiruvni yakunlang.",
-    "captchaFailed": "Tekshiruvdan oʻtilmadi. Qayta urinib koʻring.",
+    "captchaFailed": "Tekshiruvdan oʻtmadingiz. Qayta urinib koʻring.",
     "genericError": "Yuborishda xatolik yuz berdi. Iltimos, birozdan soʻng qayta urinib koʻring.",
     "labelName": "Ismingiz",
-    "labelEmail": "Email",
+    "labelEmail": "Elektron pochta",
     "labelPair": "Til yoʻnalishi",
     "choosePair": "Til yoʻnalishini tanlang",
-    "pairMismatch": "Ushbu tarjimon bunday til yoʻnalishi bilan ishlamaydi.",
+    "pairMismatch": "Ushbu tarjimon bu til yoʻnalishida ishlamaydi.",
     "labelProjectType": "Loyiha turi",
     "chooseProjectType": "Loyiha turini tanlang",
     "labelWordCount": "Soʻzlar soni",
@@ -173,12 +173,12 @@
       "under_100": "$100 dan kam",
       "100_500": "$100 - $500",
       "500_1000": "$500 - $1 000",
-      "over_1000": "$1 000 dan koʻp",
+      "over_1000": "$1 000 dan ortiq",
       "not_sure": "Hali aniq emas"
     }
   },
   "footer": {
-    "quote": "Adabiyot, inson qalbining eng chuqur aks-sadosidir.",
+    "quote": "Adabiyot — inson qalbining eng chuqur aks-sadosi.",
     "rights": "Barcha huquqlar himoyalangan.",
     "botLead": "Boshlagan kitobingizni Telegramda oxirigacha oʻqing:",
     "botName": "Kitoblarim boti"
@@ -196,8 +196,8 @@
   "bookDetail": {
     "back": "Kitoblarga qaytish",
     "details": "Kitob haqida",
-    "descriptionMore": "Koʻproq",
-    "descriptionLess": "Kamroq",
+    "descriptionMore": "Toʻliq koʻrsatish",
+    "descriptionLess": "Qisqartirish",
     "descriptionSource": "Tavsif manbasi:",
     "author": "Muallif",
     "translator": "Tarjimon",
@@ -215,20 +215,20 @@
     "viewPublisher": "Nashriyot sahifasi",
     "editions": "Nashrlar",
     "isbn": "ISBN",
-    "pages": "Sahifalar",
+    "pages": "Sahifalar soni",
     "language": "Tili",
     "script": "Yozuv",
     "binding": "Muqova",
     "format": "Format",
     "translatedBy": "Tarjima",
     "editedBy": "Muharrir",
-    "related": "Keyingi oʻqish uchun",
+    "related": "Keyin oʻqish uchun",
     "planInBot": "Oʻqish rejasini Telegramda tuzing",
     "noPdfTitle": "Bu yerda kitobning PDF nusxasi yoʻq",
-    "noPdfBody": "Kitoblarim — kitoblar katalogi: kitob fayllarini bermaymiz, Telegram botimiz ham bermaydi. Kitobni doʻkondan olishingiz yoki kutubxonada bepul oʻqishingiz mumkin.",
+    "noPdfBody": "Kitoblarim — kitoblar katalogi: kitob fayllarini bermaymiz, Telegram botimiz ham bermaydi. Kitobni doʻkondan sotib olishingiz yoki kutubxonada bepul oʻqishingiz mumkin.",
     "noPdfLink": "Qayerdan topish mumkin",
     "whereTitle": "Kitobni qayerdan topish mumkin",
-    "whereLead": "Bosma yoki elektron nusxasini shu doʻkonlardan izlang:",
+    "whereLead": "Bosma yoki elektron nusxasini quyidagi doʻkonlardan izlang:",
     "whereSave": "Telegramdagi javoningizga qoʻshing",
     "series": "Turkum",
     "seriesPart": "{name}, {position}-kitob",
@@ -258,7 +258,7 @@
     "libLead": "Bepul oʻqish uchun kutubxonadan olishingiz mumkin:",
     "libAvailable": "{count} ta bor",
     "libAllOut": "hammasi band",
-    "libChecked": "{date} holatiga",
+    "libChecked": "{date} holatiga koʻra",
     "libStale": "maʼlumot eskirgan boʻlishi mumkin",
     "libMore": "Yana {count} ta kutubxona",
     "storesTitle": "Doʻkonlarda",
@@ -294,7 +294,7 @@
     "translatorsAndAuthors": "Hamkor ijodkorlar",
     "booksInCatalog": "Katalogdagi kitoblar",
     "breadcrumbPublishers": "Nashriyotlar",
-    "metaTitle": "{name} — Nashriyot kitoblari",
+    "metaTitle": "{name} — nashriyot kitoblari",
     "metaDescription": "{name} nashriyoti chop etgan kitoblar va ularning mualliflari.",
     "metaDescriptionTranslated": "{name} nashriyoti chop etgan kitoblar, ularning mualliflari va tarjimonlari.",
     "contacts": "Bogʻlanish",
@@ -307,8 +307,8 @@
     "pageTitle": "Barcha taqrizchilar",
     "pageDescription": "Kitoblar haqida taqriz yozadigan mualliflar.",
     "sectionTitle": "Taqrizchilar",
-    "count": "{count, plural, one {# taqrizchi} other {# taqrizchi}}",
-    "taqrizlar": "{count, plural, one {# taqriz} other {# taqriz}}",
+    "count": "{count, plural, one {# ta taqrizchi} other {# ta taqrizchi}}",
+    "taqrizlar": "{count, plural, one {# ta taqriz} other {# ta taqriz}}",
     "empty": "Hozircha taqrizchilar yoʻq.",
     "viewProfile": "Profilni koʻrish",
     "defaultRole": "Taqrizchi",
@@ -380,15 +380,15 @@
     "order": "Buyurtma berish",
     "orderNote": "Telegramda nashriyot bilan suhbat ochiladi",
     "viewPost": "Telegramdagi eʼlon",
-    "orderMessage": "Assalomu alaykum! kitoblarim.uz saytida «{title}» kitobini koʻrdim. Buyurtma bermoqchiman."
+    "orderMessage": "Assalomu alaykum! «{title}» kitobini kitoblarim.uz saytida koʻrdim. Buyurtma bermoqchiman."
   },
   "askAi": {
-    "title": "Yana bilmoqchimisiz?",
+    "title": "Koʻproq bilmoqchimisiz?",
     "lead": "Sunʼiy intellekt bu haqda kengroq maʼlumot beradi. Javob yangi oynada ochiladi, bu sahifa ochiq qoladi.",
-    "label": "AIʼdan batafsil soʻrash",
-    "bookCta": "Bu kitob haqida AIʼdan soʻrang",
+    "label": "AIdan batafsil soʻrash",
+    "bookCta": "Bu kitob haqida AIdan soʻrang",
     "bookHint": "Nima haqida, asosiy gʻoyalari va kimlar uchun. Javob yangi oynada ochiladi.",
-    "authorCta": "Bu yozuvchi haqida AIʼdan soʻrang",
+    "authorCta": "Bu yozuvchi haqida AIdan soʻrang",
     "authorHint": "Hayoti, asosiy asarlari va ijodi. Javob yangi oynada ochiladi.",
     "book": "«{title}» kitobi haqida batafsil maʼlumot bering: nima haqida, asosiy gʻoyalari, kimlar uchun va nega oʻqishga arziydi?",
     "bookByAuthor": "{author}ning «{title}» kitobi haqida batafsil maʼlumot bering: nima haqida, asosiy gʻoyalari, kimlar uchun va nega oʻqishga arziydi?",
@@ -414,14 +414,14 @@
     "hours": "Ish vaqti",
     "membership": "Aʼzolik",
     "contacts": "Bogʻlanish",
-    "call": "Qoʻngʻiroq",
+    "call": "Qoʻngʻiroq qilish",
     "books": "Kutubxonadagi kitoblar",
     "searchPlaceholder": "Kitob yoki muallif",
     "search": "Qidirish",
-    "onlyAvailable": "Faqat bor kitoblar",
+    "onlyAvailable": "Faqat mavjud kitoblar",
     "available": "{count} ta bor",
     "allOut": "hammasi band",
-    "updated": "Roʻyxat {date} holatiga",
+    "updated": "Roʻyxat {date} holatiga koʻra",
     "stale": "Roʻyxat uzoq vaqt yangilanmagan: kitob borligini kutubxonadan soʻrab oling.",
     "noBooks": "Hech narsa topilmadi.",
     "map": "Xaritada"
@@ -437,7 +437,7 @@
     "facts": [
       "Bepul",
       "Oʻrnatish shart emas",
-      "Oʻzbek, rus va ingliz tilida"
+      "Oʻzbek, rus va ingliz tillarida"
     ],
     "mock": {
       "label": "Botdagi kunlik eslatma namunasi",
@@ -453,11 +453,11 @@
       "button2": "24 bet oʻqidim"
     },
     "painsTitle": "Tanish holatmi?",
-    "painsLead": "Kitob koʻpincha yomon boʻlgani uchun emas, kunlik odat boʻlmagani uchun chala qoladi. Kitoblarim aynan shu odatni quradi.",
+    "painsLead": "Kitob koʻpincha yomon boʻlgani uchun emas, kunlik odat boʻlmagani uchun chala qoladi. Kitoblarim aynan shu odatni shakllantiradi.",
     "pains": [
       {
         "pain": "Kitob 40-betda qolib ketadi.",
-        "fix": "Bot kitobni kunlik normaga boʻladi: 300 bet 20 kunda — kuniga 15 bet. Katta kitob kichik qadamlarga aylanadi."
+        "fix": "Bot kitobni kunlik normalarga boʻlib beradi: 300 bet 20 kunda — kuniga 15 bet. Katta kitob kichik qadamlarga aylanadi."
       },
       {
         "pain": "Qayerda toʻxtaganingiz esdan chiqadi.",
@@ -473,7 +473,7 @@
       },
       {
         "pain": "Yolgʻiz oʻqish zerikarli.",
-        "fix": "Telegram guruhingizda kitob marafoni oʻtkazing yoki oila bilan umumiy javon tuting."
+        "fix": "Telegram guruhingizda kitob marafoni oʻtkazing yoki oila bilan umumiy javon yuriting."
       },
       {
         "pain": "Qancha kitob oʻqiganingizni bilmaysiz.",
@@ -504,7 +504,7 @@
       },
       {
         "title": "Shtrix-kod skaneri",
-        "body": "ISBN kodini kameraga tuting: nomi, muallifi va sahifalar soni oʻzi toʻladi."
+        "body": "ISBN kodini kameraga tuting: nomi, muallifi va sahifalar soni oʻzi toʻldiriladi."
       },
       {
         "title": "Audiokitoblar",
@@ -516,7 +516,7 @@
       },
       {
         "title": "Oilaviy javon",
-        "body": "Yaqinlaringizni bitta havola bilan taklif qiling: kitoblar umumiy, oʻqish holati esa har kimniki oʻziniki."
+        "body": "Yaqinlaringizni bitta havola bilan taklif qiling: kitoblar umumiy, oʻqish holati esa har kimning oʻziniki."
       },
       {
         "title": "Oy yakuni",
@@ -530,7 +530,7 @@
     "faq": [
       {
         "q": "Kitoblarim boti nima?",
-        "a": "Kitoblarim — Telegram ichida ishlaydigan bepul bot va mini-ilova. U boshlagan kitobingizni oxirigacha oʻqishga yordam beradi: kitobni kunlik normaga boʻladi, har kuni eslatib turadi va oʻqiganlaringizni bitta javonda saqlaydi. Telegramda: @kitob_javonim_bot."
+        "a": "Kitoblarim — Telegram ichida ishlaydigan bepul bot va mini-ilova. U boshlagan kitobingizni oxirigacha oʻqishga yordam beradi: kitobni kunlik normalarga boʻlib beradi, har kuni eslatib turadi va oʻqiganlaringizni bitta javonda saqlaydi. Telegramda: @kitob_javonim_bot."
       },
       {
         "q": "Bot pullikmi?",
@@ -538,7 +538,7 @@
       },
       {
         "q": "Botdan kitobning PDF faylini olsa boʻladimi?",
-        "a": "Yoʻq. Kitoblarim kitob fayllarini bermaydi. Kitobni doʻkondan olishingiz yoki kutubxonada bepul oʻqishingiz mumkin: kitob sahifasida qaysi doʻkonda qanchaga sotilishi va qaysi kutubxonalarda borligi yozilgan. Ruxsat bilan ulashilgan audiokitoblarni esa botda tinglash mumkin."
+        "a": "Yoʻq. Kitoblarim kitob fayllarini bermaydi. Kitobni doʻkondan sotib olishingiz yoki kutubxonada bepul oʻqishingiz mumkin: kitob sahifasida qaysi doʻkonda qanchaga sotilishi va qaysi kutubxonalarda borligi yozilgan. Ruxsat bilan ulashilgan audiokitoblarni esa botda tinglash mumkin."
       },
       {
         "q": "Eslatmalar bezovta qilmaydimi?",
@@ -578,13 +578,13 @@
     "lastDayToday": "Bugun oxirgi kun",
     "daysLeft": "Yana {count} kun",
     "promoCode": "Promokod",
-    "copyCode": "Nusxa olish",
+    "copyCode": "Nusxalash",
     "takeDiscount": "Chegirmadan foydalanish",
     "takeContest": "Tanlovda qatnashish",
     "book": "Kitob: {title}",
     "note": "Shartlar va muddatni nashriyot yoki doʻkon belgilaydi: xariddan oldin manbada tekshiring.",
     "homeTitle": "Chegirmalar va tanlovlar",
     "seeAll": "Barchasi",
-    "copied": "Nusxa olindi"
+    "copied": "Nusxalandi"
   }
 }

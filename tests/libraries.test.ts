@@ -61,8 +61,8 @@ describe("LibraryAvailability", () => {
   it("lists each library, its district, as of when, and whether a copy is in", () => {
     const html = render([library(), library({ slug: "idrok", name: "Idrok", district: null, region: "Toshkent viloyati", copiesAvailable: 0 })]);
 
-    expect(text(html)).toContain("Mehr kutubxonasi Shayxontohur tumani · 24-oktabr holatiga 1 ta bor");
-    expect(text(html)).toContain("Idrok Toshkent viloyati · 24-oktabr holatiga hammasi band");
+    expect(text(html)).toContain("Mehr kutubxonasi Shayxontohur tumani · 24-oktabr holatiga koʻra 1 ta bor");
+    expect(text(html)).toContain("Idrok Toshkent viloyati · 24-oktabr holatiga koʻra hammasi band");
     expect(html).toContain('href="/library/mehr"');
   });
 
