@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRight, Gift, Percent } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Gift, Percent } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
@@ -8,8 +8,9 @@ import { daysLeft, dealHref } from "@/lib/deals";
 import type { Deal } from "@/lib/types";
 
 /**
- * One discount or contest: who runs it, the headline, the percentage or
- * promo code, how long it has left, and one button to take it up. A white
+ * One discount, contest or event: who runs it, the headline, the percentage
+ * or promo code, how long it has left (an event: its day), and one button
+ * to take it up. A white
  * plate like the catalogue's other cards; green only on what can be acted
  * on, as the design's one-accent rule asks.
  */
@@ -17,7 +18,8 @@ export async function DealCard({ deal, locale }: { deal: Deal; locale: string })
   const t = await getTranslations("deals");
   const left = daysLeft(deal);
   const href = dealHref(deal, locale);
-  const Icon = deal.kind === "contest" ? Gift : Percent;
+  const Icon = { discount: Percent, contest: Gift, event: CalendarDays }[deal.kind] ?? Percent;
+  const event = deal.kind === "event";
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white">
@@ -31,7 +33,7 @@ export async function DealCard({ deal, locale }: { deal: Deal; locale: string })
         <div className="flex items-center justify-between gap-3 text-xs">
           <span className="inline-flex items-center gap-1.5 font-medium text-zinc-600">
             <Icon aria-hidden="true" className="h-3.5 w-3.5 text-zinc-500" />
-            {t(deal.kind === "contest" ? "contest" : "discount")}
+            {t(deal.kind === "contest" || event ? deal.kind : "discount")}
             {deal.source.name ? (
               <>
                 <span aria-hidden="true" className="text-zinc-300">·</span>
@@ -81,9 +83,13 @@ export async function DealCard({ deal, locale }: { deal: Deal; locale: string })
         <div className="mt-auto pt-5">
           {left !== null ? (
             <p className={`text-xs ${left <= 2 ? "font-medium text-zinc-800" : "text-zinc-500"}`}>
-              {left === 0
-                ? t("lastDayToday")
-                : `${t("lastDay", { date: formatDay(deal.endsOn!, locale) })} · ${t("daysLeft", { count: left })}`}
+              {event
+                ? left === 0
+                  ? t("eventToday")
+                  : `${formatDay(deal.endsOn!, locale)} · ${t("eventIn", { count: left })}`
+                : left === 0
+                  ? t("lastDayToday")
+                  : `${t("lastDay", { date: formatDay(deal.endsOn!, locale) })} · ${t("daysLeft", { count: left })}`}
             </p>
           ) : null}
           {href ? (
@@ -93,7 +99,7 @@ export async function DealCard({ deal, locale }: { deal: Deal; locale: string })
               rel="noopener nofollow"
               className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-forest-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-forest-800"
             >
-              {t(deal.kind === "contest" ? "takeContest" : "takeDiscount")}
+              {t(event ? "takeEvent" : deal.kind === "contest" ? "takeContest" : "takeDiscount")}
               <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
             </a>
           ) : null}

@@ -443,13 +443,14 @@ export interface Quote {
  * date), a new book for a couple of months.
  */
 /**
- * A discount or contest readers can use today (Reads-admin's Deal::live):
- * a publisher's sale or giveaway from its Telegram channel, or a shop's
- * promotion an editor typed in.
+ * A discount, contest or event readers can use today (Reads-admin's
+ * Deal::live): a publisher's sale, giveaway or meeting with an author or
+ * translator from its Telegram channel, or a shop's promotion an editor
+ * typed in. An event's `endsOn` is its day.
  */
 export interface Deal {
   id: string;
-  kind: "discount" | "contest";
+  kind: "discount" | "contest" | "event";
   title: string;
   /** The conditions, a few lines. */
   details: string | null;
