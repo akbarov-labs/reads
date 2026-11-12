@@ -94,7 +94,7 @@ export function BookFilterPanel({
 
   return (
     <div className="mt-5">
-      <details open={active.length > 0} className="group rounded-2xl border border-stone-200 bg-white">
+      <details open={active.length > 0} className="smooth-details group rounded-2xl border border-stone-200 bg-white">
         <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-medium text-zinc-800 [&::-webkit-details-marker]:hidden">
           <SlidersHorizontal aria-hidden="true" className="h-4 w-4 text-zinc-500" />
           {labels.filters}

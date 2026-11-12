@@ -47,7 +47,7 @@ export function StoreAvailability({
       <h3 className="text-sm font-medium text-zinc-900">{t("storesTitle")}</h3>
       <ul className="mt-3 divide-y divide-stone-200 rounded-xl border border-stone-200 bg-white">{shown.map(row)}</ul>
       {more.length > 0 ? (
-        <details className="group mt-2">
+        <details className="smooth-details group mt-2">
           <summary className="cursor-pointer list-none text-sm font-medium text-forest-700 hover:text-forest-800 [&::-webkit-details-marker]:hidden">
             <span className="group-open:hidden">{t("storesMore", { count: more.length })}</span>
           </summary>

@@ -66,7 +66,7 @@ export function LocaleSwitcher() {
       </summary>
       <nav
         aria-label={t("languageLabel")}
-        className="absolute right-0 top-full z-30 mt-2 w-44 rounded-xl bg-white p-1.5 shadow-[0_12px_32px_-12px_rgba(20,26,22,0.28),0_2px_6px_rgba(20,26,22,0.06)]"
+        className="pop-in absolute right-0 top-full z-30 mt-2 w-44 rounded-xl bg-white p-1.5 shadow-[0_12px_32px_-12px_rgba(20,26,22,0.28),0_2px_6px_rgba(20,26,22,0.06)]"
       >
         {routing.locales.map((code) => {
           const isActive = code === locale;
