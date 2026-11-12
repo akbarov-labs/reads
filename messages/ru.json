@@ -37,7 +37,11 @@
     "count": "{count, plural, one {# переводчик} few {# переводчика} many {# переводчиков} other {# переводчика}}",
     "defaultRole": "Переводчик",
     "books": "{count, plural, one {# работа} few {# работы} many {# работ} other {# работы}}",
-    "empty": "Переводчики не найдены."
+    "empty": "Переводчики не найдены.",
+    "searchPlaceholder": "Имя переводчика, латиницей или кириллицей",
+    "searchLabel": "Поиск переводчиков",
+    "search": "Найти",
+    "found": "По запросу «{q}»: переводчиков — {count}"
   },
   "books": {
     "pageTitle": "Все книги",
@@ -49,7 +53,26 @@
     "categories": "Разделы",
     "allCategories": "Все",
     "count": "{count} книг",
-    "editions": "{count} изд."
+    "editions": "{count} изд.",
+    "filters": "Фильтры",
+    "filterYear": "Год издания",
+    "allYears": "Все годы",
+    "filterPublisher": "Издательство",
+    "allPublishers": "Все издательства",
+    "filterAuthor": "Автор",
+    "allAuthors": "Все авторы",
+    "filterTranslator": "Переводчик",
+    "allTranslators": "Все переводчики",
+    "sort": "Порядок",
+    "sortRelevance": "Сначала самые подходящие",
+    "sortYear": "Сначала новые издания",
+    "sortTitle": "По названию",
+    "sortRecent": "Недавно добавленные",
+    "apply": "Показать",
+    "clear": "Сбросить фильтры",
+    "removeFilter": "Убрать фильтр «{name}»",
+    "yearsLabel": "Год издания",
+    "yearsMore": "Все книги и фильтры"
   },
   "search": {
     "label": "Подсказки",
@@ -68,7 +91,11 @@
     "sectionTitle": "Авторы книг",
     "count": "{count, plural, one {# автор} few {# автора} many {# авторов} other {# автора}}",
     "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
-    "empty": "Авторы не найдены."
+    "empty": "Авторы не найдены.",
+    "searchPlaceholder": "Имя автора, латиницей или кириллицей",
+    "searchLabel": "Поиск авторов",
+    "search": "Найти",
+    "found": "По запросу «{q}»: авторов — {count}"
   },
   "publishers": {
     "pageTitle": "Все издательства",
@@ -76,7 +103,11 @@
     "sectionTitle": "Издательства",
     "count": "{count, plural, one {# издательство} few {# издательства} many {# издательств} other {# издательства}}",
     "books": "{count, plural, one {# книга} few {# книги} many {# книг} other {# книги}}",
-    "empty": "Издательства не найдены."
+    "empty": "Издательства не найдены.",
+    "searchPlaceholder": "Название издательства",
+    "searchLabel": "Поиск издательств",
+    "search": "Найти",
+    "found": "По запросу «{q}»: издательств — {count}"
   },
   "stats": {
     "booksTranslated": "Книги и переводы",

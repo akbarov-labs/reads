@@ -37,7 +37,11 @@
     "count": "{count, plural, one {# translator} other {# translators}}",
     "defaultRole": "Translator",
     "books": "{count, plural, one {# work} other {# works}}",
-    "empty": "No translators found."
+    "empty": "No translators found.",
+    "searchPlaceholder": "Translator's name, in Latin or Cyrillic",
+    "searchLabel": "Search translators",
+    "search": "Search",
+    "found": "{count} translators for “{q}”"
   },
   "books": {
     "pageTitle": "All Books",
@@ -49,7 +53,26 @@
     "categories": "Shelves",
     "allCategories": "All",
     "count": "{count} books",
-    "editions": "{count} editions"
+    "editions": "{count} editions",
+    "filters": "Filters",
+    "filterYear": "Year printed",
+    "allYears": "All years",
+    "filterPublisher": "Publisher",
+    "allPublishers": "All publishers",
+    "filterAuthor": "Author",
+    "allAuthors": "All authors",
+    "filterTranslator": "Translator",
+    "allTranslators": "All translators",
+    "sort": "Order",
+    "sortRelevance": "Best match first",
+    "sortYear": "Newest editions first",
+    "sortTitle": "By title",
+    "sortRecent": "Recently added",
+    "apply": "Show",
+    "clear": "Clear filters",
+    "removeFilter": "Remove the “{name}” filter",
+    "yearsLabel": "Year printed",
+    "yearsMore": "All books and filters"
   },
   "search": {
     "label": "Suggestions",
@@ -68,7 +91,11 @@
     "sectionTitle": "Book authors",
     "count": "{count, plural, one {# author} other {# authors}}",
     "books": "{count, plural, one {# book} other {# books}}",
-    "empty": "No authors found."
+    "empty": "No authors found.",
+    "searchPlaceholder": "Author's name, in Latin or Cyrillic",
+    "searchLabel": "Search authors",
+    "search": "Search",
+    "found": "{count} authors for “{q}”"
   },
   "publishers": {
     "pageTitle": "All Publishers",
@@ -76,7 +103,11 @@
     "sectionTitle": "Publishers",
     "count": "{count, plural, one {# publisher} other {# publishers}}",
     "books": "{count, plural, one {# book} other {# books}}",
-    "empty": "No publishers found."
+    "empty": "No publishers found.",
+    "searchPlaceholder": "Publisher's name",
+    "searchLabel": "Search publishers",
+    "search": "Search",
+    "found": "{count} publishers for “{q}”"
   },
   "stats": {
     "booksTranslated": "Books & translations",
