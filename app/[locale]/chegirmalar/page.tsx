@@ -12,7 +12,7 @@ import type { Deal } from "@/lib/types";
 /** Reads ?kind= from searchParams; see the books page for why. */
 export const dynamic = "force-dynamic";
 
-const KINDS = ["discount", "contest"] as const;
+const KINDS = ["discount", "contest", "event"] as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -25,8 +25,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /**
- * Chegirmalar: publishers' and shops' discounts, promo codes and book
- * giveaways that are on today, ending soonest first. Each button goes
+ * Chegirmalar: publishers' and shops' discounts, promo codes, book
+ * giveaways and events (meetings with authors and translators, launches)
+ * that are on today, ending soonest first. Each button goes
  * through /go/deal, which counts the click. Filtered by kind with ?kind=.
  */
 export default async function DealsPage({
@@ -49,6 +50,7 @@ export default async function DealsPage({
     { key: undefined, label: t("all"), count: live.length },
     { key: "discount" as const, label: t("discounts"), count: live.filter((deal) => deal.kind === "discount").length },
     { key: "contest" as const, label: t("contests"), count: live.filter((deal) => deal.kind === "contest").length },
+    { key: "event" as const, label: t("events"), count: live.filter((deal) => deal.kind === "event").length },
   ];
 
   return (

@@ -558,7 +558,7 @@ export async function getAnnouncements(
 }
 
 /**
- * Discounts and contests on the site today, ending soonest first. Under the
+ * Discounts, contests and events on the site today, ending soonest first. Under the
  * announcements' tag: every admin ping drops it, and an ended deal leaves
  * within REVALIDATE_SECONDS of midnight.
  */
