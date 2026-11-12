@@ -42,7 +42,7 @@ export function LibraryAvailability({
         ))}
       </ul>
       {rest.length > 0 ? (
-        <details className="group mt-2">
+        <details className="smooth-details group mt-2">
           <summary className="cursor-pointer list-none text-sm font-medium text-forest-700 hover:text-forest-800 [&::-webkit-details-marker]:hidden">
             <span className="group-open:hidden">{t("libMore", { count: rest.length })}</span>
           </summary>

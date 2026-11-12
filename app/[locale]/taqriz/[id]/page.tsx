@@ -84,7 +84,7 @@ export default async function TaqrizPage({
             </Link>
           )}
 
-          <article className="mt-8 max-w-3xl">
+          <article className="no-reveal mt-8 max-w-3xl">
             {/* The book being reviewed */}
             {taqriz.book && (
               <Link

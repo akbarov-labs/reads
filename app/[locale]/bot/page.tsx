@@ -189,7 +189,7 @@ export default async function BotPage({ params }: { params: Promise<{ locale: st
             <SectionTitle id="faq" title={t("faqTitle")} />
             <div className="-mt-5 max-w-3xl divide-y divide-stone-200 border-b border-stone-200">
               {faq.map((item) => (
-                <details key={item.q} className="group py-5">
+                <details key={item.q} className="smooth-details group py-5">
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-6 font-serif text-lg text-zinc-900 [&::-webkit-details-marker]:hidden">
                     {item.q}
                     <span
