@@ -310,7 +310,32 @@ export interface BookFilters {
   translator?: string;
   category?: string;
   series?: string;
+  /** Only books with a printing from this year (four digits). */
+  year?: string;
   sort?: "year" | "title" | "recent";
+}
+
+/** A year books were printed in, and how many of a list's books were. */
+export interface YearCount {
+  year: number;
+  count: number;
+}
+
+/**
+ * The printing years of the books a filter selects, newest first: the
+ * books page's "Yil" filter and the year chips on author, publisher and
+ * translator pages. The list's own ?year doesn't narrow it.
+ */
+export async function getBookYears(
+  locale: string,
+  filters: Omit<BookFilters, "page" | "perPage" | "sort" | "year"> = {}
+): Promise<YearCount[]> {
+  const result = await apiFetch<{ data: YearCount[] }>(
+    `/books/years?${query({ locale, ...filters })}`,
+    [BOOKS_TAG]
+  );
+
+  return (result?.data ?? []).filter((row) => Number.isInteger(row.year) && row.count > 0);
 }
 
 /**

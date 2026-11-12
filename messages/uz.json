@@ -27,8 +27,8 @@
     "authorsSeeAll": "Barcha mualliflar",
     "publishersTitle": "Nashriyotlar",
     "publishersSeeAll": "Barcha nashriyotlar",
-    "recommendPrompt": "Nima oʻqishni bilmayapsizmi?",
-    "recommendPromptLink": "Telegram bot kitob tanlab beradi",
+    "recommendPrompt": "Nima oʻqishni bilmayapsizmi yoki kitoblar chala qolyaptimi?",
+    "recommendPromptLink": "Telegram bot kitob tanlab, oxirigacha oʻqishga yordam beradi",
     "navDeals": "Chegirmalar"
   },
   "translators": {
@@ -38,7 +38,11 @@
     "count": "{count} ta tarjimon",
     "defaultRole": "Tarjimon",
     "books": "{count} ta asar",
-    "empty": "Tarjimonlar topilmadi."
+    "empty": "Tarjimonlar topilmadi.",
+    "searchPlaceholder": "Tarjimon ismi, lotin yoki kirillda",
+    "searchLabel": "Tarjimonlarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta tarjimon"
   },
   "books": {
     "pageTitle": "Barcha Kitoblar",
@@ -50,7 +54,26 @@
     "categories": "Boʻlimlar",
     "allCategories": "Hammasi",
     "count": "{count} ta kitob",
-    "editions": "{count} ta nashr"
+    "editions": "{count} ta nashr",
+    "filters": "Filtrlar",
+    "filterYear": "Nashr yili",
+    "allYears": "Barcha yillar",
+    "filterPublisher": "Nashriyot",
+    "allPublishers": "Barcha nashriyotlar",
+    "filterAuthor": "Muallif",
+    "allAuthors": "Barcha mualliflar",
+    "filterTranslator": "Tarjimon",
+    "allTranslators": "Barcha tarjimonlar",
+    "sort": "Tartib",
+    "sortRelevance": "Avval eng mosi",
+    "sortYear": "Avval yangi nashrlar",
+    "sortTitle": "Nomi boʻyicha",
+    "sortRecent": "Yaqinda qoʻshilganlar",
+    "apply": "Koʻrsatish",
+    "clear": "Filtrlarni tozalash",
+    "removeFilter": "«{name}» filtrini olib tashlash",
+    "yearsLabel": "Nashr yili",
+    "yearsMore": "Barcha kitoblar va filtrlar"
   },
   "search": {
     "label": "Takliflar",
@@ -69,7 +92,11 @@
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
     "books": "{count} ta kitob",
-    "empty": "Mualliflar topilmadi."
+    "empty": "Mualliflar topilmadi.",
+    "searchPlaceholder": "Muallif ismi, lotin yoki kirillda",
+    "searchLabel": "Mualliflarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta muallif"
   },
   "publishers": {
     "pageTitle": "Barcha Nashriyotlar",
@@ -77,7 +104,11 @@
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
     "books": "{count} ta kitob",
-    "empty": "Nashriyotlar topilmadi."
+    "empty": "Nashriyotlar topilmadi.",
+    "searchPlaceholder": "Nashriyot nomi",
+    "searchLabel": "Nashriyotlarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta nashriyot"
   },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",
@@ -397,10 +428,10 @@
   },
   "botPage": {
     "pageTitle": "Kitoblarim boti — kitobni oxirigacha oʻqing",
-    "pageDescription": "Boshlagan kitobingiz yarim yoʻlda qolyaptimi? Kitoblarim — Telegramdagi bepul bot: kunlik normani hisoblaydi, har kuni eslatadi, keyingi kitobni tanlaydi.",
+    "pageDescription": "Boshlagan kitobingiz yarim yoʻlda qolyaptimi? Kitoblarim — Telegramdagi bepul bot: kunlik normani hisoblaydi, har kuni eslatadi, keyingi kitobni tanlab beradi.",
     "breadcrumb": "Kitoblarim boti",
     "heroHeadline": "Kitobni boshlaysiz.\nU esa yarim yoʻlda qoladi.",
-    "heroSubline": "Kitoblarim — Telegramdagi bepul bot. U kitobni kuniga bir necha betga boʻlib beradi, har kuni eslatadi va oxirgi sahifagacha olib boradi.",
+    "heroSubline": "Kitoblarim — Telegramdagi bepul bot. U kitobni kuniga bir necha betdan boʻlib beradi, har kuni eslatib turadi va oxirigacha oʻqib chiqishingizga yordam beradi.",
     "cta": "Telegramda ochish",
     "how": "Qanday ishlaydi",
     "facts": [
@@ -434,7 +465,7 @@
       },
       {
         "pain": "«Ertaga oʻqiyman» deysiz, ertaga ham vaqt topilmaydi.",
-        "fix": "Siz tanlagan vaqtda bot eslatadi. Oʻqigan kuningiz jim turadi, ortda qolsangiz norma qolgan kunlarga qayta taqsimlanadi."
+        "fix": "Bot siz tanlagan vaqtda eslatadi. Oʻqigan kuningiz bot jim turadi, ortda qolsangiz esa norma qolgan kunlarga qayta taqsimlanadi."
       },
       {
         "pain": "Keyin nimani oʻqishni bilmaysiz.",
@@ -446,7 +477,7 @@
       },
       {
         "pain": "Qancha kitob oʻqiganingizni bilmaysiz.",
-        "fix": "Oʻqiganlaringiz yillar boʻyicha bitta javonda, oy oxirida esa ulashishga tayyor roʻyxat."
+        "fix": "Oʻqiganlaringiz yillar boʻyicha bitta javonda turadi, oy oxirida esa ulashishga tayyor roʻyxat olasiz."
       }
     ],
     "stepsTitle": "Uch qadam, bir daqiqa",
@@ -489,11 +520,11 @@
       },
       {
         "title": "Oy yakuni",
-        "body": "Oyiga bir roʻyxat: oʻqigan kitoblaringiz, kunlaringiz va sahifalaringiz, ulashishga tayyor."
+        "body": "Har oy oxirida bitta karta: oʻqigan kitoblaringiz, oʻqigan kunlaringiz va tinglagan vaqtingiz. Ulashishga tayyor."
       }
     ],
     "catalogueTitle": "Katalogdan botga bir bosishda",
-    "catalogueBody": "Kitoblarim.uz dagi har bir kitob sahifasida «Oʻqish rejasini Telegramda tuzing» tugmasi bor. Bot kitobni oʻzi topadi va faqat necha kunda oʻqishingizni soʻraydi. Botda yozgan taqrizingiz esa muharrir tasdiqlagach, shu yerda, kitob sahifasida chiqadi.",
+    "catalogueBody": "kitoblarim.uz saytidagi har bir kitob sahifasida «Oʻqish rejasini Telegramda tuzing» tugmasi bor. Bot kitobni oʻzi topadi va faqat necha kunda oʻqimoqchi ekaningizni soʻraydi. Botda yozgan taqrizingiz esa muharrir tasdiqlagach, shu saytda, kitob sahifasida chiqadi.",
     "catalogueLink": "Kitob tanlash",
     "faqTitle": "Savollar va javoblar",
     "faq": [

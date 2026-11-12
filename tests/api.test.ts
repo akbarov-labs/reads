@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   getAuthorBySlug,
   getBookById,
+  getBookYears,
   getBooks,
   getPublisherBySlug,
   getSitemapIndex,
@@ -134,6 +135,15 @@ describe("response normalizers", () => {
     expect(fetchMock.mock.calls[0][0]).toBe(`${INTERNAL}/api/books?locale=ru&per_page=24&page=2`);
     expect(page).toMatchObject({ page: 2, lastPage: 9, perPage: 24, total: 200 });
     expect(page.items[0].coverUrl).toBe(`${INTERNAL}/c.jpg`);
+  });
+
+  it("asks for a list's printing years with its filters, dropping rows that aren't years", async () => {
+    respond({ data: [{ year: 2024, count: 3 }, { year: null, count: 1 }, { year: 2019, count: 0 }] });
+
+    const years = await getBookYears("uz", { publisher: "hilol-nashr", q: "" });
+
+    expect(fetchMock.mock.calls[0][0]).toBe(`${INTERNAL}/api/books/years?locale=uz&publisher=hilol-nashr`);
+    expect(years).toEqual([{ year: 2024, count: 3 }]);
   });
 
   it("gives an author and a publisher one resolved image under both names", async () => {

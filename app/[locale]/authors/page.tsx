@@ -4,6 +4,7 @@ import { getAuthors } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
+import { ListSearchForm } from "@/components/ListSearchForm";
 import { AuthorCard } from "@/components/AuthorCard";
 import { Pagination } from "@/components/Pagination";
 
@@ -41,17 +42,18 @@ export default async function AuthorsPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) {
   const { locale } = await params;
-  const { page: pageParam } = await searchParams;
+  const { page: pageParam, q: rawQ } = await searchParams;
+  const q = rawQ?.trim() || undefined;
   setRequestLocale(locale);
 
   const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
   // The API pages the list, most published first.
   const [authors, t] = await Promise.all([
-    getAuthors(locale, { page: currentPage, perPage: PER_PAGE }),
+    getAuthors(locale, { page: currentPage, perPage: PER_PAGE, q }),
     getTranslations("authors"),
   ]);
 
@@ -67,6 +69,14 @@ export default async function AuthorsPage({
               {t("pageTitle")}
             </h1>
             <p className="mt-2 text-zinc-500 text-sm">{t("pageDescription")}</p>
+            <ListSearchForm
+              defaultValue={q ?? ""}
+              placeholder={t("searchPlaceholder")}
+              label={t("searchLabel")}
+              button={t("search")}
+              className="mt-6 max-w-xl"
+            />
+            {q ? <p className="mt-3 text-xs text-zinc-500">{t("found", { q, count: authors.total })}</p> : null}
           </div>
 
           {paginatedAuthors.length > 0 ? (
@@ -80,6 +90,7 @@ export default async function AuthorsPage({
                 currentPage={authors.page}
                 totalPages={authors.lastPage}
                 basePath="/authors"
+                query={{ q }}
               />
             </>
           ) : (

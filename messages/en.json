@@ -27,8 +27,8 @@
     "authorsSeeAll": "All authors",
     "publishersTitle": "Publishers",
     "publishersSeeAll": "All publishers",
-    "recommendPrompt": "Not sure what to read?",
-    "recommendPromptLink": "Our Telegram bot will pick a book",
+    "recommendPrompt": "Not sure what to read, or books left half-read?",
+    "recommendPromptLink": "Our Telegram bot picks a book and helps you finish it",
     "navDeals": "Deals"
   },
   "translators": {
@@ -38,7 +38,11 @@
     "count": "{count, plural, one {# translator} other {# translators}}",
     "defaultRole": "Translator",
     "books": "{count, plural, one {# work} other {# works}}",
-    "empty": "No translators found."
+    "empty": "No translators found.",
+    "searchPlaceholder": "Translator's name, in Latin or Cyrillic",
+    "searchLabel": "Search translators",
+    "search": "Search",
+    "found": "{count} translators for “{q}”"
   },
   "books": {
     "pageTitle": "All Books",
@@ -50,7 +54,26 @@
     "categories": "Shelves",
     "allCategories": "All",
     "count": "{count} books",
-    "editions": "{count} editions"
+    "editions": "{count} editions",
+    "filters": "Filters",
+    "filterYear": "Year printed",
+    "allYears": "All years",
+    "filterPublisher": "Publisher",
+    "allPublishers": "All publishers",
+    "filterAuthor": "Author",
+    "allAuthors": "All authors",
+    "filterTranslator": "Translator",
+    "allTranslators": "All translators",
+    "sort": "Order",
+    "sortRelevance": "Best match first",
+    "sortYear": "Newest editions first",
+    "sortTitle": "By title",
+    "sortRecent": "Recently added",
+    "apply": "Show",
+    "clear": "Clear filters",
+    "removeFilter": "Remove the “{name}” filter",
+    "yearsLabel": "Year printed",
+    "yearsMore": "All books and filters"
   },
   "search": {
     "label": "Suggestions",
@@ -69,7 +92,11 @@
     "sectionTitle": "Book authors",
     "count": "{count, plural, one {# author} other {# authors}}",
     "books": "{count, plural, one {# book} other {# books}}",
-    "empty": "No authors found."
+    "empty": "No authors found.",
+    "searchPlaceholder": "Author's name, in Latin or Cyrillic",
+    "searchLabel": "Search authors",
+    "search": "Search",
+    "found": "{count} authors for “{q}”"
   },
   "publishers": {
     "pageTitle": "All Publishers",
@@ -77,7 +104,11 @@
     "sectionTitle": "Publishers",
     "count": "{count, plural, one {# publisher} other {# publishers}}",
     "books": "{count, plural, one {# book} other {# books}}",
-    "empty": "No publishers found."
+    "empty": "No publishers found.",
+    "searchPlaceholder": "Publisher's name",
+    "searchLabel": "Search publishers",
+    "search": "Search",
+    "found": "{count} publishers for “{q}”"
   },
   "stats": {
     "booksTranslated": "Books & translations",
@@ -489,7 +520,7 @@
       },
       {
         "title": "Month in review",
-        "body": "Once a month, a list of your books, days and pages, ready to share."
+        "body": "At the end of each month, one card: the books you read, your reading days and your listening time. Ready to share."
       }
     ],
     "catalogueTitle": "From the catalogue to the bot in one tap",

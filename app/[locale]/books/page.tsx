@@ -3,14 +3,15 @@ import { headers } from "next/headers";
 import { after } from "next/server";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { getBooks, getCategories } from "@/lib/api";
+import { Link, redirect } from "@/i18n/navigation";
+import { getAuthorBySlug, getAuthors, getBookYears, getBooks, getCategories, getPublisherBySlug, getPublishers, getTranslators } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
 import { MetaLine } from "@/components/MetaLine";
 import { Pagination } from "@/components/Pagination";
 import { BookSearchForm } from "@/components/BookSearchForm";
+import { BookFilterPanel, booksHref, type BookFilterValues, type FilterOption } from "@/components/BookFilterPanel";
 import { listingSearch, logSearch } from "@/lib/stats";
 
 /**
@@ -27,6 +28,12 @@ import { listingSearch, logSearch } from "@/lib/stats";
 export const dynamic = "force-dynamic";
 
 const PER_PAGE = 20;
+
+/** The publishers and authors a filter offers: the most published. A link can still name any other. */
+const FILTER_OPTIONS = 100;
+
+const SORTS = ["year", "title", "recent"] as const;
+type Sort = (typeof SORTS)[number];
 
 export async function generateMetadata({
   params,
@@ -53,26 +60,70 @@ export default async function BooksPage({
     category?: string;
     author?: string;
     publisher?: string;
+    translator?: string;
     series?: string;
+    year?: string;
+    sort?: string;
   }>;
 }) {
   const { locale } = await params;
-  const { page: pageParam, q, category, author, publisher, series } = await searchParams;
+  const raw = await searchParams;
+  // An empty select submits "year=": the same as no filter.
+  const clean = (value?: string) => (value && value.trim() ? value.trim() : undefined);
+  const q = clean(raw.q);
+  const category = clean(raw.category);
+  const author = clean(raw.author);
+  const publisher = clean(raw.publisher);
+  const translator = clean(raw.translator);
+  const series = clean(raw.series);
+  const year = /^\d{4}$/.test(raw.year ?? "") ? raw.year : undefined;
+  const sort = SORTS.includes(raw.sort as Sort) ? (raw.sort as Sort) : undefined;
   setRequestLocale(locale);
 
-  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const currentPage = Math.max(1, parseInt(raw.page ?? "1", 10) || 1);
+  const filters = { q, category, author, publisher, translator, series };
 
-  // The API pages the catalogue; this page asks for exactly the slice it shows.
-  const [books, categories, t, tCard] = await Promise.all([
-    getBooks(locale, { page: currentPage, perPage: PER_PAGE, q, category, author, publisher, series }),
+  // The API pages the catalogue; this page asks for exactly the slice it
+  // shows. The filter's choices are the most published publishers and
+  // authors, every translator, and the years this very list was printed in.
+  const [books, categories, years, publisherList, authorList, translatorList, t, tCard] = await Promise.all([
+    getBooks(locale, { page: currentPage, perPage: PER_PAGE, ...filters, year, sort }),
     getCategories(locale),
+    getBookYears(locale, filters),
+    getPublishers(locale, { perPage: FILTER_OPTIONS }),
+    getAuthors(locale, { perPage: FILTER_OPTIONS }),
+    getTranslators(locale),
     getTranslations("books"),
     getTranslations("bookCard"),
   ]);
 
+  const publishers: FilterOption[] = publisherList.items.map((p) => ({ slug: p.slug, name: p.name, count: p.bookCount }));
+  const authors: FilterOption[] = authorList.items.map((a) => ({ slug: a.slug, name: a.name, count: a.bookCount }));
+  const translators: FilterOption[] = translatorList
+    .map((tr) => ({ slug: tr.slug, name: tr.name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  // A publisher or author reached by a link, beyond the first hundred:
+  // fetched by name so its chip and option read properly.
+  const [extraPublisher, extraAuthor] = await Promise.all([
+    publisher && !publishers.some((p) => p.slug === publisher) ? getPublisherBySlug(publisher, locale) : null,
+    author && !authors.some((a) => a.slug === author) ? getAuthorBySlug(author, locale) : null,
+  ]);
+  if (extraPublisher) publishers.unshift({ slug: extraPublisher.slug, name: extraPublisher.name });
+  if (extraAuthor) authors.unshift({ slug: extraAuthor.slug, name: extraAuthor.name });
+
+  const values = { ...filters, year, sort };
+
+  // The filter form sends every select, chosen or not ("author=&sort="):
+  // move to the same list's tidy address, which is also the one to share.
+  if (Object.values(raw).some((value) => value === "")) {
+    const page = currentPage > 1 ? String(currentPage) : undefined;
+    redirect({ href: booksHref({ ...values, ...(page ? { page } : {}) } as BookFilterValues), locale });
+  }
+
   // For the site's statistics: what readers search for, and what found nothing.
   const search = listingSearch(
-    { q, page: currentPage, filters: [category, author, publisher, series] },
+    { q, page: currentPage, filters: [category, author, publisher, translator, series, year] },
     books.total,
     locale,
     await headers(),
@@ -92,12 +143,12 @@ export default async function BooksPage({
             </h1>
             <p className="mt-2 text-zinc-500 text-sm">{t("pageDescription")}</p>
 
-            <BookSearchForm defaultValue={q ?? ""} hidden={{ category }} className="mt-6 max-w-xl" />
+            <BookSearchForm defaultValue={q ?? ""} hidden={{ category, year, publisher, author, translator, sort }} className="mt-6 max-w-xl" />
 
             {categories.length > 0 && (
               <nav className="mt-5 flex flex-wrap gap-2" aria-label={t("categories")}>
                 <Link
-                  href={q ? `/books?q=${encodeURIComponent(q)}` : "/books"}
+                  href={booksHref({ ...values, category: undefined })}
                   className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                     !category
                       ? "border-forest-700 bg-forest-700 text-white"
@@ -109,7 +160,7 @@ export default async function BooksPage({
                 {categories.map((c) => (
                   <Link
                     key={c.slug}
-                    href={`/books?${new URLSearchParams({ ...(q ? { q } : {}), category: c.slug })}`}
+                    href={booksHref({ ...values, category: c.slug })}
                     className={`rounded-full border px-3 py-1 text-xs transition-colors ${
                       category === c.slug
                         ? "border-forest-700 bg-forest-700 text-white"
@@ -121,6 +172,33 @@ export default async function BooksPage({
                 ))}
               </nav>
             )}
+
+            <BookFilterPanel
+              values={values}
+              years={years}
+              publishers={publishers}
+              authors={authors}
+              translators={translators}
+              labels={{
+                filters: t("filters"),
+                year: t("filterYear"),
+                allYears: t("allYears"),
+                publisher: t("filterPublisher"),
+                allPublishers: t("allPublishers"),
+                author: t("filterAuthor"),
+                allAuthors: t("allAuthors"),
+                translator: t("filterTranslator"),
+                allTranslators: t("allTranslators"),
+                sort: t("sort"),
+                sortRelevance: t("sortRelevance"),
+                sortYear: t("sortYear"),
+                sortTitle: t("sortTitle"),
+                sortRecent: t("sortRecent"),
+                apply: t("apply"),
+                clear: t("clear"),
+                remove: t("removeFilter", { name: "{name}" }),
+              }}
+            />
 
             <p className="mt-4 text-xs text-zinc-400">{t("count", { count: books.total })}</p>
           </div>
@@ -206,7 +284,7 @@ export default async function BooksPage({
                 currentPage={books.page}
                 totalPages={books.lastPage}
                 basePath="/books"
-                query={{ q, category, author, publisher, series }}
+                query={{ q, category, author, publisher, translator, series, year, sort }}
               />
             </>
           ) : (
