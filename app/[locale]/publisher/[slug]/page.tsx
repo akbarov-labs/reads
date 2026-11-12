@@ -3,7 +3,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, permanentRedirect } from "@/i18n/navigation";
-import { getAnnouncements, getBooks, getPublisherBySlug } from "@/lib/api";
+import { getAnnouncements, getBookYears, getBooks, getPublisherBySlug } from "@/lib/api";
+import { YearLinks } from "@/components/YearLinks";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { SiteHeader } from "@/components/SiteHeader";
 import { JsonLd } from "@/components/JsonLd";
@@ -76,9 +77,10 @@ export default async function PublisherDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [publisher, books, announcements, tPublisher, tBookCard, tBooks] = await Promise.all([
+  const [publisher, books, years, announcements, tPublisher, tBookCard, tBooks] = await Promise.all([
     getPublisherBySlug(slug, locale),
     getBooks(locale, { publisher: slug, perPage: BOOKS_SHOWN }),
+    getBookYears(locale, { publisher: slug }),
     getAnnouncements(locale, { publisher: slug, limit: 12 }),
     getTranslations("publisherDetail"),
     getTranslations("bookCard"),
@@ -268,6 +270,14 @@ export default async function PublisherDetailPage({
               <h2 className="font-serif text-2xl sm:text-3xl text-zinc-900 font-semibold">
                 {tPublisher("catalog")}
               </h2>
+              {/* Each year opens the books page filtered to this publisher. */}
+              <YearLinks
+                years={years}
+                filter={{ publisher: publisher.slug }}
+                label={tBooks("yearsLabel")}
+                moreLabel={tBooks("yearsMore")}
+                className="mt-4"
+              />
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">

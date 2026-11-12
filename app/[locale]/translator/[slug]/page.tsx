@@ -104,7 +104,7 @@ export default async function TranslatorProfilePage({
         <Container>
           <ProfileHeader translator={translator} />
           <StatsBar stats={stats} />
-          <BookGrid books={translator.books} />
+          <BookGrid books={translator.books} filter={{ translator: translator.slug }} />
           <ExcerptReader books={translator.books} />
           {/* Last, once the reader has seen what we have. */}
           <AskAiSection subject="translator" id={translator.slug} className="py-14 sm:py-16" />

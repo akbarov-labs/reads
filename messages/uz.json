@@ -37,7 +37,11 @@
     "count": "{count} ta tarjimon",
     "defaultRole": "Tarjimon",
     "books": "{count} ta asar",
-    "empty": "Tarjimonlar topilmadi."
+    "empty": "Tarjimonlar topilmadi.",
+    "searchPlaceholder": "Tarjimon ismi, lotin yoki kirillda",
+    "searchLabel": "Tarjimonlarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta tarjimon"
   },
   "books": {
     "pageTitle": "Barcha Kitoblar",
@@ -49,7 +53,26 @@
     "categories": "Boʻlimlar",
     "allCategories": "Hammasi",
     "count": "{count} ta kitob",
-    "editions": "{count} ta nashr"
+    "editions": "{count} ta nashr",
+    "filters": "Filtrlar",
+    "filterYear": "Nashr yili",
+    "allYears": "Barcha yillar",
+    "filterPublisher": "Nashriyot",
+    "allPublishers": "Barcha nashriyotlar",
+    "filterAuthor": "Muallif",
+    "allAuthors": "Barcha mualliflar",
+    "filterTranslator": "Tarjimon",
+    "allTranslators": "Barcha tarjimonlar",
+    "sort": "Tartib",
+    "sortRelevance": "Avval eng mosi",
+    "sortYear": "Avval yangi nashrlar",
+    "sortTitle": "Nomi boʻyicha",
+    "sortRecent": "Yaqinda qoʻshilganlar",
+    "apply": "Koʻrsatish",
+    "clear": "Filtrlarni tozalash",
+    "removeFilter": "«{name}» filtrini olib tashlash",
+    "yearsLabel": "Nashr yili",
+    "yearsMore": "Barcha kitoblar va filtrlar"
   },
   "search": {
     "label": "Takliflar",
@@ -68,7 +91,11 @@
     "sectionTitle": "Kitob mualliflari",
     "count": "{count} ta muallif",
     "books": "{count} ta kitob",
-    "empty": "Mualliflar topilmadi."
+    "empty": "Mualliflar topilmadi.",
+    "searchPlaceholder": "Muallif ismi, lotin yoki kirillda",
+    "searchLabel": "Mualliflarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta muallif"
   },
   "publishers": {
     "pageTitle": "Barcha Nashriyotlar",
@@ -76,7 +103,11 @@
     "sectionTitle": "Nashriyotlar",
     "count": "{count} ta nashriyot",
     "books": "{count} ta kitob",
-    "empty": "Nashriyotlar topilmadi."
+    "empty": "Nashriyotlar topilmadi.",
+    "searchPlaceholder": "Nashriyot nomi",
+    "searchLabel": "Nashriyotlarni qidirish",
+    "search": "Qidirish",
+    "found": "«{q}» boʻyicha {count} ta nashriyot"
   },
   "stats": {
     "booksTranslated": "Asarlar va tarjimalar",

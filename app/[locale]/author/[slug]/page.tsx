@@ -3,7 +3,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link, permanentRedirect } from "@/i18n/navigation";
-import { getBooks, getAuthorBySlug } from "@/lib/api";
+import { getBooks, getAuthorBySlug, getBookYears } from "@/lib/api";
+import { YearLinks } from "@/components/YearLinks";
 import { SiteHeader } from "@/components/SiteHeader";
 import { JsonLd } from "@/components/JsonLd";
 import { authorPageGraph } from "@/lib/jsonld";
@@ -76,9 +77,10 @@ export default async function AuthorDetailPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const [author, books, tAuthor, tBookCard, tBooks, tAskAi] = await Promise.all([
+  const [author, books, years, tAuthor, tBookCard, tBooks, tAskAi] = await Promise.all([
     getAuthorBySlug(slug, locale),
     getBooks(locale, { author: slug, perPage: BOOKS_SHOWN }),
+    getBookYears(locale, { author: slug }),
     getTranslations("authorDetail"),
     getTranslations("bookCard"),
     getTranslations("books"),
@@ -224,6 +226,14 @@ export default async function AuthorDetailPage({
               <h2 className="font-serif text-2xl sm:text-3xl text-zinc-900 font-semibold">
                 {tAuthor("works")}
               </h2>
+              {/* Each year opens the books page filtered to this author. */}
+              <YearLinks
+                years={years}
+                filter={{ author: author.slug }}
+                label={tBooks("yearsLabel")}
+                moreLabel={tBooks("yearsMore")}
+                className="mt-4"
+              />
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
