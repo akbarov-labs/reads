@@ -28,7 +28,9 @@
     "publishersTitle": "Publishers",
     "publishersSeeAll": "All publishers",
     "recommendPrompt": "Not sure what to read?",
-    "recommendPromptLink": "Our Telegram bot will pick a book"
+    "recommendPromptLink": "Our Telegram bot will pick a book",
+    "botPagePrompt": "Books left half-read?",
+    "botPageLink": "See how the bot helps you finish"
   },
   "translators": {
     "pageTitle": "All Translators",

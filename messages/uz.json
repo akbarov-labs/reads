@@ -28,7 +28,9 @@
     "publishersTitle": "Nashriyotlar",
     "publishersSeeAll": "Barcha nashriyotlar",
     "recommendPrompt": "Nima oʻqishni bilmayapsizmi?",
-    "recommendPromptLink": "Telegram bot kitob tanlab beradi"
+    "recommendPromptLink": "Telegram bot kitob tanlab beradi",
+    "botPagePrompt": "Boshlagan kitobingiz chala qolyaptimi?",
+    "botPageLink": "Bot oxirigacha oʻqishga yordam beradi"
   },
   "translators": {
     "pageTitle": "Barcha Tarjimonlar",
