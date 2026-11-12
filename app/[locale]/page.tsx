@@ -29,7 +29,7 @@ import { QuoteBlock } from "@/components/QuoteBlock";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
-import { Link, getPathname } from "@/i18n/navigation";
+import { getPathname } from "@/i18n/navigation";
 import { botRecommendUrl } from "@/lib/bot";
 
 export async function generateMetadata({
@@ -122,8 +122,9 @@ export default async function Home({
                 large
                 className="mt-8 max-w-xl"
               />
-              {/* …and those who came for no book in particular, the bot's
-                  "choose my next book", which knows their shelf. */}
+              {/* …and those who came for no book in particular, or whose
+                  books stall halfway: the bot's "choose my next book",
+                  which knows their shelf and then plans the reading. */}
               <p className="mt-4 text-sm text-zinc-500">
                 {t("recommendPrompt")}{" "}
                 <a
@@ -134,17 +135,6 @@ export default async function Home({
                 >
                   {t("recommendPromptLink")} →
                 </a>
-              </p>
-              {/* …and those whose books stall halfway, the page on how the
-                  bot gets a reader to the last page. */}
-              <p className="mt-1 text-sm text-zinc-500">
-                {t("botPagePrompt")}{" "}
-                <Link
-                  href="/bot"
-                  className="font-medium text-forest-700 underline-offset-4 transition-colors hover:text-forest-800 hover:underline"
-                >
-                  {t("botPageLink")} →
-                </Link>
               </p>
             </div>
 
