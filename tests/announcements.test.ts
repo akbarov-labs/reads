@@ -37,7 +37,7 @@ describe("orderUrl", () => {
 
     expect(url.origin + url.pathname).toBe("https://t.me/hilol_buyurtma");
     expect(url.searchParams.get("text")).toBe(
-      "Assalomu alaykum! kitoblarim.uz saytida «Jinoyat va jazo» kitobini koʻrdim. Buyurtma bermoqchiman.",
+      "Assalomu alaykum! «Jinoyat va jazo» kitobini kitoblarim.uz saytida koʻrdim. Buyurtma bermoqchiman.",
     );
   });
 
