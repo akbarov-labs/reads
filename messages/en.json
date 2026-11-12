@@ -27,8 +27,8 @@
     "authorsSeeAll": "All authors",
     "publishersTitle": "Publishers",
     "publishersSeeAll": "All publishers",
-    "recommendPrompt": "Not sure what to read?",
-    "recommendPromptLink": "Our Telegram bot will pick a book"
+    "recommendPrompt": "Not sure what to read, or books left half-read?",
+    "recommendPromptLink": "Our Telegram bot picks a book and helps you finish it"
   },
   "translators": {
     "pageTitle": "All Translators",
@@ -488,7 +488,7 @@
       },
       {
         "title": "Month in review",
-        "body": "Once a month, a list of your books, days and pages, ready to share."
+        "body": "At the end of each month, one card: the books you read, your reading days and your listening time. Ready to share."
       }
     ],
     "catalogueTitle": "From the catalogue to the bot in one tap",

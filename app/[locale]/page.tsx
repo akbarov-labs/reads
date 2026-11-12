@@ -122,8 +122,9 @@ export default async function Home({
                 large
                 className="mt-8 max-w-xl"
               />
-              {/* …and those who came for no book in particular, the bot's
-                  "choose my next book", which knows their shelf. */}
+              {/* …and those who came for no book in particular, or whose
+                  books stall halfway: the bot's "choose my next book",
+                  which knows their shelf and then plans the reading. */}
               <p className="mt-4 text-sm text-zinc-500">
                 {t("recommendPrompt")}{" "}
                 <a
