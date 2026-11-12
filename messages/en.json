@@ -28,7 +28,8 @@
     "publishersTitle": "Publishers",
     "publishersSeeAll": "All publishers",
     "recommendPrompt": "Not sure what to read, or books left half-read?",
-    "recommendPromptLink": "Our Telegram bot picks a book and helps you finish it"
+    "recommendPromptLink": "Our Telegram bot picks a book and helps you finish it",
+    "navDeals": "Deals"
   },
   "translators": {
     "pageTitle": "All Translators",
@@ -559,5 +560,31 @@
     "finalTitle": "Start your first book today.",
     "finalBody": "Free, right in Telegram, in a minute.",
     "footerLink": "How the bot works"
+  },
+  "deals": {
+    "pageTitle": "Book discounts, promo codes and giveaways",
+    "pageDescription": "Current discounts, promo codes and book giveaways from Uzbekistan's publishers and bookshops, on one page and updated daily.",
+    "heading": "Discounts and giveaways",
+    "lead": "Today's discounts, promo codes and book giveaways from publishers and shops, in one place. Ended ones disappear by themselves.",
+    "all": "All",
+    "discounts": "Discounts",
+    "contests": "Giveaways",
+    "count": "{count, plural, one {# offer} other {# offers}}",
+    "empty": "No discounts or giveaways right now. New ones will show up here as soon as they're added.",
+    "discount": "Discount",
+    "contest": "Giveaway",
+    "percentOff": "−{percent}%",
+    "lastDay": "Last day: {date}",
+    "lastDayToday": "Last day today",
+    "daysLeft": "{count, plural, one {# day left} other {# days left}}",
+    "promoCode": "Promo code",
+    "copyCode": "Copy",
+    "takeDiscount": "Get the discount",
+    "takeContest": "Enter",
+    "book": "Book: {title}",
+    "note": "The publisher or shop sets the terms and dates: check them at the source before you buy.",
+    "homeTitle": "Discounts and giveaways",
+    "seeAll": "See all",
+    "copied": "Copied"
   }
 }

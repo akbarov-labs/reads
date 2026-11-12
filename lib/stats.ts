@@ -13,7 +13,7 @@ import { clientIp } from "@/lib/clientIp";
  * page's "write a review" button, into the bot. "shared_list": a title in a
  * reader's monthly list, shared in Telegram, to the book's page here.
  */
-export type ClickKind = "store" | "publisher_order" | "ask_ai" | "bot_review" | "shared_list";
+export type ClickKind = "store" | "publisher_order" | "ask_ai" | "bot_review" | "shared_list" | "deal";
 
 /** What every report carries about the visitor. Reads-admin hashes it and keeps neither. */
 export interface Visitor {
@@ -26,7 +26,7 @@ export interface Click extends Visitor {
   bookId?: string;
   /** For an order: Reads-admin finds its publisher and book itself. */
   announcementId?: string;
-  /** The store's key, as in lib/stores.ts, or for ask-AI the kind of page; unused for an order. */
+  /** The store's key, as in lib/stores.ts, for ask-AI the kind of page, for a deal "deal-<id>"; unused for an order. */
   target?: string;
   locale: string;
 }
