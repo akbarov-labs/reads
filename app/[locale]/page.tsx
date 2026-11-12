@@ -32,7 +32,7 @@ import { DealCard } from "@/components/DealCard";
 import { stillOn } from "@/lib/deals";
 import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
-import { getPathname } from "@/i18n/navigation";
+import { Link, getPathname } from "@/i18n/navigation";
 import { botRecommendUrl } from "@/lib/bot";
 
 export async function generateMetadata({
@@ -92,10 +92,10 @@ export default async function Home({
 
   // Global hero stats
   const stats = [
-    { label: t("statBooks"), value: books.total },
-    { label: t("statAuthors"), value: authors.total },
-    { label: t("statTranslators"), value: translators.length },
-    { label: t("statPublishers"), value: publishers.total },
+    { label: t("statBooks"), value: books.total, href: "/books" },
+    { label: t("statAuthors"), value: authors.total, href: "/authors" },
+    { label: t("statTranslators"), value: translators.length, href: "/translators" },
+    { label: t("statPublishers"), value: publishers.total, href: "/publishers" },
   ];
 
   return (
@@ -145,16 +145,17 @@ export default async function Home({
 
             {/* Stats row */}
             <dl className="mt-14 grid grid-cols-2 sm:grid-cols-4 gap-px bg-stone-200 rounded-2xl overflow-hidden border border-stone-200">
+              {/* Each count opens its list: "15 065 kitob" is where the
+                  books are. The link covers the whole cell. */}
               {stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="bg-white px-6 py-6 text-center"
-                >
-                  <dt className="text-xs font-medium uppercase tracking-widest2 text-zinc-400 mb-1">
+                <div key={stat.label} className="group relative bg-white px-6 py-6 text-center transition-colors hover:bg-forest-50">
+                  <dt className="text-xs font-medium uppercase tracking-widest2 text-zinc-400 mb-1 transition-colors group-hover:text-forest-700">
                     {stat.label}
                   </dt>
-                  <dd className="font-serif text-4xl text-zinc-900">
-                    {stat.value}
+                  <dd className="font-serif text-4xl tabular-nums text-zinc-900 transition-colors group-hover:text-forest-800">
+                    <Link href={stat.href} className="after:absolute after:inset-0 after:content-['']">
+                      {stat.value.toLocaleString("ru-RU").replace(/\u00a0/g, " ")}
+                    </Link>
                   </dd>
                 </div>
               ))}

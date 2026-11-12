@@ -158,7 +158,9 @@ export default async function BookDetailPage({
           {/* Book Hero Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
             {/* Left: Book Cover */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-start">
+            {/* On a desktop tall enough to show the whole cover, it stays in
+                view while the details beside it scroll past. */}
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-start lg:[@media(min-height:720px)]:sticky lg:[@media(min-height:720px)]:top-24">
               <div className="relative aspect-[2/3] w-full max-w-sm overflow-hidden rounded-xl bg-zinc-100 shadow-xl ring-1 ring-zinc-900/10">
                 {book.coverUrl ? (
                   <Image
