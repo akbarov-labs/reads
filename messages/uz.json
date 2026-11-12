@@ -28,7 +28,8 @@
     "publishersTitle": "Nashriyotlar",
     "publishersSeeAll": "Barcha nashriyotlar",
     "recommendPrompt": "Nima oʻqishni bilmayapsizmi?",
-    "recommendPromptLink": "Telegram bot kitob tanlab beradi"
+    "recommendPromptLink": "Telegram bot kitob tanlab beradi",
+    "navDeals": "Chegirmalar"
   },
   "translators": {
     "pageTitle": "Barcha Tarjimonlar",
@@ -528,5 +529,31 @@
     "finalTitle": "Birinchi kitobingizni bugun boshlang.",
     "finalBody": "Bepul, Telegramning oʻzida, bir daqiqada.",
     "footerLink": "Bot qanday ishlaydi"
+  },
+  "deals": {
+    "pageTitle": "Kitob chegirmalari, promokodlar va tanlovlar",
+    "pageDescription": "Nashriyot va kitob doʻkonlaridagi amaldagi chegirmalar, promokodlar va kitob yutish mumkin boʻlgan tanlovlar — bir sahifada, har kuni yangilanadi.",
+    "heading": "Chegirmalar va tanlovlar",
+    "lead": "Nashriyotlar va doʻkonlardagi bugungi chegirmalar, promokodlar va kitob tanlovlari bir joyda. Muddati tugaganlari oʻzi olib tashlanadi.",
+    "all": "Hammasi",
+    "discounts": "Chegirmalar",
+    "contests": "Tanlovlar",
+    "count": "{count} ta taklif",
+    "empty": "Hozircha faol chegirma yoki tanlov yoʻq. Yangilari qoʻshilishi bilan shu yerda chiqadi.",
+    "discount": "Chegirma",
+    "contest": "Tanlov",
+    "percentOff": "−{percent}%",
+    "lastDay": "Oxirgi kun: {date}",
+    "lastDayToday": "Bugun oxirgi kun",
+    "daysLeft": "Yana {count} kun",
+    "promoCode": "Promokod",
+    "copyCode": "Nusxa olish",
+    "takeDiscount": "Chegirmadan foydalanish",
+    "takeContest": "Tanlovda qatnashish",
+    "book": "Kitob: {title}",
+    "note": "Shartlar va muddatni nashriyot yoki doʻkon belgilaydi: xariddan oldin manbada tekshiring.",
+    "homeTitle": "Chegirmalar va tanlovlar",
+    "seeAll": "Barchasi",
+    "copied": "Nusxa olindi"
   }
 }

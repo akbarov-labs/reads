@@ -442,6 +442,33 @@ export interface Quote {
  * site: a pre-order until its last day (`preorderDeadline`, a Tashkent
  * date), a new book for a couple of months.
  */
+/**
+ * A discount or contest readers can use today (Reads-admin's Deal::live):
+ * a publisher's sale or giveaway from its Telegram channel, or a shop's
+ * promotion an editor typed in.
+ */
+export interface Deal {
+  id: string;
+  kind: "discount" | "contest";
+  title: string;
+  /** The conditions, a few lines. */
+  details: string | null;
+  discountPercent: number | null;
+  promoCode: string | null;
+  /** YYYY-MM-DD. */
+  startsOn: string | null;
+  /** YYYY-MM-DD, the last day it holds. */
+  endsOn: string | null;
+  /** Where a reader takes it up: the shop's page, or the post. */
+  url: string | null;
+  sourceUrl: string | null;
+  imageUrl: string | null;
+  postedAt: string | null;
+  /** Who runs it: a publisher (with its slug) or a shop. */
+  source: { name: string | null; publisherSlug: string | null };
+  book: { id: string; title: string } | null;
+}
+
 export interface Announcement {
   id: string;
   title: string;

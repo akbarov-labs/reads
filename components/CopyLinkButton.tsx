@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Link2 } from "lucide-react";
+import { Check, Copy, Link2 } from "lucide-react";
 
 /** Deprecated, but it works where the Clipboard API is refused. */
 function copyBySelection(text: string): boolean {
@@ -26,11 +26,14 @@ export function CopyLinkButton({
   url,
   label,
   copiedLabel,
+  icon = "link",
   className = "",
 }: {
   url: string;
   label: string;
   copiedLabel: string;
+  /** "copy" for text that isn't a link, such as a promo code. */
+  icon?: "link" | "copy";
   className?: string;
 }) {
   const [copied, setCopied] = useState(false);
@@ -58,7 +61,7 @@ export function CopyLinkButton({
     );
   }
 
-  const Icon = copied ? Check : Link2;
+  const Icon = copied ? Check : icon === "copy" ? Copy : Link2;
 
   return (
     <button type="button" onClick={copy} className={className}>

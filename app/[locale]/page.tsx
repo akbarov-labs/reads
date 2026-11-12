@@ -12,6 +12,7 @@ import {
   getCollections,
   getQuoteOfTheDay,
   getAnnouncements,
+  getDeals,
 } from "@/lib/api";
 import { localeAlternates, type Locale } from "@/lib/site";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -27,6 +28,8 @@ import { PublisherCard } from "@/components/PublisherCard";
 import { CollectionCard } from "@/components/CollectionCard";
 import { QuoteBlock } from "@/components/QuoteBlock";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
+import { DealCard } from "@/components/DealCard";
+import { stillOn } from "@/lib/deals";
 import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
 import { getPathname } from "@/i18n/navigation";
@@ -62,7 +65,7 @@ export default async function Home({
 
   // Only the few rows each section shows; the totals come from the API's
   // pagination meta rather than from counting a downloaded catalogue.
-  const [translators, books, authors, publishers, taqrizchilar, quote, collections, announcements, t, tTaqrizchilar, tSite, tCollections, tQuotes] =
+  const [translators, books, authors, publishers, taqrizchilar, quote, collections, announcements, deals, t, tTaqrizchilar, tSite, tCollections, tQuotes, tDeals] =
     await Promise.all([
     getTranslators(locale),
     getBooks(locale, { perPage: 8 }),
@@ -72,11 +75,13 @@ export default async function Home({
     getQuoteOfTheDay(locale),
     getCollections(locale),
     getAnnouncements(locale, { limit: 6 }),
+    getDeals(locale, { limit: 6 }),
     getTranslations("home"),
     getTranslations("taqrizchilar"),
     getTranslations("site"),
     getTranslations("collections"),
     getTranslations("quotes"),
+    getTranslations("deals"),
   ]);
 
   const featuredTranslators = translators.slice(0, 4);
@@ -178,6 +183,20 @@ export default async function Home({
 
         {/* ─── NEW BOOKS AND PRE-ORDERS ─── from publishers' Telegram
             channels; absent when there are none. */}
+        {/* ─── DEALS: discounts and giveaways on today; absent when none ─── */}
+        {stillOn(deals).length > 0 && (
+          <section className="py-16 sm:py-20 border-b border-stone-200" aria-labelledby="home-deals">
+            <Container>
+              <SectionHeader title={tDeals("homeTitle")} seeMoreHref="/chegirmalar" seeMoreLabel={tDeals("seeAll")} />
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {stillOn(deals).slice(0, 3).map((deal) => (
+                  <DealCard key={deal.id} deal={deal} locale={locale} />
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
+
         {stillOpen(announcements).length > 0 && (
           <div className="py-16 sm:py-20 border-b border-stone-200">
             <Container>

@@ -8,6 +8,7 @@ export const SITE_SECTIONS = [
   { href: "/authors", detail: "/author", labelKey: "statAuthors" },
   { href: "/translators", detail: "/translator", labelKey: "statTranslators" },
   { href: "/publishers", detail: "/publisher", labelKey: "statPublishers" },
+  { href: "/chegirmalar", detail: "/chegirmalar", labelKey: "navDeals" },
 ] as const;
 
 export type SiteSection = (typeof SITE_SECTIONS)[number];

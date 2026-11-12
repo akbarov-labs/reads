@@ -18,6 +18,7 @@ import type {
   Library,
   LibraryAvailability,
   LibraryBook,
+  Deal,
 } from "@/lib/types";
 
 // Server-only: read directly, never exposed to the browser bundle.
@@ -529,6 +530,32 @@ export async function getAnnouncements(
     [ANNOUNCEMENTS_TAG, PUBLISHERS_TAG]
   );
   return (result?.data ?? []).map(normalizeAnnouncement);
+}
+
+/**
+ * Discounts and contests on the site today, ending soonest first. Under the
+ * announcements' tag: every admin ping drops it, and an ended deal leaves
+ * within REVALIDATE_SECONDS of midnight.
+ */
+export async function getDeals(
+  locale: string,
+  { kind, publisher, limit = 24 }: { kind?: Deal["kind"]; publisher?: string; limit?: number } = {}
+): Promise<Deal[]> {
+  const result = await apiFetch<{ data: Deal[] }>(
+    `/deals?${query({ locale, kind, publisher, limit })}`,
+    [ANNOUNCEMENTS_TAG, PUBLISHERS_TAG]
+  );
+  return (result?.data ?? []).map(normalizeDeal);
+}
+
+/** One deal on today, or null once it has ended or been taken down. */
+export async function getDeal(id: string): Promise<Deal | null> {
+  const result = await apiFetch<{ data: Deal }>(`/deals/${encodeURIComponent(id)}`, [ANNOUNCEMENTS_TAG]);
+  return result ? normalizeDeal(result.data) : null;
+}
+
+function normalizeDeal(deal: Deal): Deal {
+  return { ...deal, imageUrl: resolveAssetUrl(deal.imageUrl) || null };
 }
 
 /** One live announcement, or null once it has expired or been taken down. */
