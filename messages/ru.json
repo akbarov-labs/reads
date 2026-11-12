@@ -28,7 +28,9 @@
     "publishersTitle": "Издательства",
     "publishersSeeAll": "Все издательства",
     "recommendPrompt": "Не знаете, что почитать?",
-    "recommendPromptLink": "Telegram-бот подберёт книгу"
+    "recommendPromptLink": "Telegram-бот подберёт книгу",
+    "botPagePrompt": "Бросаете книги на середине?",
+    "botPageLink": "Бот поможет дочитать"
   },
   "translators": {
     "pageTitle": "Все переводчики",

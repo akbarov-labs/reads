@@ -29,7 +29,7 @@ import { QuoteBlock } from "@/components/QuoteBlock";
 import { AnnouncementsSection } from "@/components/AnnouncementsSection";
 import { stillOpen } from "@/lib/announcements";
 import { BookSearchForm } from "@/components/BookSearchForm";
-import { getPathname } from "@/i18n/navigation";
+import { Link, getPathname } from "@/i18n/navigation";
 import { botRecommendUrl } from "@/lib/bot";
 
 export async function generateMetadata({
@@ -134,6 +134,17 @@ export default async function Home({
                 >
                   {t("recommendPromptLink")} →
                 </a>
+              </p>
+              {/* …and those whose books stall halfway, the page on how the
+                  bot gets a reader to the last page. */}
+              <p className="mt-1 text-sm text-zinc-500">
+                {t("botPagePrompt")}{" "}
+                <Link
+                  href="/bot"
+                  className="font-medium text-forest-700 underline-offset-4 transition-colors hover:text-forest-800 hover:underline"
+                >
+                  {t("botPageLink")} →
+                </Link>
               </p>
             </div>
 
