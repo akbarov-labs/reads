@@ -199,6 +199,8 @@
     "descriptionMore": "Show more",
     "descriptionLess": "Show less",
     "descriptionSource": "Description from",
+    "shopDescription": "Edition description",
+    "shopDescriptionFrom": "{name} description",
     "author": "Author",
     "translator": "Translator",
     "publisher": "Publisher",

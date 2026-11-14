@@ -199,6 +199,8 @@
     "descriptionMore": "Toʻliq koʻrsatish",
     "descriptionLess": "Qisqartirish",
     "descriptionSource": "Tavsif manbasi:",
+    "shopDescription": "Nashr tavsifi",
+    "shopDescriptionFrom": "{name} tavsifi",
     "author": "Muallif",
     "translator": "Tarjimon",
     "publisher": "Nashriyot",

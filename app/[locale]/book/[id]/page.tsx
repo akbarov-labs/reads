@@ -8,7 +8,7 @@ import type { BookWithTranslator, Edition } from "@/lib/types";
 import { MetaLine } from "@/components/MetaLine";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Container } from "@/components/Container";
-import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, FileX, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen, Bookmark, ChevronDown, FileX, User } from "lucide-react";
 import { TaqrizCard } from "@/components/TaqrizCard";
 import { ShareLinks } from "@/components/ShareLinks";
 import { AskAiButton } from "@/components/AskAiSection";
@@ -261,6 +261,32 @@ export default async function BookDetailPage({
                     {book.descriptionSource.name}
                   </a>
                 </p>
+              ) : null}
+              {/* Our own description leads; the shop's or edition's text it
+                  replaced stays on the page, folded and credited. */}
+              {book.description && book.shopDescription ? (
+                <details className="group mt-4 rounded-lg border border-zinc-200 px-4 py-3">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-medium text-zinc-700 hover:text-forest-800 [&::-webkit-details-marker]:hidden">
+                    {book.shopDescription.source
+                      ? tDetail("shopDescriptionFrom", { name: book.shopDescription.source.name })
+                      : tDetail("shopDescription")}
+                    <ChevronDown aria-hidden className="size-4 shrink-0 transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-600 whitespace-pre-line">{book.shopDescription.text}</p>
+                  {book.shopDescription.source ? (
+                    <p className="mt-2 text-xs text-zinc-500">
+                      {tDetail("descriptionSource")}{" "}
+                      <a
+                        href={book.shopDescription.source.url}
+                        target="_blank"
+                        rel="nofollow noopener"
+                        className="underline underline-offset-4 hover:text-forest-800"
+                      >
+                        {book.shopDescription.source.name}
+                      </a>
+                    </p>
+                  ) : null}
+                </details>
               ) : null}
 
               {/* What the description leaves out (often most of it), asked

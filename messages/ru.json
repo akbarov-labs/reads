@@ -199,6 +199,8 @@
     "descriptionMore": "Подробнее",
     "descriptionLess": "Свернуть",
     "descriptionSource": "Источник описания:",
+    "shopDescription": "Описание издания",
+    "shopDescriptionFrom": "Описание {name}",
     "author": "Автор",
     "translator": "Переводчик",
     "publisher": "Издательство",
