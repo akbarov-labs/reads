@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { Link, permanentRedirect } from "@/i18n/navigation";
+import { keptBookPath } from "@/lib/bookAddress";
 import { getBookById, publicAssetUrl } from "@/lib/api";
 import type { BookWithTranslator, Edition } from "@/lib/types";
 import { MetaLine } from "@/components/MetaLine";
@@ -47,6 +48,9 @@ export async function generateMetadata({
     getTranslations({ locale, namespace: "bookDetail" }),
   ]);
   if (!book) return { robots: { index: false, follow: false } };
+  // A merged book's old id: the page redirects, and the canonical names
+  // the kept book in case anything reads the metadata first.
+  const path = keptBookPath(id, book) ?? `/book/${id}`;
 
   const title = bookTitle(book);
   const description = bookSnippet(book, t, locale);
@@ -58,12 +62,12 @@ export async function generateMetadata({
     // Its own address, and its own in each language. Without this the page
     // inherits the layout's, which points at the home page and tells search
     // engines every book is a copy of it.
-    alternates: localeAlternates(locale as Locale, `/book/${id}`),
+    alternates: localeAlternates(locale as Locale, path),
     openGraph: {
       type: "book",
       title,
       description,
-      url: localeAlternates(locale as Locale, `/book/${id}`).canonical,
+      url: localeAlternates(locale as Locale, path).canonical,
       ...(cover ? { images: [{ url: cover, alt: book.uzbekTitle }] } : {}),
       isbn: (book.editions ?? []).find((edition) => edition.isbn)?.isbn ?? undefined,
     },
@@ -88,6 +92,12 @@ export default async function BookDetailPage({
   ]);
 
   if (!book) notFound();
+
+  // A book merged into another in the admin keeps its old link, which the
+  // API answers with the kept book: send the reader (and search engines)
+  // to that book's own address.
+  const keptPath = keptBookPath(id, book);
+  if (keptPath) permanentRedirect({ href: keptPath, locale });
 
   const firstAuthor = book.authors?.[0];
 
