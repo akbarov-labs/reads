@@ -30,7 +30,9 @@ services:
     restart: unless-stopped
     logging: *default-logging
     env_file: .env
-    mem_limit: 256m
+    # 256m left Next.js pinned at the cap and it restarted on its own
+    # (2026-11-14). The server has ~5 GB free.
+    mem_limit: 512m
     networks:
       - edge
       - reads_net
