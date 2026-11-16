@@ -38,17 +38,19 @@ services:
       - reads_net
     labels:
       caddy: ${DOMAIN:?set DOMAIN in .env, e.g. kitoblarim.uz}
-      caddy.reverse_proxy: "{{upstreams 3000}}"
+      # By container name, not {{upstreams 3000}}: while the container is
+      # down (a crash, a restart, a deploy) that template renders as a bare
+      # `:3000`, and Cloudflare's long-lived connections kept using that
+      # broken route after the site came back: ~15-25% 502s until edge
+      # Caddy was restarted (2026-11-15 and 2026-11-16). Docker's DNS
+      # resolves the name on every dial, so a restart now means a few
+      # seconds of errors and nothing that outlives it.
+      caddy.reverse_proxy: "reads-app:3000"
       # Behind Cloudflare, Caddy would append Cloudflare's address and the
       # inquiry route would rate-limit by it. {client_ip} is the visitor,
       # read from CF-Connecting-IP only when Cloudflare sent the request
       # (docs/cloudflare-real-ip.md).
       caddy.reverse_proxy.header_up: "X-Forwarded-For {client_ip}"
-      # The address Reads was briefly announced on (canonical links and the
-      # sitemap pointed there). Search engines learned it, so send each of
-      # its URLs to the same path here instead of a certificate error.
-      caddy_1: tarjima.kitoblarim.uz
-      caddy_1.redir: "https://kitoblarim.uz{uri} permanent"
 
 networks:
   edge:

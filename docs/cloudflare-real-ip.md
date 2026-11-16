@@ -111,7 +111,7 @@ overwrite them, so the change is made there.
 ### Reads
 
 ```bash
-cd /opt/apps/reads && sudo grep -q "reverse_proxy.header_up" docker-compose.prod.yml || sudo sed -i '/caddy.reverse_proxy: "{{upstreams 3000}}"/a\      caddy.reverse_proxy.header_up: "X-Forwarded-For {client_ip}"' docker-compose.prod.yml
+cd /opt/apps/reads && sudo grep -q "reverse_proxy.header_up" docker-compose.prod.yml || sudo sed -i '/caddy.reverse_proxy: "reads-app:3000"/a\      caddy.reverse_proxy.header_up: "X-Forwarded-For {client_ip}"' docker-compose.prod.yml
 ```
 
 ```bash
@@ -121,7 +121,7 @@ cd /opt/apps/reads && sudo grep -n "reverse_proxy" docker-compose.prod.yml
 You should see two lines, one under the other:
 
 ```
-      caddy.reverse_proxy: "{{upstreams 3000}}"
+      caddy.reverse_proxy: "reads-app:3000"
       caddy.reverse_proxy.header_up: "X-Forwarded-For {client_ip}"
 ```
 
