@@ -36,7 +36,8 @@ services:
       caddy: ${DOMAIN:?set DOMAIN in .env, e.g. reads.staging.sarvarlogs.uz}
       # Username "staging"; the password is whatever was hashed.
       caddy.basic_auth.staging: STAGING_AUTH_HASH
-      caddy.reverse_proxy: "{{upstreams 3000}}"
+      # By container name, not {{upstreams 3000}}: see docker-compose.prod.yml.
+      caddy.reverse_proxy: "reads-staging-app:3000"
 
 networks:
   edge:

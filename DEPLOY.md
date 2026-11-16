@@ -84,7 +84,7 @@ until it's reachable.
 
 There is no Caddyfile to edit. The `edge` Caddy (caddy-docker-proxy) reads
 routing straight off this container's Docker labels
-(`caddy: ${DOMAIN}` / `caddy.reverse_proxy: {{upstreams 3000}}` in
+(`caddy: ${DOMAIN}` / `caddy.reverse_proxy: reads-app:3000` in
 `docker-compose.prod.yml`), so the only step here is setting `DOMAIN` in the
 server's `.env` (`DOMAIN=kitoblarim.uz`). Caddy fetches the
 Let's Encrypt certificate for it automatically the first time it's
@@ -95,10 +95,13 @@ Reads lives on `kitoblarim.uz` (decided 2026-10-15; the planned move to
 as `DOMAIN`: `deploy-app` refuses a deploy where it isn't.
 
 For a while every canonical link and the sitemap pointed at
-`tarjima.kitoblarim.uz`, so search engines know that address. The second
-site in `docker-compose.prod.yml`'s labels (`caddy_1`) answers it with a
-permanent redirect to the same path on `kitoblarim.uz`. Keep it until
-Search Console stops listing `tarjima` URLs.
+`tarjima.kitoblarim.uz`. Its DNS record was deleted on 2026-11-15, and the
+redirect labels for it (`caddy_1`) went with it.
+
+The upstream is the container's name, never `{{upstreams 3000}}`. While the
+container is down that template renders as a bare `:3000`, and Cloudflare's
+long-lived connections kept using the broken route after the site was back
+(502s until edge Caddy was restarted, 2026-11-15 and 2026-11-16).
 
 **5. Log the server in to GHCR (one time, for manual operations)**
 
