@@ -222,6 +222,21 @@ describe("bookSnippet", () => {
     expect(bookSnippet({ ...book, description: "  " }, t, "uz")).toBe(facts);
     expect(bookSnippet(described, t, "ru")).toBe(facts);
     expect(bookSnippet(described, t, "en")).toBe(facts);
+    // The Uzbek text shown on the Russian page for want of a Russian one.
+    expect(bookSnippet({ ...described, descriptionIsOwn: true, descriptionLanguage: "uz" }, t, "ru")).toBe(facts);
+  });
+
+  it("leads with the own text written in the page's language", () => {
+    const russian: BookWithTranslator = {
+      ...book,
+      description: "Повесть Эрнеста Хемингуэя (1952) о старом рыбаке Сантьяго.\n\nКнига на узбекском языке.",
+      descriptionIsOwn: true,
+      descriptionLanguage: "ru",
+    };
+    expect(bookSnippet(russian, t, "ru")).toBe(
+      "Повесть Эрнеста Хемингуэя (1952) о старом рыбаке Сантьяго. Книга на узбекском языке.",
+    );
+    expect(bookSnippet(russian, t, "uz")).toBe(bookDescription(book, t));
   });
 });
 

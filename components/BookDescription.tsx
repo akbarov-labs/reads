@@ -18,10 +18,13 @@ export function isLongDescription(text: string): boolean {
  */
 export function BookDescription({
   text,
+  lang,
   moreLabel,
   lessLabel,
 }: {
   text: string;
+  /** The text's language when it differs from the page's (an Uzbek text on the Russian page). */
+  lang?: string;
   moreLabel: string;
   lessLabel: string;
 }) {
@@ -43,6 +46,7 @@ export function BookDescription({
       <p
         id={id}
         ref={textRef}
+        lang={lang}
         className={`text-sm leading-relaxed text-zinc-700 whitespace-pre-line ${
           long && !open ? "max-h-[6lh] overflow-hidden [mask-image:linear-gradient(to_bottom,black_65%,transparent)]" : ""
         }`}

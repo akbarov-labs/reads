@@ -221,17 +221,19 @@ const SNIPPET_LENGTH = 160;
 
 /**
  * What a search result and the page's structured data say about a book.
- * On the Uzbek page, a book with a description of its own leads with it:
- * that says what the book is about, which the facts line can't. A text
+ * A book with a description of its own in the page's language leads with
+ * it: that says what the book is about, which the facts line can't. A text
  * copied from a shop or a publisher channel is their words, which search
- * engines already have, so those books keep the facts line, as do the
- * Russian and English pages, since descriptions are written in Uzbek.
+ * engines already have, so those books keep the facts line, as does a
+ * Russian or English page showing the Uzbek text for want of its own.
  * (`descriptionIsOwn` says which is which; an older API without it only
- * flags shop copies, through `descriptionSource`.)
+ * flags shop copies, through `descriptionSource`, and has Uzbek own texts
+ * only.)
  */
 export function bookSnippet(book: BookWithTranslator, t: Translate, locale: string): string {
   const isOwn = book.descriptionIsOwn ?? !book.descriptionSource;
-  const own = locale === "uz" && isOwn ? (book.description ?? "").replace(/\s+/g, " ").trim() : "";
+  const language = book.descriptionLanguage ?? (isOwn ? "uz" : null);
+  const own = isOwn && language === locale ? (book.description ?? "").replace(/\s+/g, " ").trim() : "";
   return own ? excerpt(own, SNIPPET_LENGTH) : bookDescription(book, t);
 }
 
