@@ -141,6 +141,8 @@ export interface BookWithTranslator extends Book {
   descriptionSource?: { name: string; url: string } | null;
   /** Book page only: whether `description` is the editors' own words (not a shop or channel copy). Older APIs omit it. */
   descriptionIsOwn?: boolean;
+  /** Book page only: the language the own description is written in; null for a copied text. Older APIs omit it (their own texts are Uzbek). */
+  descriptionLanguage?: "uz" | "ru" | "en" | null;
   /** Book page only: a shop's or edition's text, folded under the book's own description; null when there is none. */
   shopDescription?: { text: string; source: { name: string; url: string } | null } | null;
   /** Book page only: every published edition. */

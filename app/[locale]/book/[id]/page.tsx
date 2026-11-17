@@ -253,6 +253,9 @@ export default async function BookDetailPage({
               {book.description && (
                 <BookDescription
                   text={book.description}
+                  lang={
+                    book.descriptionLanguage && book.descriptionLanguage !== locale ? book.descriptionLanguage : undefined
+                  }
                   moreLabel={tDetail("descriptionMore")}
                   lessLabel={tDetail("descriptionLess")}
                 />
