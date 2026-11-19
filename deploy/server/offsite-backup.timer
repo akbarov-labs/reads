@@ -1,5 +1,6 @@
 # After every app's own nightly backup: the shop's at 22:00 UTC (03:00
-# Tashkent), kitoblarim's at 03:00 UTC, reads-admin's at 03:30, my-blog's at 03:45.
+# Tashkent), kitoblarim's at 03:00 UTC, reads-admin's at 03:30, my-blog's at 03:45,
+# sabaq's at 21:30 UTC (02:30 Tashkent) and before each of its deploys.
 [Unit]
 Description=Nightly off-site copy of app backups
 
