@@ -22,6 +22,7 @@ including when the server is gone.
 | reads-admin | nightly SQLite copy | `reads-admin_db_backups` | `dumps/reads-admin/` |
 | reads-admin | portraits/avatars, mirrored | `reads-admin_app_storage/app/public` | `files/reads-admin/` |
 | my-blog | nightly SQLite copy (new `backup` service) | `my-blog_db_backups` | `dumps/my-blog/` |
+| sabaq (sabaq.uz) | nightly `pg_dump` of the live centers (not the demo) | `sabaq_db_backups` | `dumps/sabaq/` |
 | server | `/opt/apps`, `/etc/deploy-app`, `~/edge` (`.env` files included) | — | `dumps/server/` |
 
 Reads has no database. Staging copies are not backed up.

@@ -11,3 +11,4 @@ files  kitoblarim   vol:kitoblarim_uploads_data
 dumps  reads-admin  vol:reads-admin_db_backups
 files  reads-admin  vol:reads-admin_app_storage/app/public
 dumps  my-blog      vol:my-blog_db_backups
+dumps  sabaq        vol:sabaq_db_backups

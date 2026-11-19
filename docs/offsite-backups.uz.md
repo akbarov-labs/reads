@@ -26,6 +26,7 @@ qolganda ham), **healthchecks.io** sizga email yuboradi.
 | reads-admin | har kechagi SQLite nusxasi | `reads-admin_db_backups` | `dumps/reads-admin/` |
 | reads-admin | portret/avatarlar, nusxasi | `reads-admin_app_storage/app/public` | `files/reads-admin/` |
 | my-blog | har kechagi SQLite nusxasi (yangi `backup` xizmati) | `my-blog_db_backups` | `dumps/my-blog/` |
+| sabaq (sabaq.uz) | haqiqiy markazlarning har kechagi `pg_dump`i (demo emas) | `sabaq_db_backups` | `dumps/sabaq/` |
 | server | `/opt/apps`, `/etc/deploy-app`, `~/edge` (`.env` fayllar bilan) | — | `dumps/server/` |
 
 Reads'da ma'lumotlar bazasi yoʻq. Staging'lar zaxiralanmaydi.
